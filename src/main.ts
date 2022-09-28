@@ -1,0 +1,51 @@
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import helmet from 'helmet';
+import * as session from 'express-session';
+import * as nocache from 'nocache';
+import { logger } from './common/middleware/logger.middleware';
+
+const PORT = parseInt(process.env.PORT, 10) || 3001;
+const HOST = process.env.HOST || 'localhost';
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.setGlobalPrefix(process.env.ROUTER_PREFIX);
+  if (process.env.ALLOW_CORS) {
+    app.enableCors({
+      origin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN.split(','),
+      credentials: true,
+    });
+  }
+  // позволяет защитить приложение от некоторых широко известных веб-уязвимостей путем соответствующей настройки заголовков HTTP
+  app.use(helmet());
+  // отключаем кэширование на стороне клиента
+  app.use(nocache());
+  // подключаем  логирование ошибок
+  app.use(logger);
+
+  app.use(
+    session({
+      cookie: {
+        sameSite:
+          process.env.NODE_ENV === 'production'
+            ? 'strict'
+            : process.env.NODE_ENV === 'development'
+            ? 'none'
+            : false,
+        httpOnly: true,
+        secure: process.env.SESSION_SECURE === 'true',
+      },
+      secret: process.env.SESSION_SECRET,
+      name: process.env.SESSION_NAME,
+      resave: false,
+      saveUninitialized: false,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    }),
+  );
+
+  await app.listen(PORT, HOST);
+}
+bootstrap();
