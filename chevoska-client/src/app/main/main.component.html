@@ -1,0 +1,49 @@
+<div *ngIf="currentUser">
+  <h1>Hello {{currentUser.username}}</h1>
+</div>
+
+  <div *ngIf="!currentUser">
+    <form [formGroup]="form" (ngSubmit)="login()">
+      <h3>Enter in system: </h3>
+      <div>
+        <label for="name"></label>
+        <input
+          type="text"
+          formControlName="name"
+          id="name"
+          placeholder="name"
+        />
+      </div>
+
+      <div>
+        <label for="role"></label>
+        <input
+          autocomplete="new-password"
+          type="text"
+          formControlName="role"
+          id="role"
+          placeholder="role"
+        />
+      </div>
+
+      <button>Enter</button>
+    </form>
+  </div>
+
+
+  <div  *ngIf="currentUser">
+    <h3>Exit out system: </h3>
+    <button (click)="logout()">Exit</button>
+  </div>
+
+
+<div  *ngIf="currentUser">
+  <div><h3>Show All users in system</h3></div>
+  <button (click)="getUsers()">Get Users</button>
+  <div *ngIf="users">
+    <div *ngFor="let user of users">
+      <div>{{user.name}}</div>
+    </div>
+  </div>
+</div>
+
