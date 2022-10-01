@@ -1,13 +1,15 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import helmet from 'helmet';
-import * as session from 'express-session';
-import * as nocache from 'nocache';
-import { logger } from './common/middleware/logger.middleware';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import helmet from "helmet";
+import * as session from "express-session";
+import * as nocache from "nocache";
+import { logger } from "./common/middleware/logger.middleware";
+import { getCacheClient } from "./shared/redis";
+import * as RedisStore from "connect-redis";
 
 const PORT = parseInt(process.env.PORT, 10) || 3001;
-const HOST = process.env.HOST || 'localhost';
+const HOST = process.env.HOST || "localhost";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -15,7 +17,7 @@ async function bootstrap() {
   app.setGlobalPrefix(process.env.ROUTER_PREFIX);
   if (process.env.ALLOW_CORS) {
     app.enableCors({
-      origin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN.split(','),
+      origin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN.split(","),
       credentials: true,
     });
   }
@@ -28,22 +30,20 @@ async function bootstrap() {
 
   app.use(
     session({
+      store: new (RedisStore(session))({
+        client: getCacheClient(),
+      }),
       cookie: {
-        sameSite:
-          process.env.NODE_ENV === 'production'
-            ? 'strict'
-            : process.env.NODE_ENV === 'development'
-            ? 'none'
-            : false,
+        sameSite: false,
         httpOnly: true,
-        secure: process.env.SESSION_SECURE === 'true',
+        secure: process.env.SESSION_SECURE === "true",
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours,
       },
       secret: process.env.SESSION_SECRET,
       name: process.env.SESSION_NAME,
       resave: false,
       saveUninitialized: false,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    }),
+    })
   );
 
   await app.listen(PORT, HOST);

@@ -17,6 +17,7 @@ const new_module_1 = require("./new/new.module");
 const logger_module_1 = require("./common/logger/logger.module");
 const transform_interceptor_1 = require("./common/interceptors/transform.interceptor");
 const all_exception_filter_1 = require("./common/exeptions/all-exception.filter");
+const database_module_1 = require("./database/database.module");
 const envFile = process.env.NODE_ENV
     ? `.env.${process.env.NODE_ENV}`
     : '.env.development';
@@ -30,6 +31,7 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 envFilePath: [`${baseDir}/.env.development.local`, envPath],
             }),
+            database_module_1.DatabaseModule.forRoot(),
             core_1.RouterModule.register([
                 {
                     path: '',

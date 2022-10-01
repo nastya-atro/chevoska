@@ -70,4 +70,15 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+-- creating user
+CREATE USER 'chevoska_client'@'localhost' IDENTIFIED BY 'Asdfgh123456!' PASSWORD EXPIRE NEVER;
+-- ALTER USER 'partners_client'@'localhost' IDENTIFIED WITH mysql_native_password BY 'L%&cx^Lj-x72fH`a';
+
+-- drop DB if exist
+DROP SCHEMA IF EXISTS `chevoska_db`;
+
+-- creating schema
+CREATE SCHEMA `chevoska_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- granting permission
+GRANT ALL ON `chevoska_db`.* TO 'chevoska_client'@'localhost';

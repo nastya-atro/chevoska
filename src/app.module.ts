@@ -8,6 +8,7 @@ import { NewModule } from './new/new.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { AllExceptionFilter } from './common/exeptions/all-exception.filter';
+import {DatabaseModule} from "./database/database.module";
 
 const envFile = process.env.NODE_ENV
   ? `.env.${process.env.NODE_ENV}`
@@ -20,6 +21,7 @@ const envPath = path.resolve(baseDir, `${envFile}`);
     ConfigModule.forRoot({
       envFilePath: [`${baseDir}/.env.development.local`, envPath],
     }),
+    DatabaseModule.forRoot(),
     RouterModule.register([
       {
         path: '',

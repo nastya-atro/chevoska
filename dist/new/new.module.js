@@ -10,12 +10,15 @@ exports.NewModule = void 0;
 const common_1 = require("@nestjs/common");
 const new_controller_1 = require("./new.controller");
 const new_service_1 = require("./new.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("../common/entities/user.entity");
+const local_strategy_1 = require("./strategies/local.strategy");
 let NewModule = class NewModule {
 };
 NewModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
-        providers: [new_service_1.NewService],
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity])],
+        providers: [new_service_1.NewService, local_strategy_1.UserLocalStrategy],
         controllers: [new_controller_1.NewController],
         exports: [],
     })

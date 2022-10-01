@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
-import { NewController } from './new.controller';
-import { NewService } from './new.service';
+import { Module } from "@nestjs/common";
+import { NewController } from "./new.controller";
+import { NewService } from "./new.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UserEntity } from "../common/entities/user.entity";
+import { UserLocalStrategy } from "./strategies/local.strategy";
 
 @Module({
-  imports: [],
-  providers: [NewService],
+  imports: [TypeOrmModule.forFeature([UserEntity])],
+  providers: [NewService, UserLocalStrategy],
   controllers: [NewController],
   exports: [],
 })
