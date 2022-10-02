@@ -9,6 +9,8 @@ export function getCacheClient() {
     process.env.REDIS_CLUSTER_MODE && process.env.REDIS_CLUSTER_MODE === "true";
   const redisUserName = process.env.REDIS_USERNAME;
   const redisPassword = process.env.REDIS_PASSWORD;
+  const host = process.env.REDIS_HOST;
+  const port = process.env.REDIS_PORT;
   const redisKeyPrefix = process.env.REDIS_KEY_PREFIX || "";
   const redisConnectionString = process.env.REDIS_CONNECTION_STRING;
   if (!redisConnectionString) {

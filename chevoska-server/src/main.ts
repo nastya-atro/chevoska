@@ -8,7 +8,7 @@ import { logger } from "./common/middleware/logger.middleware";
 import { getCacheClient } from "./shared/redis";
 import * as RedisStore from "connect-redis";
 
-const PORT = parseInt(process.env.PORT, 10) || 3001;
+const PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || "localhost";
 
 async function bootstrap() {
