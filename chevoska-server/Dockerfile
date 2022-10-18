@@ -11,11 +11,4 @@ RUN npm install -g @nestjs/cli
 
 COPY . .
 
-#ARG NODE_ENV
-#ENV NODE_ENV=${NODE_ENV}
-#ENV NODE_ENV=production
-
-#RUN pnpm build
-
-#CMD ["node", "dist/main.js"]
 CMD ["npm", "run", "start:dev"]

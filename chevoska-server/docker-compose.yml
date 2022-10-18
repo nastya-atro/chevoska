@@ -8,12 +8,14 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: 12345ç
+      MYSQL_ROOT_PASSWORD: 12345
 
   cache:
     image: redis
     container_name: cache-server
     restart: always
+    ports:
+      - 127.0.0.1:6379:6379
     volumes:
       - cache:/data
 
@@ -24,16 +26,19 @@ services:
       - cache
       - db
     ports:
-      - "3000:3000"
+      - 0.0.0.0:3001:3001
     environment:
       - HOST=0.0.0.0
-      - PORT=3000
+      - PORT=3001
       - NODE_ENV=development
-      - TYPEORM_HOST=host.docker.internal
+
+      - TYPEORM_HOST=db
+      - TYPEORM_PORT=3306
+
       - REDIS_CLUSTER_MODE=false
       - REDIS_KEY_PREFIX=CVEVOSKA_
-      - REDIS_CONNECTION_STRING=172.22.0.3:6379
-      - TYPEORM_PORT=3306
+      - REDIS_CONNECTION_STRING=cache:6379
+
       - ALLOW_CORS=true
       - ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:4200
       - SESSION_SECURE=false # only for local, use `true` if start for production (https)
