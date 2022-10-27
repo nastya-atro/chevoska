@@ -18,7 +18,7 @@ FROM nginx:1.17.3-alpine
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 # copy built application from "builder" image
-COPY --from=builder /app/dist/chevoska-client /usr/share/nginx/html
+COPY --from=builder /app/dist/chevoska-cli /usr/share/nginx/html
 
 
 

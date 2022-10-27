@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16 AS builder
 
 COPY package*.json ./
 

@@ -1,6 +1,6 @@
 -- creating user
-CREATE USER 'chevoska_client'@'172.21.0.4' IDENTIFIED BY 'Asdfgh123456!' PASSWORD EXPIRE NEVER;
--- ALTER USER 'partners_client'@'172.21.0.4' IDENTIFIED WITH mysql_native_password BY 'L%&cx^Lj-x72fH`a';
+CREATE USER 'chevoska_client'@'host.docker.internal' IDENTIFIED BY 'Asdfgh123456!' PASSWORD EXPIRE NEVER;
+-- ALTER USER 'partners_client'@'host.docker.internal' IDENTIFIED WITH mysql_native_password BY 'L%&cx^Lj-x72fH`a';
 
 -- drop DB if exist
 DROP SCHEMA IF EXISTS `chevoska_db`;
@@ -9,7 +9,7 @@ DROP SCHEMA IF EXISTS `chevoska_db`;
 CREATE SCHEMA `chevoska_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- granting permission
-GRANT ALL ON `chevoska_db`.* TO 'chevoska_client'@'172.21.0.4';
+GRANT ALL ON `chevoska_db`.* TO 'chevoska_client'@'localhost';
 
 
 

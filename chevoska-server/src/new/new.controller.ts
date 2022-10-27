@@ -9,6 +9,8 @@ export class NewController {
 
   @Post("/login")
   login(@Req() req) {
+    console.log('______', 'LOGIN')
+
     return this.newService.login(req.body, req);
   }
 
@@ -23,6 +25,7 @@ export class NewController {
 
   @Get("/currentUser")
   getProfile(@CurrentUser() user) {
+    console.log('______', 'currentUser')
     return this.newService.getProfile(user);
   }
 
