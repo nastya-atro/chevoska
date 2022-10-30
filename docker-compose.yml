@@ -49,6 +49,5 @@ services:
       - REDIS_CONNECTION_STRING=cache:6379
 
       - ALLOW_CORS=true
-      - ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:4200,http://localhost:4201,http://localhost:4202
+      - ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:4202,http://localhost
       - SESSION_SECURE=false # only for local, use `true` if start for production (https)
-
