@@ -1,4 +1,8 @@
-FROM node:16 AS builder
+# to build for linux using
+FROM --platform=linux/amd64 node:16 AS builder
+
+# to build for mac using
+#FROM node:16 AS builder
 
 COPY package*.json ./
 
