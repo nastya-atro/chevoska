@@ -16,6 +16,7 @@ specifiers:
   '@types/jasmine': ~3.10.0
   '@types/node': ^12.11.1
   '@types/qs': ^6.9.7
+  bootstrap: ^5.2.2
   jasmine-core: ~4.0.0
   karma: ~6.3.0
   karma-chrome-launcher: ~3.1.0
@@ -38,6 +39,7 @@ dependencies:
   '@angular/platform-browser-dynamic': 13.2.7_vkbm4mesp4vzs4r6epm7k663dq
   '@angular/router': 13.2.7_pka4ybxyuk2z5wawant2h63cnm
   '@ngneat/until-destroy': 9.2.2_wqwt4gijiklml63xh5krqw4amq
+  bootstrap: 5.2.2
   qs: 6.11.0
   rxjs: 7.5.7
   tslib: 2.4.0
@@ -2476,6 +2478,12 @@ packages:
   /boolbase/1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
+
+  /bootstrap/5.2.2:
+    resolution: {integrity: sha512-dEtzMTV71n6Fhmbg4fYJzQsw1N29hJKO1js5ackCgIpDcGid2ETMGC6zwSYw09v05Y+oRdQ9loC54zB1La3hHQ==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.6
+    dev: false
 
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
