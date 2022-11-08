@@ -9,7 +9,7 @@ export class UsersApi implements OnDestroy {
   constructor(private api: ApiService) {}
 
   findCurrentUser(): Observable<any> {
-    return this.api.get(`/users/profile`);
+    return this.api.get(`/auth/profile`);
   }
 
   ngOnDestroy(): void {}

@@ -16,7 +16,7 @@ export class AuthApi {
 
   login(username: string, password: string): Observable<any> {
     return this.api
-      .post(`${this.SEGMENT}/signin`, { username, password })
+      .post(`${this.SEGMENT}/login`, { username, password })
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 

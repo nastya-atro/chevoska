@@ -18,6 +18,7 @@ export class SignupComponent implements OnDestroy {
       {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
+        username: ['', [Validators.required]],
         email: [
           '',
           [
@@ -28,7 +29,7 @@ export class SignupComponent implements OnDestroy {
             Validators.maxLength(80),
           ],
         ],
-        phone: ['', [Validators.required, Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
+        phone: ['123', [Validators.required, Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
         password: [
           '',
           [
@@ -39,7 +40,7 @@ export class SignupComponent implements OnDestroy {
           ],
         ],
         confirmPassword: ['', [Validators.required, Validators.maxLength(255)]],
-        isAgreement: [false],
+        isAgreement: [true],
       },
       { validator: MustMatch('password', 'confirmPassword') }
     );

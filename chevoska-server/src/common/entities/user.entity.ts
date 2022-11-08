@@ -1,14 +1,65 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { ProfileEntity } from "./profile.entity";
+import { RoleEntity } from "./role.entity";
 
-@Entity('users')
+@Entity("users")
 export class UserEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ type: 'varchar', length: 255 })
-    name: string;
+  @Column({ type: "varchar", length: 50 })
+  email: string;
 
-    constructor(user?: Partial<UserEntity>) {
-        user && Object.assign(this, user);
-    }
+  @Column({ name: "password_hash", type: "varchar", length: 64 })
+  passwordHash: string;
+
+  @Column({ name: "password_salt", type: "varchar", length: 16 })
+  passwordSalt: string;
+
+  @Column()
+  enabled: boolean;
+
+  @Column({ name: "confirm_token", type: "varchar", length: 64 })
+  confirmToken: string;
+
+  @Column({
+    name: "confirm_token_expiration_date",
+  })
+  confirmTokenExpirationDate: Date;
+
+  @Column()
+  deleted: boolean;
+
+  @Column({ name: "forgot_password_token", type: "varchar", length: 64 })
+  forgotPasswordToken: string;
+
+  @Column({
+    name: "forgot_password_expiration_date",
+  })
+  forgotPasswordExpirationDate: Date;
+
+  @Column({ name: "create_date" })
+  createDate: Date;
+
+  @ManyToOne(() => RoleEntity, (role) => role.users)
+  @JoinColumn({ name: "role_id" })
+  role?: RoleEntity;
+
+  @OneToOne(() => ProfileEntity, (profile) => profile.id, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "id" })
+  profile?: ProfileEntity;
+
+  constructor(user?: Partial<UserEntity>) {
+    user && Object.assign(this, user);
+  }
 }

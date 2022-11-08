@@ -94,11 +94,11 @@
                             <label class="form-label" for="confirmPassword">Password Confirm</label>
                             <input
                                     type="password"
-                                    formControlName="password"
+                                    formControlName="confirmPassword"
                                     id="confirmPassword"
                                     class="form-control form-control-lg"
                                     [ngClass]="
-                            myForm.get('password')?.errors && myForm.get('password')?.touched ? 'is-invalid' : ''
+                            myForm.get('confirmPassword')?.errors && myForm.get('confirmPassword')?.touched ? 'is-invalid' : ''
                         "
                             />
                             <div class="invalid-feedback" *ngIf="myForm.get('confirmPassword')?.errors">

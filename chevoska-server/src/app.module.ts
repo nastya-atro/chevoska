@@ -1,19 +1,19 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { APP_FILTER, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
-import * as path from 'path';
-import { NewModule } from './new/new.module';
-import { LoggerModule } from './common/logger/logger.module';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { AllExceptionFilter } from './common/exeptions/all-exception.filter';
-import {DatabaseModule} from "./database/database.module";
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { APP_FILTER, APP_INTERCEPTOR, RouterModule } from "@nestjs/core";
+import { ConfigModule } from "@nestjs/config";
+import * as path from "path";
+import { LoggerModule } from "./common/logger/logger.module";
+import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
+import { AllExceptionFilter } from "./common/exeptions/all-exception.filter";
+import { DatabaseModule } from "./database/database.module";
+import { MainModule } from "./main/main.module";
 
 const envFile = process.env.NODE_ENV
   ? `.env.${process.env.NODE_ENV}`
-  : '.env.development';
-const baseDir = path.join(__dirname, '../env');
+  : ".env.development";
+const baseDir = path.join(__dirname, "../env");
 const envPath = path.resolve(baseDir, `${envFile}`);
 
 @Module({
@@ -24,12 +24,12 @@ const envPath = path.resolve(baseDir, `${envFile}`);
     DatabaseModule.forRoot(),
     RouterModule.register([
       {
-        path: '',
-        module: NewModule,
+        path: "",
+        module: MainModule,
         children: [], // map module types
       },
     ]),
-    NewModule,
+    MainModule,
     LoggerModule,
   ],
   controllers: [AppController],
