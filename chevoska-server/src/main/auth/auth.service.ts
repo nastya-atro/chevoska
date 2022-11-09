@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -60,6 +61,24 @@ export class AuthService {
     return {
       statusCode: 201,
     };
+  }
+
+  async activate(token: string) {
+    const user = await this.userRepository.findOne({
+      where: { confirmToken: token },
+    });
+    if (!user) {
+      throw new NotFoundException("Token is not valid");
+    }
+    if (user.confirmTokenExpirationDate < moment.utc().toDate()) {
+      throw new BadRequestException(
+        "Confirmation link has been expired. Please proceed to account creation"
+      );
+    }
+
+    user.confirmToken = null;
+    user.enabled = true;
+    await this.userRepository.save(user);
   }
 
   async validateUser(username: string, password: string) {

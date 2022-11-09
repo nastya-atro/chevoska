@@ -17,6 +17,10 @@ export class AuthenticationService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
+  activateProfile(token: string) {
+    return this.authApi.activate(token);
+  }
+
   login(username: string, password: string): Observable<unknown> {
     return this.authApi.login(username, password);
   }
@@ -42,6 +46,10 @@ export class AuthenticationService implements OnDestroy {
           this.resetUser();
           this.router.navigate(['/signin']);
         },
+        error: () => {
+          this.resetUser();
+          this.router.navigate(['/signin']);
+        },
       });
   }
 
@@ -53,6 +61,10 @@ export class AuthenticationService implements OnDestroy {
       }),
       catchError((error: any) => of(console.log(error)))
     );
+  }
+
+  isAuthorized(): boolean {
+    return !!this.currentUser;
   }
 
   initializer() {

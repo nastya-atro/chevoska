@@ -1,0 +1,41 @@
+<div class="modal">
+  <div class="modal-window">
+    <button routerLink="/signup" class="action-button action-button_inline-secondary">
+      <svg class="icon">
+        <use href='#iconClose' height='100%' width='100%'></use>
+      </svg>
+    </button>
+    <div class="modal-content">
+      <img class="logo" src="assets/images/email.svg" alt="Email"/>
+      <span
+        class="textbox textbox_header-2 textbox_text-main"> {{ this.confirmationError ? "Confirm registration error" : "Registration completed" }}</span>
+        <span class="textbox textbox_body-2 textbox_secondary textbox_with-custom-width">
+        {{ this.confirmationError ? 'Token is not valid' : ' You Registration Process is completed successfully. You can sign in now.'}}
+        </span>
+
+      <hr class="divider">
+      <div class="resend-block"><span class="textbox textbox_body-2 textbox_secondary">Proceed to  </span>
+        <button routerLink="/signin" class="button button_inline-text-in-buttons button_font-body-2">Sing In</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row d-flex justify-content-center align-items-center h-100">
+  <div class="">
+    <div class="card" style="border-radius: 1rem">
+      <div class="card-body p-5">
+        <div class="mt-md-4">
+          <h3>{{ this.confirmationError ? "Confirm registration error" : "Registration completed" }}</h3>
+          <div>
+            {{ this.confirmationError ? 'Token is not valid' : ' You Registration Process is completed successfully. You can sign in now.'}}
+          </div>
+          <a class="text-center" href="/signin">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

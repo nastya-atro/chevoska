@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { ValidateDTO } from "../../common/decorators/validate-dto.decorator";
 import { SignUpInputDto } from "./dto/signUp.input.dto";
@@ -8,7 +17,6 @@ import { SessionService } from "../../common/session/session.service";
 import { UserAuthGuard } from "./guards/auth.guard";
 import { CurrentUser } from "../../common/decorators/current-user.decorators";
 import { SessionUser } from "../../common/session/models/session.model";
-import { ProfileOutputDto } from "./dto/profile.output.dto";
 import { UserProfileOutputDto } from "./dto/user-profile.output.dto";
 
 @Controller("auth")
@@ -27,6 +35,16 @@ export class AuthController {
   @Post("/login")
   login(@Req() req, @Session() session: SessionService) {
     return this.authService.login(req.user, session);
+  }
+
+  @Get("/logout")
+  logout(@Session() session: SessionService, @Res() res) {
+    session.logout(res);
+  }
+
+  @Get("/activate")
+  activate(@Query("token") token: string) {
+    return this.authService.activate(token);
   }
 
   @Post("/signup")

@@ -39,4 +39,10 @@ export class AuthApi {
       .post(`${this.SEGMENT}/signin`, { enterData })
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
+
+  activate(token: string) {
+    return this.api
+      .get(`${this.SEGMENT}/activate?token=${token}`)
+      .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  }
 }

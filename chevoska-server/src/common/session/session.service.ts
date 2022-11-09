@@ -1,4 +1,5 @@
 import { IncomingMessageSession } from "../../shared/models/incoming-message-session.model";
+import { Request, Response } from "express";
 
 export class SessionService {
   private readonly TOKEN_TTL_MINUTES = 60 * 24;
@@ -15,5 +16,15 @@ export class SessionService {
       username,
       role,
     };
+  }
+
+  logout(res: Response) {
+    (this.request as unknown as IncomingMessageSession).session.destroy(
+      function () {
+        res.clearCookie(process.env.SESSION_NAME);
+        res.status(200);
+        res.send({ message: "Successfully logged out" });
+      }
+    );
   }
 }
