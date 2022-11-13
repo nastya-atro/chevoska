@@ -74,4 +74,16 @@ export class AuthenticationService implements OnDestroy {
   resetUser(): void {
     this.currentUser = null;
   }
+
+  sendResetPasswordRequest(email: string) {
+    return this.authApi.sendResetPasswordRequest(email);
+  }
+
+  setNewPassword(token: string, password: string) {
+    return this.authApi.setNewPassword(token, password);
+  }
+
+  validateRecoveryToken(token: string): Observable<string> {
+    return this.authApi.validateRecoveryToken(token);
+  }
 }

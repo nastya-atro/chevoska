@@ -45,4 +45,20 @@ export class AuthApi {
       .get(`${this.SEGMENT}/activate?token=${token}`)
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
+
+  sendResetPasswordRequest(email: string) {
+    return this.api
+      .post(`${this.SEGMENT}/forgot`, { email })
+      .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  }
+
+  setNewPassword(token: string, password: string) {
+    return this.api
+      .post(`${this.SEGMENT}/recover`, { token, password })
+      .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  }
+
+  validateRecoveryToken(token: string): Observable<string> {
+    return this.api.get(`${this.SEGMENT}/forgot/${token}`);
+  }
 }

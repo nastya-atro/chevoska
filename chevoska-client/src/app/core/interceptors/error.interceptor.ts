@@ -11,12 +11,13 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
+import { NotifyService } from '../../shared/modules/notifications/notify.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(
     private authenticationService: AuthenticationService,
-    // private notifyService: NotifyService,
+    private notifyService: NotifyService,
     private router: Router
   ) {}
 
@@ -28,6 +29,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           case HttpStatusCode.Unauthorized:
             this.authenticationService.resetUser();
             this.router.navigate(['/signin']);
+            errors.push(err.error.message || 'Unauthorized');
             break;
           case HttpStatusCode.BadRequest:
             errors = errors.concat(err.error.message.slice(0, 3));
@@ -36,15 +38,14 @@ export class ErrorInterceptor implements HttpInterceptor {
             errors.push(err.error.message || 'Forbidden error');
             break;
           case HttpStatusCode.InternalServerError:
-            errors.push('Internal Server Error');
+            errors.push(err.error.message || 'Internal Server Error');
             break;
           default:
-            errors.push('Something went wrong');
+            errors.push(err.error.message || 'Something went wrong');
         }
         errors.slice(0, 3).forEach((error, i) => {
           setTimeout(() => {
-            console.log('Error interceptor: ', error);
-            // this.notifyService.notifier.warning(error);
+            this.notifyService.notifier.warning(error);
           }, i * 500);
         });
         return throwError(() => err);

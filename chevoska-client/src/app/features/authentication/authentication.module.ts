@@ -9,6 +9,7 @@ import { EnterSystemComponent } from './enter-system/enterSystem.component';
 import { SigninComponent } from './sign-in/signin.component';
 import { ConfirmationSignupComponent } from './confirmation/confirmation-signup.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 @NgModule({
   imports: [RouterModule.forChild(AUTHENTICATION_ROUTES), FormsModule, ReactiveFormsModule, CommonModule, SharedModule],
@@ -18,6 +19,7 @@ import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
     SigninComponent,
     ConfirmationSignupComponent,
     ConfirmEmailComponent,
+    ForgotPasswordComponent,
   ],
 })
 export class AuthenticationModule {}

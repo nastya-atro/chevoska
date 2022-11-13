@@ -25,6 +25,7 @@ import { TemplateType } from "../../common/constants/email-templates";
 import { SignInModel } from "./models/signIn.model";
 import { SessionService } from "../../common/session/session.service";
 import { UserProfileOutputDto } from "./dto/user-profile.output.dto";
+import { ForgotPasswordModel } from "./models/forgotPassword.model";
 
 @Injectable()
 export class AuthService {
@@ -186,6 +187,130 @@ export class AuthService {
         },
         {
           confirm_link: `${domain}/${process.env.CONFIRMATION_LINK}?token=${newUser.confirmToken}`,
+        }
+      );
+      return { statusCode: 204 };
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  private async saveNewUserPassword(token: string, password: string) {
+    const user = await this.findUserByForgotToken(token);
+
+    if (!user) {
+      throw new NotFoundException("Not found user");
+    }
+
+    if (!user.enabled) {
+      throw new ForbiddenException(
+        "User is not active or has been deactivated"
+      );
+    }
+    if (user.forgotPasswordExpirationDate < moment.utc().toDate()) {
+      throw new ForbiddenException("Token was expired.");
+    }
+
+    const passwordSalt = generateSalt();
+    const passwordHash = generatePasswordHash(password, passwordSalt);
+
+    user.passwordHash = passwordHash;
+    user.passwordSalt = passwordSalt;
+    user.forgotPasswordToken = null;
+
+    await this.userRepository.save(user);
+  }
+
+  async forgotPassword(
+    data: ForgotPasswordModel
+  ): Promise<{ statusCode: number }> {
+    await this.saveNewUserPassword(data.token, data.password);
+    return { statusCode: 204 };
+  }
+
+  private async findUserByForgotToken(token: string): Promise<UserEntity> {
+    if (!token) {
+      throw new BadRequestException("Invalid token");
+    }
+    const user = await this.userRepository.findOne({
+      where: { forgotPasswordToken: token },
+    });
+    if (!user) {
+      throw new NotFoundException("Not found user");
+    }
+
+    if (!user.enabled) {
+      throw new ForbiddenException(
+        "User is not active or has been deactivated"
+      );
+    }
+    if (user.forgotPasswordExpirationDate < moment.utc().toDate()) {
+      throw new ForbiddenException("Token was expired.");
+    }
+    return user;
+  }
+
+  async forgotPasswordInfo(token: string): Promise<string> {
+    const user = await this.findUserByForgotToken(token);
+
+    if (!user.email || user.email.indexOf("@") < 1) {
+      throw new BadRequestException("Invalid Email");
+    }
+    const atIndex = user.email.indexOf("@");
+    const prefix =
+      atIndex > 2 ? `${user.email[0]}***${user.email[atIndex - 1]}` : "***";
+    return `${prefix}${user.email.substring(atIndex)}`;
+  }
+
+  private async recovery(email: string): Promise<string> {
+    const user = await this.userRepository.findOne({
+      where: { email, enabled: true },
+      relations: ["role"],
+    });
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    if (!user.role) {
+      throw new NotFoundException("User not found");
+    }
+
+    if (!user.enabled) {
+      if (
+        user.confirmTokenExpirationDate < moment.utc().toDate() &&
+        user.confirmToken
+      ) {
+        throw new NotFoundException("User not found");
+      } else {
+        throw new ForbiddenException(
+          "User is not active or has been deactivated"
+        );
+      }
+    }
+    const forgotToken = generateTokenHash("sha1", `${email}${new Date()}`);
+    user.forgotPasswordToken = forgotToken;
+    user.forgotPasswordExpirationDate = moment.utc().add(24, "h").toDate();
+    await this.userRepository.save(user);
+    return forgotToken;
+  }
+
+  async recoveryPassword(
+    email: string,
+    domain: string,
+    appLink: string
+  ): Promise<{ statusCode: number }> {
+    try {
+      const token = await this.recovery(email);
+
+      await this.transport.send(
+        TemplateType.ForgotPassword,
+        {
+          from: '"Do not reply" <stream-service@example.com>',
+          to: email,
+          subject: "Recovery password for Stream Service",
+        },
+        {
+          recover_link: `${domain}/${process.env.RECOVERY_LINK}?token=${token}`,
+          base_app_url: appLink,
         }
       );
       return { statusCode: 204 };

@@ -4,6 +4,7 @@ import { EnterSystemComponent } from './enter-system/enterSystem.component';
 import { SigninComponent } from './sign-in/signin.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ConfirmationSignupComponent } from './confirmation/confirmation-signup.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 export const AUTHENTICATION_ROUTES: Routes = [
   {
@@ -25,5 +26,9 @@ export const AUTHENTICATION_ROUTES: Routes = [
   {
     path: 'confirmation',
     component: ConfirmationSignupComponent,
+  },
+  {
+    path: 'forgot',
+    component: ForgotPasswordComponent,
   },
 ];

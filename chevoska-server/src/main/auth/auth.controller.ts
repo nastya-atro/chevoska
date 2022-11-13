@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -18,6 +19,7 @@ import { UserAuthGuard } from "./guards/auth.guard";
 import { CurrentUser } from "../../common/decorators/current-user.decorators";
 import { SessionUser } from "../../common/session/models/session.model";
 import { UserProfileOutputDto } from "./dto/user-profile.output.dto";
+import { ForgotPasswordInputDto } from "./dto/forgot-password.input.dto";
 
 @Controller("auth")
 @UseGuards()
@@ -32,24 +34,48 @@ export class AuthController {
   }
 
   @UseGuards(UserAuthGuard)
-  @Post("/login")
+  @Post("login")
   login(@Req() req, @Session() session: SessionService) {
     return this.authService.login(req.user, session);
   }
 
-  @Get("/logout")
+  @Get("logout")
   logout(@Session() session: SessionService, @Res() res) {
     session.logout(res);
   }
 
-  @Get("/activate")
+  @Get("activate")
   activate(@Query("token") token: string) {
     return this.authService.activate(token);
   }
 
-  @Post("/signup")
+  @Post("signup")
   @ValidateDTO()
   signUp(@Body() body: SignUpInputDto, @Host() domain) {
     return this.authService.signup(body, domain);
+  }
+
+  @Post("forgot")
+  async recovery(
+    @Body("email") email: string,
+    @Host() domain
+  ): Promise<{ statusCode: number }> {
+    return this.authService.recoveryPassword(
+      email,
+      domain,
+      `${process.env.STATIC_URL}`
+    );
+  }
+
+  @Get("forgot/:token")
+  async forgotPasswordInfo(@Param("token") token: string): Promise<string> {
+    return this.authService.forgotPasswordInfo(token);
+  }
+
+  @Post("recover")
+  async forgotPassword(
+    @Body() body: ForgotPasswordInputDto
+  ): Promise<{ statusCode: number }> {
+    return this.authService.forgotPassword(body);
   }
 }
