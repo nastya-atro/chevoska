@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../authentication.service';
 import { Router } from '@angular/router';
 import { MustMatch } from '../../../core/validators/must-match.validator';
@@ -57,8 +57,10 @@ export class SignupComponent implements OnDestroy {
         .signup({ ...this.myForm.value })
         .pipe(untilDestroyed(this))
         .subscribe({
-          next: () => {
-            this.router.navigateByUrl('/confirm-email', { state: { email: this.myForm.value['email'] } });
+          next: token => {
+            this.router.navigateByUrl(`/pre-activate?token=${token}`, {
+              state: { email: this.myForm.value['email'], phone: this.myForm.value['phone'] },
+            });
           },
           error: () => {},
         });

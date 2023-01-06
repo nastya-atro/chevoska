@@ -28,6 +28,10 @@ export class AuthApi {
     return this.api.post(`${this.SEGMENT}/signup`, user);
   }
 
+  getUserInfo(token: string): Observable<{ email: string; phone: string }> {
+    return this.api.get(`${this.SEGMENT}/activate-profile?token=${token}`);
+  }
+
   enterPrivateSystem(enterData: any, key: string): Observable<any> {
     return this.api
       .post(`${this.SEGMENT}/signin`, { enterData, key })
@@ -43,6 +47,24 @@ export class AuthApi {
   activate(token: string) {
     return this.api
       .get(`${this.SEGMENT}/activate?token=${token}`)
+      .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  }
+
+  developActivate(token: string) {
+    return this.api
+      .get(`${this.SEGMENT}/develop-activate?token=${token}`)
+      .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  }
+
+  sendConfirmEmailToken(token: string) {
+    return this.api
+      .get(`${this.SEGMENT}/validate-email?token=${token}`)
+      .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  }
+
+  sendPhoneCode(token: string) {
+    return this.api
+      .get(`${this.SEGMENT}/validate-phone?token=${token}`)
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 

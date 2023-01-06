@@ -32,7 +32,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             errors.push(err.error.message || 'Unauthorized');
             break;
           case HttpStatusCode.BadRequest:
-            errors = errors.concat(err.error.message.slice(0, 3));
+            errors = errors.concat(err.error.message);
             break;
           case HttpStatusCode.Forbidden:
             errors.push(err.error.message || 'Forbidden error');

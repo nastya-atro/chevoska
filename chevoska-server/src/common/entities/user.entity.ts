@@ -26,13 +26,16 @@ export class UserEntity {
   @Column()
   enabled: boolean;
 
-  @Column({ name: "confirm_token", type: "varchar", length: 64 })
-  confirmToken: string;
+  @Column({ name: "token", type: "varchar", length: 64 })
+  token: string;
 
   @Column({
-    name: "confirm_token_expiration_date",
+    name: "token_expiration_date",
   })
-  confirmTokenExpirationDate: Date;
+  tokenExpirationDate: Date;
+
+  @Column({ name: "confirm_token", type: "varchar", length: 64 })
+  confirmToken: string;
 
   @Column()
   deleted: boolean;

@@ -21,6 +21,18 @@ export class AuthenticationService implements OnDestroy {
     return this.authApi.activate(token);
   }
 
+  developActivateProfile(token: string) {
+    return this.authApi.developActivate(token);
+  }
+
+  sendConfirmEmailToken(token: string) {
+    return this.authApi.sendConfirmEmailToken(token);
+  }
+
+  sendPhoneCode(token: string) {
+    return this.authApi.sendPhoneCode(token);
+  }
+
   login(username: string, password: string): Observable<unknown> {
     return this.authApi.login(username, password);
   }
@@ -35,6 +47,10 @@ export class AuthenticationService implements OnDestroy {
 
   enterPrivateSystem(enterData: any, key: string): Observable<unknown> {
     return this.authApi.enterPrivateSystem(enterData, key);
+  }
+
+  getUserInfo(token: string): Observable<{ email: string; phone: string }> {
+    return this.authApi.getUserInfo(token);
   }
 
   logout() {

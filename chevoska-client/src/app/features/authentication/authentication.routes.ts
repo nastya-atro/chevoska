@@ -2,9 +2,10 @@ import { Routes } from '@angular/router';
 import { SignupComponent } from './sign-up/signup.component';
 import { EnterSystemComponent } from './enter-system/enterSystem.component';
 import { SigninComponent } from './sign-in/signin.component';
-import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
-import { ConfirmationSignupComponent } from './confirmation/confirmation-signup.component';
+import { ConfirmEmailComponent } from './activate-profile/confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { PreActivateComponent } from './activate-profile/pre-activate/pre-activate.component';
+import { EndActivateComponent } from './activate-profile/end-activate/end-activate.component';
 
 export const AUTHENTICATION_ROUTES: Routes = [
   {
@@ -24,8 +25,12 @@ export const AUTHENTICATION_ROUTES: Routes = [
     component: ConfirmEmailComponent,
   },
   {
-    path: 'confirmation',
-    component: ConfirmationSignupComponent,
+    path: 'pre-activate',
+    component: PreActivateComponent,
+  },
+  {
+    path: 'activating',
+    component: EndActivateComponent,
   },
   {
     path: 'forgot',

@@ -44,16 +44,43 @@ export class AuthController {
     session.logout(res);
   }
 
+  @Post("signup")
+  @ValidateDTO()
+  signUp(@Body() body: SignUpInputDto, @Host() domain) {
+    return this.authService.signup(body);
+  }
+
+  // gey not active user info (email and phone)
+  @Get("activate-profile")
+  validate(@Query("token") token: string) {
+    return this.authService.getUserInfo(token);
+  }
+
+  // validate email by sending confirm link
+  @Get("validate-email")
+  validateEmail(@Query("token") token: string, @Host() domain) {
+    return this.authService.validateUserEmail(token, domain);
+  }
+
+  // validate email by sending confirm link
+  @Get("validate-phone")
+  validatePhone(@Query("token") token: string, @Host() domain) {
+    return this.authService.validateUserPhone(token, domain);
+  }
+
+  // activate email by confirm-link
   @Get("activate")
   activate(@Query("token") token: string) {
     return this.authService.activate(token);
   }
 
-  @Post("signup")
-  @ValidateDTO()
-  signUp(@Body() body: SignUpInputDto, @Host() domain) {
-    return this.authService.signup(body, domain);
+  // activate profile without validate email or phone by start token
+  @Get("develop-activate")
+  activateUserWithoutValidate(@Query("token") token: string) {
+    return this.authService.activateUserWithoutValidate(token);
   }
+
+  // Forgot password functionality
 
   @Post("forgot")
   async recovery(

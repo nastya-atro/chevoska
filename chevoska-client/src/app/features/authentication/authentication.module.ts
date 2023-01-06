@@ -7,9 +7,10 @@ import { SharedModule } from '../../shared/shared.module';
 import { SignupComponent } from './sign-up/signup.component';
 import { EnterSystemComponent } from './enter-system/enterSystem.component';
 import { SigninComponent } from './sign-in/signin.component';
-import { ConfirmationSignupComponent } from './confirmation/confirmation-signup.component';
-import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+import { ConfirmEmailComponent } from './activate-profile/confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { PreActivateComponent } from './activate-profile/pre-activate/pre-activate.component';
+import { EndActivateComponent } from './activate-profile/end-activate/end-activate.component';
 
 @NgModule({
   imports: [RouterModule.forChild(AUTHENTICATION_ROUTES), FormsModule, ReactiveFormsModule, CommonModule, SharedModule],
@@ -17,9 +18,10 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
     SignupComponent,
     EnterSystemComponent,
     SigninComponent,
-    ConfirmationSignupComponent,
+    EndActivateComponent,
     ConfirmEmailComponent,
     ForgotPasswordComponent,
+    PreActivateComponent,
   ],
 })
 export class AuthenticationModule {}

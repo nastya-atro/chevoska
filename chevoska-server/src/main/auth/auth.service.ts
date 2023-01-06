@@ -27,6 +27,8 @@ import { SessionService } from "../../common/session/session.service";
 import { UserProfileOutputDto } from "./dto/user-profile.output.dto";
 import { ForgotPasswordModel } from "./models/forgotPassword.model";
 
+import { post } from "request-promise";
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -64,18 +66,27 @@ export class AuthService {
     };
   }
 
-  async activate(token: string) {
+  private async findUserByToken(token: string, tokenType: string) {
     const user = await this.userRepository.findOne({
-      where: { confirmToken: token },
+      where: { [tokenType]: token },
     });
     if (!user) {
       throw new NotFoundException("Token is not valid");
     }
-    if (user.confirmTokenExpirationDate < moment.utc().toDate()) {
+
+    if (user.tokenExpirationDate < moment.utc().toDate()) {
       throw new BadRequestException(
-        "Confirmation link has been expired. Please proceed to account creation"
+        "Token link has been expired. Please proceed to account creation"
       );
     }
+    if (user.enabled) {
+      throw new BadRequestException("User has already been activated");
+    }
+    return user;
+  }
+
+  async activate(token: string) {
+    const user = await this.findUserByToken(token, "confirmToken");
 
     user.confirmToken = null;
     user.enabled = true;
@@ -124,8 +135,8 @@ export class AuthService {
         throw new ForbiddenException("User is not active.");
       }
       if (
-        existsUser.confirmToken &&
-        existsUser.confirmTokenExpirationDate < moment.utc().toDate()
+        existsUser.token &&
+        existsUser.tokenExpirationDate < moment.utc().toDate()
       ) {
         await this.profileRepository.delete({ id: existsUser.id });
         await this.userRepository.delete({ id: existsUser.id });
@@ -136,7 +147,8 @@ export class AuthService {
 
     const passwordSalt = generateSalt();
     const passwordHash = generatePasswordHash(password, passwordSalt);
-    const confirmToken = generateTokenHash("sha1", data.email);
+    const token = generateTokenHash("sha1", data.email);
+    const confirmToken = generateTokenHash("sha1", token);
 
     try {
       const role = await this.roleRepository.findOneBy({
@@ -149,8 +161,9 @@ export class AuthService {
           passwordSalt,
           passwordHash,
           confirmToken,
+          token,
           role,
-          confirmTokenExpirationDate: moment.utc().add(24, "h").toDate(),
+          tokenExpirationDate: moment.utc().add(24, "h").toDate(),
           createDate: moment.utc().toDate(),
         });
 
@@ -172,27 +185,79 @@ export class AuthService {
     }
   }
 
-  async signup(data: SignUpModel, domain: string) {
+  async signup(data: SignUpModel) {
     try {
       if (!data.isAgreement) {
         throw new Error("Accept the Terms Of Agreement for registration");
       }
       const newUser = await this.createUser(data);
-      await this.transport.send(
-        TemplateType.EmailConfirmation,
-        {
-          from: '"Do not reply" <stream-service@example.com>',
-          to: newUser.email,
-          subject: "Confirm registration for StreamService",
-        },
-        {
-          confirm_link: `${domain}/${process.env.CONFIRMATION_LINK}?token=${newUser.confirmToken}`,
-        }
-      );
-      return { statusCode: 204 };
+      return newUser.token;
     } catch (e) {
       throw e;
     }
+  }
+
+  private async findProfileById(id: number) {
+    return this.profileRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async getUserInfo(token: string) {
+    const user = await this.findUserByToken(token, "token");
+    const profile = await this.findProfileById(user.id);
+    return { email: user.email, phone: profile.phone };
+  }
+
+  async validateUserEmail(token: string, domain: string) {
+    const user = await this.findUserByToken(token, "token");
+
+    await this.transport.send(
+      TemplateType.EmailConfirmation,
+      {
+        from: '"Do not reply" <stream-service@example.com>',
+        to: user.email,
+        subject: "Confirm registration for StreamService",
+      },
+      {
+        confirm_link: `${domain}/${process.env.CONFIRMATION_LINK}?token=${user.confirmToken}`,
+      }
+    );
+  }
+  async validateUserPhone(token: string, domain: string) {
+    const user = await this.findUserByToken(token, "token");
+    console.log("____success found user to validate");
+
+    post({
+      uri: "https://api.zenvia.com/v2/channels/sms/messages",
+      headers: {
+        "X-API-TOKEN": "WajyfHoetoY7DZAnPZOiicT4Aop74kFmfqhS",
+      },
+      body: {
+        from: "belle.nastja",
+        to: "+375295209720",
+        contents: [
+          {
+            type: "text",
+            text: "Yoo from chevoska service",
+          },
+        ],
+      },
+      json: true,
+    })
+      .then((response) => {
+        console.log("__________Response:", response);
+      })
+      .catch((error) => {
+        console.log("____________Error:", error);
+      });
+  }
+
+  async activateUserWithoutValidate(token: string) {
+    const user = await this.findUserByToken(token, "token");
+    user.confirmToken = null;
+    user.enabled = true;
+    await this.userRepository.save(user);
   }
 
   private async saveNewUserPassword(token: string, password: string) {
@@ -276,7 +341,7 @@ export class AuthService {
 
     if (!user.enabled) {
       if (
-        user.confirmTokenExpirationDate < moment.utc().toDate() &&
+        user.tokenExpirationDate < moment.utc().toDate() &&
         user.confirmToken
       ) {
         throw new NotFoundException("User not found");
