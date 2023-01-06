@@ -23,20 +23,28 @@ CREATE TABLE `roles` (
 INSERT INTO roles(id,title) values
 (1, 'user'),(2, 'client');
 
+DROP TABLE IF EXISTS `stream_statuses`;
+CREATE TABLE `stream_statuses` (
+  `id` int NOT NULL,
+  `title` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(50) NOT NULL,
+  `email` varchar(50)  NOT NULL,
   `password_hash` varchar(64) NOT NULL,
   `password_salt` varchar(16) NOT NULL,
   `role_id` int DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `confirm_token` varchar(64) DEFAULT NULL,
-  `confirm_token_expiration_date` datetime(6) DEFAULT NULL,
+  `confirm_token` varchar(64)  DEFAULT NULL,
+  `token_expiration_date` datetime(6) DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `forgot_password_token` varchar(64) DEFAULT NULL,
   `forgot_password_expiration_date` datetime(6) DEFAULT NULL,
   `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`),
   FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
@@ -54,12 +62,7 @@ CREATE TABLE `profiles` (
   FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
-DROP TABLE IF EXISTS `stream_statuses`;
-CREATE TABLE `stream_statuses` (
-  `id` int NOT NULL,
-  `title` varchar(80) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-);
+
 
 DROP TABLE IF EXISTS `stream`;
 CREATE TABLE `stream` (

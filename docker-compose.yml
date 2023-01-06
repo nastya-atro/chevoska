@@ -29,7 +29,7 @@ services:
       - cache:/data
 
   backend:
-    image: chevoska/testapp:amdserver2
+    image: chevoska/testapp:server2
    # build: ./chevoska-server
     container_name: server
     depends_on:
