@@ -58,11 +58,11 @@ export class ForgotPasswordComponent implements OnInit {
   submitEmailForRecoveryPassword() {
     if (this.email.valid) {
       this.authService
-        .sendResetPasswordRequest(this.email.value)
+        .sendResetPasswordRequest(this.email.value || '')
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => {
-            this.visibleEmail = this.email.value;
+            this.visibleEmail = this.email.value || '';
             this.email.reset();
             this.step = PasswordRecoveredSteps.RESET_PASSWORD_STEP;
           },

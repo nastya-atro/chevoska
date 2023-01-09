@@ -1,1 +1,68 @@
-Profile
+<div class="row mt-5">
+<div class="form col d-flex flex-column align-self-center">
+    <div class="logo-block">
+        <img class="logo" [src]="'assets/images/avatar.jpg'" />
+    </div>
+</div>
+
+<form [formGroup]="form" class="form col-6">
+    <div class="form-outline mb-4">
+        <label class="form-label" for="firstName">First Name</label>
+        <input
+            formControlName="firstName"
+            type="text"
+            id="firstName"
+            class="form-control form-control-lg"
+            [ngClass]="form.get('firstName')?.errors && form.get('firstName')?.touched ? 'is-invalid' : ''"
+        />
+        <div class="invalid-feedback" *ngIf="form.get('firstName')?.errors">
+            {{ form.get("firstName")?.errors | validateError }}
+        </div>
+    </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="lastName">Last Name</label>
+        <input
+                formControlName="lastName"
+                type="text"
+                id="lastName"
+                class="form-control form-control-lg"
+                [ngClass]="form.get('lastName')?.errors && form.get('lastName')?.touched ? 'is-invalid' : ''"
+        />
+
+        <div class="invalid-feedback" *ngIf="form.get('lastName')?.errors">
+            {{ form.get("lastName")?.errors | validateError }}
+        </div>
+    </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="email">Email</label>
+        <input
+                formControlName="email"
+                type="email"
+                id="email"
+                class="form-control form-control-lg"
+                [ngClass]="form.get('email')?.errors && form.get('email')?.touched ? 'is-invalid' : ''"
+        />
+
+        <div class="invalid-feedback" *ngIf="form.get('email')?.errors">
+            {{ form.get("email")?.errors | validateError: 'email' }}
+        </div>
+    </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="email">Phone</label>
+        <input
+                formControlName="phone"
+                type="phone"
+                id="phone"
+                class="form-control form-control-lg"
+                [ngClass]="form.get('phone')?.errors && form.get('phone')?.touched ? 'is-invalid' : ''"
+        />
+
+        <div class="invalid-feedback" *ngIf="form.get('phone')?.errors">
+            {{ form.get("phone")?.errors | validateError }}
+        </div>
+    </div>
+</form>
+</div>

@@ -79,6 +79,10 @@ export class AuthenticationService implements OnDestroy {
     );
   }
 
+  getCurrentUser(): Observable<void | any> {
+    return this.currentUser;
+  }
+
   isAuthorized(): boolean {
     return !!this.currentUser;
   }

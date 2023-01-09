@@ -1,4 +1,19 @@
-<div>
-    <button (click)="logout()">lOGOUT</button>
+<nav class="navbar bg-body-tertiary fixed-top bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/streams">StreamService</a>
+        <div class="d-flex flex-row gap-3">
+            <div class="navbar-nav d-flex flex-row gap-3">
+                <a [routerLink]="'/streams'"
+                   routerLinkActive="active" class="nav-link">Streams</a>
+                <a [routerLink]="'/profile'"
+                   routerLinkActive="active" class="nav-link">Profile</a>
+            </div>
+
+            <button (click)="logout()" type="button" class="btn btn-outline-dark ">Log out</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-5 pt-3">
+    <router-outlet></router-outlet>
 </div>
-<router-outlet></router-outlet>

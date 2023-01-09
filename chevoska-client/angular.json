@@ -31,6 +31,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@angular/cdk/overlay-prebuilt.css",
               "node_modules/bootstrap/scss/bootstrap.scss",
               "src/styles.scss"
             ],
@@ -118,5 +119,8 @@
       }
     }
   },
-  "defaultProject": "chevoska-cli"
+  "defaultProject": "chevoska-cli",
+  "cli": {
+    "analytics": "d0843122-b406-41ab-b3a5-beb5f0ed0a73"
+  }
 }
