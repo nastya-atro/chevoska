@@ -10,7 +10,7 @@
 
 <div class="row mt-2">
     <div class="col text-end">
-        <button type="button" class="btn btn-dark">Create Stream</button>
+        <button type="button" (click)="createStream()" class="btn btn-dark">Create Stream</button>
     </div>
 </div>
 
@@ -24,6 +24,9 @@
     </div>
 
     <form [formGroup]="form" class="form col-6">
+
+
+
         <div class="form-outline mb-4">
             <label class="form-label" for="title">Title</label>
             <input
@@ -50,6 +53,15 @@
 
             <div class="invalid-feedback" *ngIf="form.get('description')?.errors">
                 {{ form.get("description")?.errors | validateError }}
+            </div>
+        </div>
+
+        <div class="form-outline mb-4">
+            <div class="form-check">
+                <input formControlName="isPrivate" class="form-check-input" type="checkbox" id="isPrivate">
+                <label class="form-check-label" for="isPrivate">
+                    Private stream
+                </label>
             </div>
         </div>
 
@@ -83,5 +95,6 @@
                 {{ form.get("keyWord")?.errors | validateError }}
             </div>
         </div>
+
     </form>
 </div>

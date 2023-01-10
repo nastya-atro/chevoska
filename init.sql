@@ -73,7 +73,7 @@ CREATE TABLE `stream` (
   `user_id` int NOT NULL,
   `enter_link` varchar(255) DEFAULT NULL,
   `create_date` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `update_date` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `update_date` datetime(6) DEFAULT CURRENT_TIMESTAMP(6),
   `start_date` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `download_link` varchar(255) DEFAULT NULL,
   `private` tinyint(1) NOT NULL DEFAULT '0',

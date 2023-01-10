@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
+import { AddNewStreamService } from './addNewStream.service';
+import { NotifyService } from '../../shared/modules/notifications/notify.service';
+import Utils from '../../core/utils/utils';
 
 @UntilDestroy()
 @Component({
@@ -30,7 +33,23 @@ export class AddNewStreamComponent {
     keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),
   });
 
-  constructor() {}
+  constructor(private streamsService: AddNewStreamService, private notifyService: NotifyService) {}
+
+  createStream() {
+    const data = {
+      ...this.form.value,
+      startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
+    };
+    this.streamsService
+      .createStream(data)
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: () => {
+          this.notifyService.notifier.success('Stream created success');
+        },
+        error: () => {},
+      });
+  }
 
   dateIntervalChange() {
     this.form.get('startDate')?.updateValueAndValidity();
