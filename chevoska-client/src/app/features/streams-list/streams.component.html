@@ -10,6 +10,10 @@
             <td>{{ (stream.startDate | date: "medium") || "—" }}</td>
             <td>{{ (stream.private ? 'private' : 'social') }}</td>
             <td class="text-end">
+                <button (click)="removeStream(stream.id)" class="btn btn-outline-dark">
+                    Delete
+                </button>
+
                 <button class="btn btn-dark" [routerLink]="['/stream/', stream.id]">
                     Show
                 </button>

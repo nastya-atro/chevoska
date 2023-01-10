@@ -16,5 +16,9 @@ export class StreamsApi implements OnDestroy {
     return this.api.get(`/streams`, params);
   }
 
+  removeStream(id: number): Observable<any> {
+    return this.api.delete(`/streams/${id}`);
+  }
+
   ngOnDestroy(): void {}
 }

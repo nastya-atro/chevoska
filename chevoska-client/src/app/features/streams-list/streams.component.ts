@@ -5,6 +5,7 @@ import * as qs from 'qs';
 import * as tableConstant from '../../core/enums/table.constants';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { NotifyService } from '../../shared/modules/notifications/notify.service';
 
 @UntilDestroy()
 @Component({
@@ -36,7 +37,12 @@ export class StreamsComponent {
   };
   loading = false;
 
-  constructor(private streamService: StreamsService, private activatedRoute: ActivatedRoute, private router: Router) {
+  constructor(
+    private notifyService: NotifyService,
+    private streamService: StreamsService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {
     const { pagination, order } = this.state;
     this.activatedRoute.queryParams.subscribe(params => {
       this.queryParams = qs.parse(qs.stringify(params));
@@ -70,6 +76,19 @@ export class StreamsComponent {
           this.state.pagination.page = data.page;
           this.state.pagination.total = data.total;
           this.state.pagination.totalPages = data.totalPages;
+        },
+        error: () => {},
+      });
+  }
+
+  removeStream(id: number) {
+    this.streamService
+      .removeStream(id)
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: () => {
+          this.notifyService.notifier.success('stream deleted successfully');
+          this.loadStreams(this.queryParams);
         },
         error: () => {},
       });

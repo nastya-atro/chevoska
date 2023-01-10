@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { StreamsService } from "./streams.service";
 import { ValidateDTO } from "../../common/decorators/validate-dto.decorator";
 import { CreateStreamInputDto } from "./dto/stream.input.dto";
@@ -31,5 +41,10 @@ export class StreamsController {
     @CurrentUser() user: SessionUser
   ) {
     return await this.streamService.create(body, domain, user?.id);
+  }
+
+  @Delete(":id")
+  async delete(@Param("id", ParseIntPipe) id: number): Promise<{ statusCode }> {
+    return await this.streamService.remove(id);
   }
 }

@@ -10,6 +10,7 @@ import { generateLink } from "../../common/utils/streams.utils";
 import { StreamListOutputDto } from "./dto/streamsList.output.dto";
 import { Order, Pagination } from "../../common/models/pagination.model";
 import { getSortByAllowed } from "../../common/utils/pagination.utils";
+import path from "path";
 
 @Injectable()
 export class StreamsService {
@@ -87,5 +88,16 @@ export class StreamsService {
       }
       throw e;
     }
+  }
+
+  async remove(id: number): Promise<{ statusCode: number }> {
+    //check if used
+    await this.streamRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds([id])
+      .execute();
+
+    return { statusCode: 204 };
   }
 }
