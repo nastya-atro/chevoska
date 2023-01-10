@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 import { ProfileEntity } from "../../common/entities/profile.entity";
@@ -10,7 +14,7 @@ import { generateLink } from "../../common/utils/streams.utils";
 import { StreamListOutputDto } from "./dto/streamsList.output.dto";
 import { Order, Pagination } from "../../common/models/pagination.model";
 import { getSortByAllowed } from "../../common/utils/pagination.utils";
-import path from "path";
+import { StreamOneOutputDto } from "./dto/streamOne.output.dto";
 
 @Injectable()
 export class StreamsService {
@@ -53,6 +57,20 @@ export class StreamsService {
       limit,
       page,
     };
+  }
+
+  async findOne(id: number) {
+    const stream = await this.dataSource
+      .createQueryBuilder(StreamEntity, "stream")
+      .leftJoinAndSelect("stream.status", "status")
+      .whereInIds([id])
+      .getOne();
+
+    if (!stream) {
+      throw new NotFoundException();
+    }
+
+    return StreamOneOutputDto.new(stream);
   }
 
   async create(stream: SignUpModel, domain: string, userId: number) {

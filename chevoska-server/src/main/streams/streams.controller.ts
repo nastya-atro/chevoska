@@ -33,6 +33,12 @@ export class StreamsController {
     return await this.streamService.findList(pagination, order, user?.id);
   }
 
+  @Get(":id")
+  @ValidateDTO()
+  async findOne(@Param("id", ParseIntPipe) id: number) {
+    return await this.streamService.findOne(id);
+  }
+
   @Post()
   @ValidateDTO()
   async create(

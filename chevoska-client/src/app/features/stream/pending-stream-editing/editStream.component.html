@@ -1,1 +1,103 @@
-Edit pending stream
+<div class="row mb-2">
+    <div class="col">
+        <div class="images-container">
+            <div class="images-container_area images-container_area_banner">
+                <img class="img_banner_cover" [src]="'assets/images/stream-banner.jpg'" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row gy-2 justify-content-start mb-1">
+    <div class="col">
+        <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+            <div>Create Date</div>
+            <div>{{ stream.createDate | date }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row gy-2 justify-content-start mb-1">
+    <div class="col">
+        <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+            <div>Status</div>
+            <div>{{ stream.streamStatus }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row gy-2 justify-content-start mb-1">
+    <div class="col">
+        <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+            <div>Enter Link</div>
+            <div>{{ stream.enterLink }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="form col d-flex flex-column align-self-center">
+        <div class="images-container">
+            <div class="images-container_area images-container_area_preview">
+                <img [src]="'assets/images/stream-preview.jpg'" />
+            </div>
+        </div>
+    </div>
+    <form [formGroup]="form" class="form col-6">
+        <div class="col text-end">
+            <button type="button" (click)="editStream()" class="btn btn-dark">Edit Stream</button>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="title">Title</label>
+            <input
+                formControlName="title"
+                type="text"
+                id="title"
+                class="form-control form-control-lg"
+                [ngClass]="form.get('title')?.errors && form.get('title')?.touched ? 'is-invalid' : ''"
+            />
+            <div class="invalid-feedback" *ngIf="form.get('title')?.errors">
+                {{ form.get("title")?.errors | validateError }}
+            </div>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="description">Description</label>
+            <input
+                formControlName="description"
+                type="text"
+                id="description"
+                class="form-control form-control-lg"
+                [ngClass]="form.get('description')?.errors && form.get('description')?.touched ? 'is-invalid' : ''"
+            />
+
+            <div class="invalid-feedback" *ngIf="form.get('description')?.errors">
+                {{ form.get("description")?.errors | validateError }}
+            </div>
+        </div>
+
+        <div class="form-outline mb-4">
+            <div class="form-check">
+                <input formControlName="isPrivate" class="form-check-input" type="checkbox" id="isPrivate" />
+                <label class="form-check-label" for="isPrivate"> Private stream </label>
+            </div>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="startDate">Start Date</label>
+            <input
+                formControlName="startDate"
+                mode="daytime"
+                id="startDate"
+                class="form-control form-control-lg"
+                [dpDayPicker]="dayPickerconfig"
+                (onChange)="dateIntervalChange()"
+                [ngClass]="form.get('startDate')?.errors && form.get('startDate')?.touched ? 'is-invalid' : ''"
+            />
+            <div class="invalid-feedback" *ngIf="form.get('startDate')?.errors">
+                {{ form.get("startDate")?.errors | validateError }}
+            </div>
+        </div>
+    </form>
+</div>
