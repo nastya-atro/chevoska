@@ -1,3 +1,30 @@
 <div class="container-fluid">
     <button routerLink="/new-stream" type="button" class="btn btn-outline-dark">Create New Stream</button>
 </div>
+
+<div class="mt-3">
+    <app-table [displayedColumns]="displayedColumns">
+        <tr class="align-middle" *ngFor="let stream of streams">
+            <td>{{ stream.title || "—" }}</td>
+            <td>{{ stream.description || "—" }}</td>
+            <td>{{ (stream.startDate | date: "medium") || "—" }}</td>
+            <td>{{ (stream.private ? 'private' : 'social') }}</td>
+            <td class="text-end">
+                <button class="btn btn-dark" [routerLink]="['/stream/', stream.id]">
+                    Show
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="streams && streams.length < 1">
+            <td class="text-center" colspan="4">No Streams</td>
+        </tr>
+    </app-table>
+
+    <app-pagination
+            [totalPages]="state.pagination.totalPages"
+            [page]="state.pagination.page"
+            [pageSize]="state.pagination.limit"
+            (handleChanged)="handleChangePage($event)"
+    ></app-pagination>
+
+</div>

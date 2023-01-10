@@ -7,6 +7,9 @@ import { StreamStatusesEntity } from "../../common/entities/stream-statuses.enti
 import { SignUpModel } from "./models/stream.model";
 import * as moment from "moment";
 import { generateLink } from "../../common/utils/streams.utils";
+import { StreamListOutputDto } from "./dto/streamsList.output.dto";
+import { Order, Pagination } from "../../common/models/pagination.model";
+import { getSortByAllowed } from "../../common/utils/pagination.utils";
 
 @Injectable()
 export class StreamsService {
@@ -19,6 +22,37 @@ export class StreamsService {
     private streamStatusRepository: Repository<StreamStatusesEntity>,
     private dataSource: DataSource
   ) {}
+
+  async findList(pagination: Pagination, order: Order, userId: number) {
+    const { limit, page, offset } = pagination;
+    const { sortOrder } = order;
+
+    const sortBy: string = getSortByAllowed(order.sortBy, {
+      id: "streams.id",
+    });
+
+    const query = this.dataSource
+      .createQueryBuilder(StreamEntity, "streams")
+      .leftJoinAndSelect("streams.profile", "profile")
+      .leftJoinAndSelect("streams.status", "status")
+      .andWhere(`streams.user_id in (:usersIds)`, { usersIds: [userId] })
+      .orderBy(sortBy, sortOrder)
+      .skip(offset)
+      .take(limit);
+
+    const $count = query.getCount();
+    const [total, results] = await Promise.all([$count, query.getMany()]);
+
+    return {
+      results: results.map(StreamListOutputDto.new),
+      totalPages: Math.ceil(total / limit),
+      total,
+      sortOrder,
+      sortBy: order.sortBy,
+      limit,
+      page,
+    };
+  }
 
   async create(stream: SignUpModel, domain: string, userId: number) {
     const { title, description, keyWord, startDate, isPrivate } = stream;

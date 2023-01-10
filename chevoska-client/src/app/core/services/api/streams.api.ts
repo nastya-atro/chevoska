@@ -12,5 +12,9 @@ export class StreamsApi implements OnDestroy {
     return this.api.post(`/streams`, stream);
   }
 
+  getStreams(params: any): Observable<any> {
+    return this.api.get(`/streams`, params);
+  }
+
   ngOnDestroy(): void {}
 }

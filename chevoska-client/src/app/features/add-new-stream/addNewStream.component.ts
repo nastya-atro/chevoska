@@ -5,6 +5,7 @@ import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
 import { AddNewStreamService } from './addNewStream.service';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
 import Utils from '../../core/utils/utils';
+import { Router } from '@angular/router';
 
 @UntilDestroy()
 @Component({
@@ -33,22 +34,31 @@ export class AddNewStreamComponent {
     keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),
   });
 
-  constructor(private streamsService: AddNewStreamService, private notifyService: NotifyService) {}
+  constructor(
+    private streamsService: AddNewStreamService,
+    private notifyService: NotifyService,
+    private router: Router
+  ) {}
 
   createStream() {
-    const data = {
-      ...this.form.value,
-      startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
-    };
-    this.streamsService
-      .createStream(data)
-      .pipe(untilDestroyed(this))
-      .subscribe({
-        next: () => {
-          this.notifyService.notifier.success('Stream created success');
-        },
-        error: () => {},
-      });
+    if (this.form.valid) {
+      const data = {
+        ...this.form.value,
+        startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
+      };
+      this.streamsService
+        .createStream(data)
+        .pipe(untilDestroyed(this))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/streams']);
+            this.notifyService.notifier.success('Stream created success');
+          },
+          error: () => {},
+        });
+    } else {
+      Utils.checkFormValidation(this.form);
+    }
   }
 
   dateIntervalChange() {
