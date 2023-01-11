@@ -16,4 +16,8 @@ export class EditStreamService implements OnDestroy {
   getStream(id: number): Observable<unknown> {
     return this.streamsApi.getStream(id);
   }
+
+  editStream(id: number, newStreamData: any): Observable<unknown> {
+    return this.streamsApi.editStream(id, newStreamData);
+  }
 }

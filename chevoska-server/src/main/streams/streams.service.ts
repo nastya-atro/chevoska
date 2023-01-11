@@ -8,13 +8,14 @@ import { DataSource, Repository } from "typeorm";
 import { ProfileEntity } from "../../common/entities/profile.entity";
 import { StreamEntity } from "../../common/entities/stream.entity";
 import { StreamStatusesEntity } from "../../common/entities/stream-statuses.entity";
-import { SignUpModel } from "./models/stream.model";
+import { CreateStreamModel } from "./models/createStream.model";
 import * as moment from "moment";
 import { generateLink } from "../../common/utils/streams.utils";
 import { StreamListOutputDto } from "./dto/streamsList.output.dto";
 import { Order, Pagination } from "../../common/models/pagination.model";
 import { getSortByAllowed } from "../../common/utils/pagination.utils";
 import { StreamOneOutputDto } from "./dto/streamOne.output.dto";
+import { EditStreamModel } from "./models/editStream.model";
 
 @Injectable()
 export class StreamsService {
@@ -73,7 +74,7 @@ export class StreamsService {
     return StreamOneOutputDto.new(stream);
   }
 
-  async create(stream: SignUpModel, domain: string, userId: number) {
+  async create(stream: CreateStreamModel, domain: string, userId: number) {
     const { title, description, keyWord, startDate, isPrivate } = stream;
 
     const enterLink = generateLink("sha1", keyWord);
@@ -98,7 +99,27 @@ export class StreamsService {
         status,
       });
 
-      console.log("____stream", stream);
+      return { statusCode: 204 };
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") {
+        throw new ConflictException();
+      }
+      throw e;
+    }
+  }
+
+  async edit(id: number, body: EditStreamModel) {
+    try {
+      await this.dataSource
+        .createQueryBuilder()
+        .update(StreamEntity, {
+          title: body.title,
+          description: body.description,
+          startDate: body.startDate,
+          private: body.isPrivate,
+        })
+        .whereInIds([id])
+        .execute();
       return { statusCode: 204 };
     } catch (e) {
       if (e.code === "ER_DUP_ENTRY") {

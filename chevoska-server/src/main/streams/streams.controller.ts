@@ -6,17 +6,19 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UseGuards,
 } from "@nestjs/common";
 import { StreamsService } from "./streams.service";
 import { ValidateDTO } from "../../common/decorators/validate-dto.decorator";
-import { CreateStreamInputDto } from "./dto/stream.input.dto";
+import { CreateStreamInputDto } from "./dto/createStream.input.dto";
 import { Host } from "../../common/decorators/host.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorators";
 import { SessionUser } from "../../common/session/models/session.model";
 import { PaginationPipe } from "../../common/pipes/pagination.pipe";
 import { OrderPipe } from "../../common/pipes/order.pipe";
+import { EditStreamInputDto } from "./dto/editStream.input.dto";
 
 @Controller("streams")
 @UseGuards()
@@ -47,6 +49,15 @@ export class StreamsController {
     @CurrentUser() user: SessionUser
   ) {
     return await this.streamService.create(body, domain, user?.id);
+  }
+
+  @Put(":id")
+  @ValidateDTO()
+  async edit(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() body: EditStreamInputDto
+  ) {
+    return await this.streamService.edit(id, body);
   }
 
   @Delete(":id")

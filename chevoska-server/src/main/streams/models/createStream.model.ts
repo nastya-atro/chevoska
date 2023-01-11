@@ -1,4 +1,4 @@
-export interface SignUpModel {
+export interface CreateStreamModel {
   title: string;
   description: string;
   startDate: Date;
