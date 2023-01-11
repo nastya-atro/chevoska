@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { AUTHENTICATION_ROUTES } from './authentication.routes';
 import { SharedModule } from '../../shared/shared.module';
 import { SignupComponent } from './sign-up/signup.component';
-import { EnterSystemComponent } from './enter-system/enterSystem.component';
 import { SigninComponent } from './sign-in/signin.component';
 import { ConfirmEmailComponent } from './activate-profile/confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -16,7 +15,6 @@ import { EndActivateComponent } from './activate-profile/end-activate/end-activa
   imports: [RouterModule.forChild(AUTHENTICATION_ROUTES), FormsModule, ReactiveFormsModule, CommonModule, SharedModule],
   declarations: [
     SignupComponent,
-    EnterSystemComponent,
     SigninComponent,
     EndActivateComponent,
     ConfirmEmailComponent,

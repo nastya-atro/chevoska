@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { SignupComponent } from './sign-up/signup.component';
-import { EnterSystemComponent } from './enter-system/enterSystem.component';
 import { SigninComponent } from './sign-in/signin.component';
 import { ConfirmEmailComponent } from './activate-profile/confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -15,10 +14,6 @@ export const AUTHENTICATION_ROUTES: Routes = [
   {
     path: 'signin',
     component: SigninComponent,
-  },
-  {
-    path: 'enter/:id',
-    component: EnterSystemComponent,
   },
   {
     path: 'confirm-email',

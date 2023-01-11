@@ -1,18 +1,17 @@
-import { Routes } from "@angular/router";
-import { AuthLayoutComponent } from "./auth-layout.component";
+import { Routes } from '@angular/router';
+import { AuthLayoutComponent } from './auth-layout.component';
+import { AuthAccessGuard } from '../../core/guards/auth-access.guard';
 
 export const AUTH_LAYOUT_ROUTES: Routes = [
   {
-    path: "",
-    redirectTo: "signin",
-    pathMatch: "full",
+    path: '',
+    redirectTo: 'signin',
+    pathMatch: 'full',
   },
   {
-    path: "",
+    path: '',
+    canActivate: [AuthAccessGuard],
     component: AuthLayoutComponent,
-    loadChildren: () =>
-      import("../../features/authentication/authentication.module").then(
-        (m) => m.AuthenticationModule
-      ),
+    loadChildren: () => import('../../features/authentication/authentication.module').then(m => m.AuthenticationModule),
   },
 ];

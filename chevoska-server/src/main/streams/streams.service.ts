@@ -16,6 +16,7 @@ import { Order, Pagination } from "../../common/models/pagination.model";
 import { getSortByAllowed } from "../../common/utils/pagination.utils";
 import { StreamOneOutputDto } from "./dto/streamOne.output.dto";
 import { EditStreamModel } from "./models/editStream.model";
+import { StreamViewOutputDto } from "./dto/streamView.output.dto";
 
 @Injectable()
 export class StreamsService {
@@ -74,10 +75,29 @@ export class StreamsService {
     return StreamOneOutputDto.new(stream);
   }
 
+  async findViewStream(enterLink: string) {
+    const stream = await this.dataSource
+      .createQueryBuilder(StreamEntity, "stream")
+      .leftJoinAndSelect("stream.status", "status")
+      .andWhere(`stream.enterLink = (:enterLink)`, { enterLink: enterLink })
+      .getOne();
+
+    if (!stream) {
+      throw new NotFoundException();
+    }
+
+    return StreamViewOutputDto.new(stream);
+  }
+
+  async enterViewStream(req: any) {
+    console.log(req);
+    return { statusCode: 204 };
+  }
+
   async create(stream: CreateStreamModel, domain: string, userId: number) {
     const { title, description, keyWord, startDate, isPrivate } = stream;
 
-    const enterLink = generateLink("sha1", keyWord);
+    const enterLink = generateLink("sha1", keyWord, title);
 
     const profile = await this.profileRepository.findOneBy({
       id: userId,
@@ -92,7 +112,7 @@ export class StreamsService {
         startDate,
         private: isPrivate,
         createDate: moment.utc().toDate(),
-        enterLink: `${domain}/stream/${enterLink}`,
+        enterLink: `${enterLink}`,
         updateDate: "",
         downloadLink: null,
         profile,

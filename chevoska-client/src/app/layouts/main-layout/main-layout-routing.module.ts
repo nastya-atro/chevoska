@@ -11,13 +11,6 @@ export const MAIN_LAYOUT_ROUTES: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('../../features/stream/active-stream/activeStream.module').then(m => {
-            return m.ActiveStreamModule;
-          }),
-      },
-      {
-        path: '',
-        loadChildren: () =>
           import('../../features/add-new-stream/addNewStream.module').then(m => {
             return m.AddNewStreamModule;
           }),
@@ -43,13 +36,7 @@ export const MAIN_LAYOUT_ROUTES: Routes = [
             return m.ProfileModule;
           }),
       },
-      {
-        path: '',
-        loadChildren: () =>
-          import('../../features/review-after-stream/review.module').then(m => {
-            return m.ReviewModule;
-          }),
-      },
+
       {
         path: '',
         loadChildren: () =>

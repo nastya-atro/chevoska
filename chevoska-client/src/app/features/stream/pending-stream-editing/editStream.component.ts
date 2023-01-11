@@ -68,7 +68,7 @@ export class EditStreamComponent implements OnInit {
           startDate: Utils.utcDateStringToLocalString(result.startDate, this.dateForat),
           isPrivate: result.private,
         });
-        this.stream = result;
+        this.stream = { ...result, enterLink: `${window.location.host}/stream/${result.enterLink}` };
       });
   }
 
