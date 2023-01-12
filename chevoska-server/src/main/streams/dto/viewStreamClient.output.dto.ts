@@ -1,6 +1,5 @@
 import { Expose, Type } from "class-transformer";
 import { StreamClientsEntity } from "../../../common/entities/stream-clients.entity";
-import { StreamOneOutputDto } from "./streamOne.output.dto";
 
 export class ViewStreamClientOutputDto {
   @Expose()

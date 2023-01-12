@@ -10,7 +10,10 @@ import { StreamEntity } from "../../common/entities/stream.entity";
 import { StreamStatusesEntity } from "../../common/entities/stream-statuses.entity";
 import { CreateStreamModel } from "./models/createStream.model";
 import * as moment from "moment";
-import { generateLink } from "../../common/utils/streams.utils";
+import {
+  generateLink,
+  generateTokenHash,
+} from "../../common/utils/streams.utils";
 import { StreamListOutputDto } from "./dto/streamsList.output.dto";
 import { Order, Pagination } from "../../common/models/pagination.model";
 import { getSortByAllowed } from "../../common/utils/pagination.utils";
@@ -114,7 +117,7 @@ export class StreamsService {
   }
 
   async enterViewStream(client: StreamClientModel, streamId: number) {
-    const { email, username, phone, timezone } = client;
+    const { email, username, phone, timezone, key } = client;
 
     const existClient = await this.dataSource
       .createQueryBuilder(StreamClientsEntity, "stream_clients")
@@ -134,15 +137,51 @@ export class StreamsService {
         id: streamId,
       });
 
-      const user = await this.streamClientsRepository.save({
-        email,
-        username,
-        phone,
-        timezone,
-        stream,
-      });
+      if (stream.private) {
+        console.log("stream.enterKey", stream.enterKey);
+        console.log("key", key);
 
-      return new ViewStreamClientOutputDto(user);
+        if (stream.enterKey === key) {
+          const user = await this.streamClientsRepository.save({
+            email,
+            username,
+            phone,
+            timezone,
+            stream,
+          });
+          return new ViewStreamClientOutputDto(user);
+        } else {
+          throw new ConflictException("Enter key not correct");
+        }
+      } else {
+        const user = await this.streamClientsRepository.save({
+          email,
+          username,
+          phone,
+          timezone,
+          stream,
+        });
+        return new ViewStreamClientOutputDto(user);
+      }
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") {
+        throw new ConflictException();
+      }
+      throw e;
+    }
+  }
+
+  async generatePrivateStreamKey(streamId: number) {
+    const key = generateTokenHash("sha1", String(streamId));
+    try {
+      await this.dataSource
+        .createQueryBuilder()
+        .update(StreamEntity, {
+          enterKey: key,
+        })
+        .whereInIds([streamId])
+        .execute();
+      return { statusCode: 204 };
     } catch (e) {
       if (e.code === "ER_DUP_ENTRY") {
         throw new ConflictException();

@@ -36,6 +36,15 @@
         </div>
     </div>
 
+    <div *ngIf="stream.private" class="row gy-2 justify-content-start mb-1">
+        <div class="col">
+            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+                <button type="button" (click)="generateKey()" class="btn btn-outline-dark"> Generate Private Key For Enter</button>
+                <div>{{ stream.enterKey || 'N/A' }}</div>
+            </div>
+        </div>
+    </div>
+
     <div class="row mt-2">
         <div class="form col d-flex flex-column align-self-center">
             <div class="images-container">

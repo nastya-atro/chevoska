@@ -72,6 +72,19 @@ export class EditStreamComponent implements OnInit {
       });
   }
 
+  generateKey() {
+    this.editStreamService
+      .generatePrivateKey(this.id)
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: () => {
+          this.notifyService.notifier.success('Private Key generated success');
+          this.loadStream();
+        },
+        error: () => {},
+      });
+  }
+
   editStream() {
     if (this.id) {
       if (this.form.valid) {

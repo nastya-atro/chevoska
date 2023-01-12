@@ -3,4 +3,5 @@ export interface StreamClientModel {
   username: string;
   timezone?: string;
   phone?: string;
+  key?: string;
 }

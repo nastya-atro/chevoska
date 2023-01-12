@@ -77,6 +77,7 @@ CREATE TABLE `stream` (
   `start_date` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `download_link` varchar(255) DEFAULT NULL,
   `private` tinyint(1) NOT NULL DEFAULT '0',
+  `enter_key` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `status_id` (`status_id`),
   KEY `user_id` (`user_id`),

@@ -20,6 +20,10 @@ export class StreamsApi implements OnDestroy {
     return this.api.get(`/streams/${id}`);
   }
 
+  generatePrivateKey(id: number): Observable<any> {
+    return this.api.get(`/streams/key/${id}`);
+  }
+
   removeStream(id: number): Observable<any> {
     return this.api.delete(`/streams/${id}`);
   }

@@ -83,6 +83,12 @@ export class StreamsController {
     return await this.streamService.edit(id, body);
   }
 
+  @Get("key/:id")
+  @ValidateDTO()
+  async generatePrivateKey(@Param("id", ParseIntPipe) id: number) {
+    return await this.streamService.generatePrivateStreamKey(id);
+  }
+
   @Delete(":id")
   async delete(@Param("id", ParseIntPipe) id: number): Promise<{ statusCode }> {
     return await this.streamService.remove(id);

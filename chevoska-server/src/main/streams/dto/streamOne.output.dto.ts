@@ -31,6 +31,9 @@ export class StreamOneOutputDto {
   @Expose()
   downloadLink: string;
 
+  @Expose()
+  enterKey: string;
+
   status: StreamStatusesEntity;
 
   @Expose()

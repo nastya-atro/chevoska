@@ -19,4 +19,8 @@ export class ViewStreamClientInputDto {
   @IsString()
   @IsOptional()
   readonly phone: string;
+
+  @IsString()
+  @IsOptional()
+  readonly key: string;
 }

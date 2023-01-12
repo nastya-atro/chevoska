@@ -11,3 +11,15 @@ export function generateLink(algorithm: string, data: string, title: string) {
     .randomBytes(5)
     .toString("hex")}`;
 }
+
+/**
+ * Generation tokenKey
+ * @param algorithm
+ * @param data
+ */
+export function generateTokenHash(algorithm: string, data: any) {
+  return crypto
+    .createHash(algorithm)
+    .update(crypto.randomBytes(5))
+    .digest("hex");
+}

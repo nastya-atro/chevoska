@@ -1,12 +1,23 @@
-<div class="text-light text-end">
-    <p><small>
-        Hello <b>{{ user.username }}, </b>
-        <br>Thanks for joining our stream !
+<div *ngIf="user" class="text-light text-end">
+    <p>
+        <small>
+            Hello <b>{{ user.username }}, </b> <br />Thanks for joining our stream !
         </small>
     </p>
 </div>
 
-<figure class="figure mt-3">
-    <img src="assets/images/stream-banner.jpg" class="figure-img img-fluid rounded" alt="banner">
-    <figcaption class="figure-caption text-end">Stream start at {{stream.startDate |date:'medium'}}</figcaption>
-</figure>
+<div class="container w-100">
+    <div class="row d-flex justify-content-center align-items-stretch">
+        <div class="col-12 mt-3">
+            <div class="card text-bg-dark container-wrapper">
+                <img class="card-img im-blurry-anyway" src="assets/images/stream-banner.jpg" alt="Card image" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<figcaption class="figure-caption text-end mt-2 mb-3">Stream start at {{ stream.startDate | date: "medium" }}</figcaption>
+
+<div class="text-light">
+    <app-date-count-down [day]="stream.startDate"></app-date-count-down>
+</div>

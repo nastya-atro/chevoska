@@ -36,8 +36,13 @@ export class EnterSystemComponent {
       ],
       timezone: [''],
       phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
-      // key: new FormControl('', [Validators.required]),
+      key: [''],
     });
+
+    if (this.stream.private) {
+      this.myForm.controls['key'].setValidators([Validators.required]);
+      this.myForm.controls['key'].updateValueAndValidity();
+    }
   }
 
   submit(): void {
@@ -50,7 +55,6 @@ export class EnterSystemComponent {
             localStorage.setItem('stream_view_user', res.id);
             this.router.navigate([`${this.viewStream.rootPath}/active`]);
           },
-
           error: () => {},
         });
     } else {

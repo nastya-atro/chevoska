@@ -17,6 +17,10 @@ export class EditStreamService implements OnDestroy {
     return this.streamsApi.getStream(id);
   }
 
+  generatePrivateKey(id: number): Observable<unknown> {
+    return this.streamsApi.generatePrivateKey(id);
+  }
+
   editStream(id: number, newStreamData: any): Observable<unknown> {
     return this.streamsApi.editStream(id, newStreamData);
   }

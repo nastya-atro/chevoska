@@ -1,0 +1,9 @@
+.container-wrapper {
+  img {
+    max-height: 350px;
+  }
+}
+.im-blurry-anyway {
+  border: none;
+  filter: blur(4px);
+}

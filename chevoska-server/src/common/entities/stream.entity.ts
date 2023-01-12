@@ -25,6 +25,9 @@ export class StreamEntity {
   @Column({ name: "enter_link", type: "varchar", length: 255 })
   enterLink: string;
 
+  @Column({ name: "enter_key", type: "varchar", length: 64 })
+  enterKey: string;
+
   @Column({ name: "create_date" })
   createDate: Date;
 
