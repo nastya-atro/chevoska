@@ -1,6 +1,12 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from "class-validator";
 
-export class EnterViewStreamInputDto {
+export class ViewStreamClientInputDto {
   @IsNotEmpty({ always: true })
   @IsString({ always: true })
   readonly username: string;

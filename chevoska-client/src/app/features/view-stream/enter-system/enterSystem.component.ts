@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ViewStreamService } from '../viewStream.service';
 import Utils from '../../../core/utils/utils';
+import { ViewStreamsApi } from '../../../core/services/api/view-stream.api';
 
 @UntilDestroy()
 @Component({
@@ -13,8 +14,16 @@ import Utils from '../../../core/utils/utils';
 })
 export class EnterSystemComponent {
   myForm: FormGroup;
+  stream!: any;
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private viewStreamService: ViewStreamService) {
+  constructor(
+    private viewStream: ViewStreamsApi,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private viewStreamService: ViewStreamService
+  ) {
+    this.stream = this.viewStream.stream;
     this.myForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       email: [
@@ -25,7 +34,8 @@ export class EnterSystemComponent {
           Validators.maxLength(80),
         ],
       ],
-      // phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
+      timezone: [''],
+      phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
       // key: new FormControl('', [Validators.required]),
     });
   }
@@ -33,12 +43,12 @@ export class EnterSystemComponent {
   submit(): void {
     if (this.myForm.valid) {
       this.viewStreamService
-        .enterSystem(this.myForm.value)
+        .enterSystem(this.myForm.value, this.stream.id)
         .pipe(untilDestroyed(this))
         .subscribe({
-          next: () => {
-            console.log('111111111111111111');
-            //  this.router.navigate([])
+          next: res => {
+            localStorage.setItem('stream_view_user', res.id);
+            this.router.navigate([`${this.viewStream.rootPath}/active`]);
           },
 
           error: () => {},

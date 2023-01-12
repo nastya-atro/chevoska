@@ -17,6 +17,10 @@ import { getSortByAllowed } from "../../common/utils/pagination.utils";
 import { StreamOneOutputDto } from "./dto/streamOne.output.dto";
 import { EditStreamModel } from "./models/editStream.model";
 import { StreamViewOutputDto } from "./dto/streamView.output.dto";
+import { StreamClientsEntity } from "../../common/entities/stream-clients.entity";
+import { StreamClientModel } from "./models/streamClient.model";
+import { ROLES } from "../../common/constants/roles.constants";
+import { ViewStreamClientOutputDto } from "./dto/viewStreamClient.output.dto";
 
 @Injectable()
 export class StreamsService {
@@ -27,6 +31,8 @@ export class StreamsService {
     private profileRepository: Repository<ProfileEntity>,
     @InjectRepository(StreamStatusesEntity)
     private streamStatusRepository: Repository<StreamStatusesEntity>,
+    @InjectRepository(StreamClientsEntity)
+    private streamClientsRepository: Repository<StreamClientsEntity>,
     private dataSource: DataSource
   ) {}
 
@@ -89,9 +95,60 @@ export class StreamsService {
     return StreamViewOutputDto.new(stream);
   }
 
-  async enterViewStream(req: any) {
-    console.log(req);
-    return { statusCode: 204 };
+  async findViewStreamClient(id: number) {
+    try {
+      const client = await this.dataSource
+        .createQueryBuilder(StreamClientsEntity, "stream_clients")
+        .andWhere(`stream_clients.id = (:id)`, { id })
+        .getOne();
+      if (!client) {
+        throw new NotFoundException();
+      }
+      return new ViewStreamClientOutputDto(client);
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") {
+        throw new ConflictException();
+      }
+      throw e;
+    }
+  }
+
+  async enterViewStream(client: StreamClientModel, streamId: number) {
+    const { email, username, phone, timezone } = client;
+
+    const existClient = await this.dataSource
+      .createQueryBuilder(StreamClientsEntity, "stream_clients")
+      .leftJoinAndSelect("stream_clients.stream", "stream")
+      .andWhere(`stream_clients.email = (:email)`, { email })
+      .andWhere(`stream.id = (:streamId)`, { streamId })
+      .getOne();
+
+    if (existClient) {
+      throw new ConflictException(
+        "Choose other email for enter. This email is even registrated"
+      );
+    }
+
+    try {
+      const stream = await this.streamRepository.findOneBy({
+        id: streamId,
+      });
+
+      const user = await this.streamClientsRepository.save({
+        email,
+        username,
+        phone,
+        timezone,
+        stream,
+      });
+
+      return new ViewStreamClientOutputDto(user);
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") {
+        throw new ConflictException();
+      }
+      throw e;
+    }
   }
 
   async create(stream: CreateStreamModel, domain: string, userId: number) {
@@ -118,7 +175,6 @@ export class StreamsService {
         profile,
         status,
       });
-
       return { statusCode: 204 };
     } catch (e) {
       if (e.code === "ER_DUP_ENTRY") {

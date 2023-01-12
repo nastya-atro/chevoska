@@ -20,9 +20,7 @@ import { SessionUser } from "../../common/session/models/session.model";
 import { PaginationPipe } from "../../common/pipes/pagination.pipe";
 import { OrderPipe } from "../../common/pipes/order.pipe";
 import { EditStreamInputDto } from "./dto/editStream.input.dto";
-import { Session } from "../../common/session/decorators/session.decorator";
-import { SessionService } from "../../common/session/session.service";
-import { EnterViewStreamInputDto } from "./dto/enterViewStream.input.dto";
+import { ViewStreamClientInputDto } from "./dto/viewStreamClient.input.dto";
 
 @Controller("streams")
 @UseGuards()
@@ -51,10 +49,19 @@ export class StreamsController {
     return await this.streamService.findViewStream(enterLink);
   }
 
-  @Post("view/enter")
+  @Get("view/client/:id")
   @ValidateDTO()
-  async enterViewStream(@Body() body: EnterViewStreamInputDto) {
-    return await this.streamService.enterViewStream(body);
+  async findViewStreamClient(@Param("id", ParseIntPipe) id: number) {
+    return await this.streamService.findViewStreamClient(id);
+  }
+
+  @Post("view/enter/:streamId")
+  @ValidateDTO()
+  async enterViewStream(
+    @Param("streamId", ParseIntPipe) streamId: number,
+    @Body() body: ViewStreamClientInputDto
+  ) {
+    return await this.streamService.enterViewStream(body, streamId);
   }
 
   @Post()

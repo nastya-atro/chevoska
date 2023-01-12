@@ -4,10 +4,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { RoleEntity } from "./role.entity";
 import { ProfileEntity } from "./profile.entity";
 import { StreamStatusesEntity } from "./stream-statuses.entity";
+import { StreamClientsEntity } from "./stream-clients.entity";
 
 @Entity("stream")
 export class StreamEntity {
@@ -45,6 +47,9 @@ export class StreamEntity {
   @ManyToOne(() => ProfileEntity, (profile) => profile.id)
   @JoinColumn({ name: "user_id" })
   profile?: ProfileEntity;
+
+  @OneToMany(() => StreamClientsEntity, (client) => client.stream)
+  clients?: StreamClientsEntity[];
 
   constructor(stream?: Partial<StreamEntity>) {
     stream && Object.assign(this, stream);

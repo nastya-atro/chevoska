@@ -97,11 +97,13 @@ CREATE TABLE `stream_reviews` (
 );
 
 CREATE TABLE `stream_clients` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `stream_id` int DEFAULT NULL,
   `username` varchar(80) not null,
   `email` varchar(50)  DEFAULT NULL,
   `phone` varchar(25) DEFAULT NULL,
   `timezone` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `stream_id` (`stream_id`),
   FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)
 );

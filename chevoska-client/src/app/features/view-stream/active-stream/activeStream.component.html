@@ -1,1 +1,12 @@
-Active Stream Page
+<div class="text-light text-end">
+    <p><small>
+        Hello <b>{{ user.username }}, </b>
+        <br>Thanks for joining our stream !
+        </small>
+    </p>
+</div>
+
+<figure class="figure mt-3">
+    <img src="assets/images/stream-banner.jpg" class="figure-img img-fluid rounded" alt="banner">
+    <figcaption class="figure-caption text-end">Stream start at {{stream.startDate |date:'medium'}}</figcaption>
+</figure>

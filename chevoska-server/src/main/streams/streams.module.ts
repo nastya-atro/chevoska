@@ -6,11 +6,13 @@ import { ProfileEntity } from "../../common/entities/profile.entity";
 import { TransportModule } from "../../shared/transport/transport.module";
 import { StreamEntity } from "../../common/entities/stream.entity";
 import { StreamStatusesEntity } from "../../common/entities/stream-statuses.entity";
+import { StreamClientsEntity } from "../../common/entities/stream-clients.entity";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       StreamEntity,
+      StreamClientsEntity,
       StreamStatusesEntity,
       ProfileEntity,
     ]),
