@@ -7,6 +7,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
 import Utils from '../../../core/utils/utils';
 import { NotifyService } from '../../../shared/modules/notifications/notify.service';
+import { Clipboard } from '@angular/cdk/clipboard';
+
 @UntilDestroy()
 @Component({
   selector: 'app-edit-stream',
@@ -37,6 +39,7 @@ export class EditStreamComponent implements OnInit {
   });
 
   constructor(
+    private clipboard: Clipboard,
     private editStreamService: EditStreamService,
     private activatedRoute: ActivatedRoute,
     private notifyService: NotifyService
@@ -68,7 +71,11 @@ export class EditStreamComponent implements OnInit {
           startDate: Utils.utcDateStringToLocalString(result.startDate, this.dateForat),
           isPrivate: result.private,
         });
-        this.stream = { ...result, enterLink: `${window.location.host}/stream/${result.enterLink}` };
+        this.stream = {
+          ...result,
+          enterLink: `${window.location.host}/stream/${result.enterLink}`,
+          hrefLink: `/stream/${result.enterLink}`,
+        };
       });
   }
 
@@ -113,5 +120,10 @@ export class EditStreamComponent implements OnInit {
 
   dateIntervalChange() {
     this.form.get('startDate')?.updateValueAndValidity();
+  }
+
+  copyToClipboard(text: string) {
+    this.clipboard.copy(text);
+    this.notifyService.notifier.success('Copied to clipboard success');
   }
 }

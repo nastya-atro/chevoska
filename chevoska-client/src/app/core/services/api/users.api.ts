@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 
 @Injectable({
@@ -10,6 +10,10 @@ export class UsersApi implements OnDestroy {
 
   findCurrentUser(): Observable<any> {
     return this.api.get(`/auth/profile`);
+  }
+
+  findCurrentClient(): Observable<any> {
+    return this.api.get(`/streams/client`);
   }
 
   ngOnDestroy(): void {}

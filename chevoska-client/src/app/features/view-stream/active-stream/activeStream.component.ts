@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import { ViewStreamService } from '../viewStream.service';
 import { ViewStreamsApi } from '../../../core/services/api/view-stream.api';
+import { AuthenticationService } from '../../authentication/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -12,19 +13,12 @@ import { ViewStreamsApi } from '../../../core/services/api/view-stream.api';
 export class ActiveStreamComponent {
   user!: any;
   stream!: any;
-  constructor(private viewStreamService: ViewStreamService, private viewStream: ViewStreamsApi) {
-    const clientId = localStorage.getItem('stream_view_user');
-    if (clientId) {
-      viewStreamService
-        .findCurrentClient(Number(clientId))
-        .pipe(untilDestroyed(this))
-        .subscribe({
-          next: result => {
-            this.user = result;
-          },
-          error: () => {},
-        });
-    }
-    this.stream = this.viewStream.stream;
+  constructor(
+    private viewStreamService: ViewStreamService,
+    private authService: AuthenticationService,
+    private viewStreamApi: ViewStreamsApi
+  ) {
+    this.user = this.authService.getCurrentClient();
+    this.stream = this.viewStreamApi.stream;
   }
 }

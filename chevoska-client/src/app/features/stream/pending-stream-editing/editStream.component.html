@@ -31,7 +31,10 @@
         <div class="col">
             <div class="p-3 border bg-light d-flex flex-row justify-content-between">
                 <div>Enter Link</div>
-                <div>{{ stream.enterLink }}</div>
+                <div class="d-flex flex-row gap-2">
+                    <button [routerLink]="[stream.hrefLink]" class="btn btn-outline-dark"> View Stream Page</button>
+                    <button type="button" (click)="copyToClipboard(stream.enterLink)" class="btn btn-outline-dark"> Copy path to clipboard</button>
+                </div>
             </div>
         </div>
     </div>
@@ -40,7 +43,10 @@
         <div class="col">
             <div class="p-3 border bg-light d-flex flex-row justify-content-between">
                 <button type="button" (click)="generateKey()" class="btn btn-outline-dark"> Generate Private Key For Enter</button>
-                <div>{{ stream.enterKey || 'N/A' }}</div>
+                <div class="d-flex flex-row gap-2 align-items-center">
+                    <div>{{ stream.enterKey.slice(0, 5)+'*****' || 'N/A' }}</div>
+                    <button type="button" (click)="copyToClipboard(stream.enterKey)" class="btn btn-outline-dark"> Copy key to clipboard</button>
+                </div>
             </div>
         </div>
     </div>

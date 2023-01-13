@@ -12,6 +12,7 @@ import { AuthApi } from '../../core/services/api/auth.api';
 })
 export class AuthenticationService implements OnDestroy {
   private currentUser: any | null = null;
+  private currentClient: any | null = null;
 
   constructor(private router: Router, private authApi: AuthApi, private usersApi: UsersApi) {}
 
@@ -79,8 +80,12 @@ export class AuthenticationService implements OnDestroy {
     );
   }
 
-  getCurrentUser(): Observable<void | any> {
+  getCurrentUser(): any {
     return this.currentUser;
+  }
+
+  getCurrentClient(): any {
+    return this.currentClient;
   }
 
   isAuthorized(): boolean {
@@ -88,6 +93,8 @@ export class AuthenticationService implements OnDestroy {
   }
 
   initializer() {
+    console.log('__________initializer');
+
     return this.findCurrentUser();
   }
 
@@ -105,5 +112,30 @@ export class AuthenticationService implements OnDestroy {
 
   validateRecoveryToken(token: string): Observable<string> {
     return this.authApi.validateRecoveryToken(token);
+  }
+
+  // --------Client
+
+  clientInitializer() {
+    console.log('__________clientInitializer');
+    return this.findCurrentClient();
+  }
+
+  findCurrentClient(): Observable<void | any> {
+    return this.usersApi.findCurrentClient().pipe(
+      map(client => {
+        this.currentClient = client;
+        return client;
+      }),
+      catchError((error: any) => of(console.log(error)))
+    );
+  }
+
+  isClientSessionSave(): boolean {
+    return !!this.currentClient;
+  }
+
+  resetClient(): void {
+    this.currentClient = null;
   }
 }

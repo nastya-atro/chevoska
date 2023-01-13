@@ -21,11 +21,25 @@ import { PaginationPipe } from "../../common/pipes/pagination.pipe";
 import { OrderPipe } from "../../common/pipes/order.pipe";
 import { EditStreamInputDto } from "./dto/editStream.input.dto";
 import { ViewStreamClientInputDto } from "./dto/viewStreamClient.input.dto";
+import { Session } from "../../common/session/decorators/session.decorator";
+import { SessionService } from "../../common/session/session.service";
+import { CurrentClient } from "../../common/decorators/current-client.decorators";
 
 @Controller("streams")
 @UseGuards()
 export class StreamsController {
   constructor(private readonly streamService: StreamsService) {}
+
+  @Get("client")
+  findCurrentClient(@CurrentClient() client: SessionUser) {
+    return this.streamService.findCurrentClient(client?.id);
+  }
+
+  @Get(":id")
+  @ValidateDTO()
+  async findOne(@Param("id", ParseIntPipe) id: number) {
+    return await this.streamService.findOne(id);
+  }
 
   @Get()
   @ValidateDTO()
@@ -37,31 +51,20 @@ export class StreamsController {
     return await this.streamService.findList(pagination, order, user?.id);
   }
 
-  @Get(":id")
-  @ValidateDTO()
-  async findOne(@Param("id", ParseIntPipe) id: number) {
-    return await this.streamService.findOne(id);
-  }
-
   @Get("view/:enterLink")
   @ValidateDTO()
   async findViewStream(@Param("enterLink") enterLink: string) {
     return await this.streamService.findViewStream(enterLink);
   }
 
-  @Get("view/client/:id")
-  @ValidateDTO()
-  async findViewStreamClient(@Param("id", ParseIntPipe) id: number) {
-    return await this.streamService.findViewStreamClient(id);
-  }
-
   @Post("view/enter/:streamId")
   @ValidateDTO()
   async enterViewStream(
     @Param("streamId", ParseIntPipe) streamId: number,
-    @Body() body: ViewStreamClientInputDto
+    @Body() body: ViewStreamClientInputDto,
+    @Session() session: SessionService
   ) {
-    return await this.streamService.enterViewStream(body, streamId);
+    return await this.streamService.enterViewStream(body, streamId, session);
   }
 
   @Post()

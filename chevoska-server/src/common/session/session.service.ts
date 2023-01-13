@@ -18,6 +18,15 @@ export class SessionService {
     };
   }
 
+  setClient(clientId: number, username: string, role?: string) {
+    (this.request as unknown as IncomingMessageSession).session.currentClient =
+      {
+        id: clientId,
+        username,
+        role,
+      };
+  }
+
   logout(res: Response) {
     (this.request as unknown as IncomingMessageSession).session.destroy(
       function () {

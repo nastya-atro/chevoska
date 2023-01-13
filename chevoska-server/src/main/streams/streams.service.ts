@@ -22,8 +22,10 @@ import { EditStreamModel } from "./models/editStream.model";
 import { StreamViewOutputDto } from "./dto/streamView.output.dto";
 import { StreamClientsEntity } from "../../common/entities/stream-clients.entity";
 import { StreamClientModel } from "./models/streamClient.model";
-import { ROLES } from "../../common/constants/roles.constants";
 import { ViewStreamClientOutputDto } from "./dto/viewStreamClient.output.dto";
+import { SessionService } from "../../common/session/session.service";
+import { UserEntity } from "../../common/entities/user.entity";
+import { SessionUser } from "../../common/session/models/session.model";
 
 @Injectable()
 export class StreamsService {
@@ -32,6 +34,8 @@ export class StreamsService {
     private streamRepository: Repository<StreamEntity>,
     @InjectRepository(ProfileEntity)
     private profileRepository: Repository<ProfileEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     @InjectRepository(StreamStatusesEntity)
     private streamStatusRepository: Repository<StreamStatusesEntity>,
     @InjectRepository(StreamClientsEntity)
@@ -98,14 +102,15 @@ export class StreamsService {
     return StreamViewOutputDto.new(stream);
   }
 
-  async findViewStreamClient(id: number) {
+  async findCurrentClient(id: number) {
     try {
       const client = await this.dataSource
         .createQueryBuilder(StreamClientsEntity, "stream_clients")
+        .leftJoinAndSelect("stream_clients.stream", "stream")
         .andWhere(`stream_clients.id = (:id)`, { id })
         .getOne();
       if (!client) {
-        throw new NotFoundException();
+        throw new NotFoundException("Client not found");
       }
       return new ViewStreamClientOutputDto(client);
     } catch (e) {
@@ -116,7 +121,11 @@ export class StreamsService {
     }
   }
 
-  async enterViewStream(client: StreamClientModel, streamId: number) {
+  async enterViewStream(
+    client: StreamClientModel,
+    streamId: number,
+    session: SessionService
+  ) {
     const { email, username, phone, timezone, key } = client;
 
     const existClient = await this.dataSource
@@ -127,42 +136,61 @@ export class StreamsService {
       .getOne();
 
     if (existClient) {
-      throw new ConflictException(
-        "Choose other email for enter. This email is even registrated"
-      );
-    }
+      if (username !== existClient.username) {
+        await this.replaceExistedClient(existClient.id, username);
+      }
+      session.setClient(existClient.id, email, "client");
+      return new ViewStreamClientOutputDto(existClient);
+    } else {
+      try {
+        const stream = await this.streamRepository.findOneBy({
+          id: streamId,
+        });
 
-    try {
-      const stream = await this.streamRepository.findOneBy({
-        id: streamId,
-      });
-
-      if (stream.private) {
-        console.log("stream.enterKey", stream.enterKey);
-        console.log("key", key);
-
-        if (stream.enterKey === key) {
+        if (stream.private) {
+          if (stream.enterKey === key) {
+            const user = await this.streamClientsRepository.save({
+              email,
+              username,
+              phone,
+              timezone,
+              stream,
+            });
+            session.setClient(user.id, user.email, "client");
+            return new ViewStreamClientOutputDto(user);
+          } else {
+            throw new ConflictException("Enter key not correct");
+          }
+        } else {
           const user = await this.streamClientsRepository.save({
             email,
             username,
             phone,
             timezone,
             stream,
+            active: true,
           });
+          session.setClient(user.id, user.email, "client");
           return new ViewStreamClientOutputDto(user);
-        } else {
-          throw new ConflictException("Enter key not correct");
         }
-      } else {
-        const user = await this.streamClientsRepository.save({
-          email,
-          username,
-          phone,
-          timezone,
-          stream,
-        });
-        return new ViewStreamClientOutputDto(user);
+      } catch (e) {
+        if (e.code === "ER_DUP_ENTRY") {
+          throw new ConflictException();
+        }
+        throw e;
       }
+    }
+  }
+
+  async replaceExistedClient(clientId: number, username: string) {
+    try {
+      await this.dataSource
+        .createQueryBuilder()
+        .update(StreamClientsEntity, {
+          username,
+        })
+        .whereInIds([clientId])
+        .execute();
     } catch (e) {
       if (e.code === "ER_DUP_ENTRY") {
         throw new ConflictException();

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ViewStreamService } from '../viewStream.service';
 import Utils from '../../../core/utils/utils';
 import { ViewStreamsApi } from '../../../core/services/api/view-stream.api';
+import { AuthenticationService } from '../../authentication/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -21,7 +22,8 @@ export class EnterSystemComponent {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private viewStreamService: ViewStreamService
+    private viewStreamService: ViewStreamService,
+    private authService: AuthenticationService
   ) {
     this.stream = this.viewStream.stream;
     this.myForm = this.formBuilder.group({
@@ -52,8 +54,10 @@ export class EnterSystemComponent {
         .pipe(untilDestroyed(this))
         .subscribe({
           next: res => {
-            localStorage.setItem('stream_view_user', res.id);
-            this.router.navigate([`${this.viewStream.rootPath}/active`]);
+            this.authService
+              .findCurrentClient()
+              .pipe(untilDestroyed(this))
+              .subscribe(() => this.router.navigate([`${this.viewStream.rootPath}/active`]));
           },
           error: () => {},
         });

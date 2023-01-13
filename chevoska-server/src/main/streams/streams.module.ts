@@ -7,6 +7,7 @@ import { TransportModule } from "../../shared/transport/transport.module";
 import { StreamEntity } from "../../common/entities/stream.entity";
 import { StreamStatusesEntity } from "../../common/entities/stream-statuses.entity";
 import { StreamClientsEntity } from "../../common/entities/stream-clients.entity";
+import { UserEntity } from "../../common/entities/user.entity";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { StreamClientsEntity } from "../../common/entities/stream-clients.entity
       StreamClientsEntity,
       StreamStatusesEntity,
       ProfileEntity,
+      UserEntity,
     ]),
     TransportModule,
   ],

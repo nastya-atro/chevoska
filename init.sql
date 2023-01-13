@@ -104,6 +104,7 @@ CREATE TABLE `stream_clients` (
   `email` varchar(50)  DEFAULT NULL,
   `phone` varchar(25) DEFAULT NULL,
   `timezone` varchar(45) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `stream_id` (`stream_id`),
   FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)

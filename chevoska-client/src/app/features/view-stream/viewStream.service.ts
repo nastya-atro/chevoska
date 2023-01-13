@@ -15,8 +15,4 @@ export class ViewStreamService implements OnDestroy {
   enterSystem(data: any, streamId: number) {
     return this.viewStreamApi.enterSystem(data, streamId);
   }
-
-  findCurrentClient(id: number) {
-    return this.viewStreamApi.findCurrentClient(id);
-  }
 }

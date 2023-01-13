@@ -7,10 +7,16 @@ import { RoleEntity } from "../../common/entities/role.entity";
 import { UserEntity } from "../../common/entities/user.entity";
 import { ProfileEntity } from "../../common/entities/profile.entity";
 import { TransportModule } from "../../shared/transport/transport.module";
+import { StreamClientsEntity } from "../../common/entities/stream-clients.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RoleEntity, UserEntity, ProfileEntity]),
+    TypeOrmModule.forFeature([
+      RoleEntity,
+      UserEntity,
+      ProfileEntity,
+      StreamClientsEntity,
+    ]),
     TransportModule,
   ],
   providers: [AuthService, AuthLocalStrategy],

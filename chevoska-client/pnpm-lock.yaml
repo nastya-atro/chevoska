@@ -39,7 +39,6 @@ specifiers:
   karma-jasmine: ~4.0.0
   karma-jasmine-html-reporter: ~1.7.0
   moment: ^2.29.4
-  ng2-date-countdown: ^1.1.3
   ng2-date-picker: 14.0.0
   qs: ^6.11.0
   rxjs: ~7.5.0
@@ -73,7 +72,6 @@ dependencies:
   dayjs: 1.11.7
   eslint: 8.12.0
   moment: 2.29.4
-  ng2-date-countdown: 1.1.3_gw2wuxauns2bnnm4xkmmfxwljm
   ng2-date-picker: 14.0.0_nwwjuw3ljzyawxaxe37ex5ugie
   qs: 6.11.0
   rxjs: 7.5.7
@@ -5312,16 +5310,6 @@ packages:
   /neo-async/2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
-
-  /ng2-date-countdown/1.1.3_gw2wuxauns2bnnm4xkmmfxwljm:
-    resolution: {integrity: sha512-MjVGpQWIIyEcZOLcZsP3f1nytBaFBtmQqY8nNcgSzNIT5YEjMoSSOANa2pmTQX9uToCgetxafKhJNFrYULbHsQ==}
-    peerDependencies:
-      '@angular/common': 10.0.7
-      '@angular/core': 10.0.7
-    dependencies:
-      '@angular/common': 14.1.1_pe5o2idy3nicazspuvdwte5aiy
-      '@angular/core': 14.1.1_rxjs@7.5.7+zone.js@0.11.8
-    dev: false
 
   /ng2-date-picker/14.0.0_nwwjuw3ljzyawxaxe37ex5ugie:
     resolution: {integrity: sha512-W8iCULkI8bMdPhkTtuN3F+CNEMsbNqDIYZgp7s8xepQWVZz+YVDHwp4Om7gB6chDY125Yx1izH7AQOpcG89LfQ==}
