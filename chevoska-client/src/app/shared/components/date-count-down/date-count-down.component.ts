@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subscription, takeWhile } from 'rxjs';
+import { DateCountDownService } from './date-count-down.service';
 
 @Component({
   selector: 'app-date-count-down',
@@ -23,6 +24,8 @@ export class DateCountDownComponent implements OnInit, OnDestroy {
   public hoursToDday!: any;
   public daysToDday!: any;
 
+  constructor(private dateCountDownService: DateCountDownService) {}
+
   private getTimeDifference() {
     this.timeDifference = this.dDay.getTime() - new Date().getTime();
     this.allocateTimeUnits(this.timeDifference);
@@ -43,9 +46,19 @@ export class DateCountDownComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dDay = new Date(this.day);
-    this.subscription = interval(1000).subscribe(x => {
-      this.getTimeDifference();
-    });
+    this.timeDifference = 1;
+    this.subscription = this.dateCountDownService
+      .startTimeDifferenceCounter(this.dDay)
+      .pipe(takeWhile(value => this.timeDifference > 0))
+      .subscribe(x => {
+        this.getTimeDifference();
+      });
+
+    // this.subscription = interval(1000)
+    //   .pipe(takeWhile(value => this.timeDifference > 0))
+    //   .subscribe(x => {
+    //     this.getTimeDifference();
+    //   });
   }
 
   ngOnDestroy() {

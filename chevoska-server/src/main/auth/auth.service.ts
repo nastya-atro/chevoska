@@ -85,12 +85,13 @@ export class AuthService {
     return user;
   }
 
-  async activate(token: string) {
+  async activate(token: string): Promise<{ statusCode: number }> {
     const user = await this.findUserByToken(token, "confirmToken");
 
     user.confirmToken = null;
     user.enabled = true;
     await this.userRepository.save(user);
+    return { statusCode: 204 };
   }
 
   async validateUser(username: string, password: string) {
@@ -185,7 +186,7 @@ export class AuthService {
     }
   }
 
-  async signup(data: SignUpModel) {
+  async signup(data: SignUpModel): Promise<string> {
     try {
       if (!data.isAgreement) {
         throw new Error("Accept the Terms Of Agreement for registration");
@@ -203,7 +204,7 @@ export class AuthService {
     });
   }
 
-  async getUserInfo(token: string) {
+  async getUserInfo(token: string): Promise<{ email: string; phone: string }> {
     const user = await this.findUserByToken(token, "token");
     const profile = await this.findProfileById(user.id);
     return { email: user.email, phone: profile.phone };
@@ -223,10 +224,10 @@ export class AuthService {
         confirm_link: `${domain}/${process.env.CONFIRMATION_LINK}?token=${user.confirmToken}`,
       }
     );
+    return { statusCode: 204 };
   }
   async validateUserPhone(token: string, domain: string) {
     const user = await this.findUserByToken(token, "token");
-    console.log("____success found user to validate");
 
     post({
       uri: "https://api.zenvia.com/v2/channels/sms/messages",
@@ -251,6 +252,7 @@ export class AuthService {
       .catch((error) => {
         console.log("____________Error:", error);
       });
+    return { statusCode: 204 };
   }
 
   async activateUserWithoutValidate(token: string) {
@@ -258,6 +260,7 @@ export class AuthService {
     user.confirmToken = null;
     user.enabled = true;
     await this.userRepository.save(user);
+    return { statusCode: 204 };
   }
 
   private async saveNewUserPassword(token: string, password: string) {

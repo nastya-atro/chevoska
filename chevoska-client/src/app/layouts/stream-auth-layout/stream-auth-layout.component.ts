@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { ViewStreamsApi } from '../../core/services/api/view-stream.api';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import { AuthenticationService } from '../../features/authentication/authentication.service';
+import { ViewStreamService } from '../../features/view-stream/viewStream.service';
+import { ViewStream } from '../../core/models/view-stream.model';
+import { CurrentUserResponse } from '../../core/models/user.model';
 
 @UntilDestroy()
 @Component({
@@ -10,9 +13,26 @@ import { UntilDestroy } from '@ngneat/until-destroy';
   styleUrls: ['./stream-auth-layout.component.scss'],
 })
 export class StreamAuthLayoutComponent {
-  stream!: any;
+  stream!: ViewStream;
+  user!: CurrentUserResponse | null;
   rootPath!: string;
-  constructor(private router: Router, private viewStream: ViewStreamsApi) {
-    this.stream = this.viewStream.stream;
+  isUserActiveInStream!: boolean;
+
+  constructor(
+    private router: Router,
+    private viewStreamService: ViewStreamService,
+    private authService: AuthenticationService
+  ) {
+    const isClientSessionSave = this.viewStreamService.isClientSessionSave();
+    const isClientSessionToCurrentStream =
+      this.viewStreamService.getCurrentClient()?.stream === this.viewStreamService.stream?.id;
+    this.user = this.authService.getCurrentUser();
+    this.isUserActiveInStream = isClientSessionSave && isClientSessionToCurrentStream;
+
+    this.stream = this.viewStreamService.stream;
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

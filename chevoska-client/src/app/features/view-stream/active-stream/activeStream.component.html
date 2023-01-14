@@ -1,8 +1,21 @@
-<div *ngIf="user && stream">
+<nav class="navbar bg-body-tertiary fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-light" href="/streams">StreamService</a>
+        <div class="d-flex flex-row gap-3">
+            <div class="navbar-nav d-flex flex-row gap-3">
+            </div>
+            <button *ngIf="!this.user"  (click)="logout()" type="button" class="btn btn-outline-light ">Leave Stream page</button>
+            <button *ngIf="this.user" (click)="logout()" type="button" class="btn btn-outline-light ">Log out</button>
+        </div>
+    </div>
+</nav>
+
+
+<div *ngIf="client && stream">
     <div class="text-light text-end">
         <p>
             <small>
-                Hello <b>{{ user.username }}, </b> <br />Thanks for joining our stream !
+                Hello <b>{{ client.username }}, </b> <br />Thanks for joining our stream !
             </small>
         </p>
     </div>

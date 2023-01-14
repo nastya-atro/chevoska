@@ -2,19 +2,19 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
-import { UsersApi } from '../../core/services/api/users.api';
+import { CurrentSessionApi } from '../../core/services/api/current-session.api';
 import { catchError, map } from 'rxjs/operators';
 import { AuthApi } from '../../core/services/api/auth.api';
+import { CreateUserRequest, CurrentUserResponse } from '../../core/models/user.model';
 
 @UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService implements OnDestroy {
-  private currentUser: any | null = null;
-  private currentClient: any | null = null;
+  private currentUser: CurrentUserResponse | null = null;
 
-  constructor(private router: Router, private authApi: AuthApi, private usersApi: UsersApi) {}
+  constructor(private router: Router, private authApi: AuthApi, private usersApi: CurrentSessionApi) {}
 
   ngOnDestroy(): void {}
 
@@ -38,16 +38,8 @@ export class AuthenticationService implements OnDestroy {
     return this.authApi.login(username, password);
   }
 
-  signup(user: any): Observable<unknown> {
+  signup(user: CreateUserRequest): Observable<unknown> {
     return this.authApi.signup(user);
-  }
-
-  enterSystem(enterData: any): Observable<unknown> {
-    return this.authApi.enterSystem(enterData);
-  }
-
-  enterPrivateSystem(enterData: any, key: string): Observable<unknown> {
-    return this.authApi.enterPrivateSystem(enterData, key);
   }
 
   getUserInfo(token: string): Observable<{ email: string; phone: string }> {
@@ -70,7 +62,7 @@ export class AuthenticationService implements OnDestroy {
       });
   }
 
-  findCurrentUser(): Observable<void | any> {
+  findCurrentUser(): Observable<void | CurrentUserResponse> {
     return this.usersApi.findCurrentUser().pipe(
       map(user => {
         this.currentUser = user;
@@ -84,17 +76,11 @@ export class AuthenticationService implements OnDestroy {
     return this.currentUser;
   }
 
-  getCurrentClient(): any {
-    return this.currentClient;
-  }
-
   isAuthorized(): boolean {
     return !!this.currentUser;
   }
 
   initializer() {
-    console.log('__________initializer');
-
     return this.findCurrentUser();
   }
 
@@ -112,30 +98,5 @@ export class AuthenticationService implements OnDestroy {
 
   validateRecoveryToken(token: string): Observable<string> {
     return this.authApi.validateRecoveryToken(token);
-  }
-
-  // --------Client
-
-  clientInitializer() {
-    console.log('__________clientInitializer');
-    return this.findCurrentClient();
-  }
-
-  findCurrentClient(): Observable<void | any> {
-    return this.usersApi.findCurrentClient().pipe(
-      map(client => {
-        this.currentClient = client;
-        return client;
-      }),
-      catchError((error: any) => of(console.log(error)))
-    );
-  }
-
-  isClientSessionSave(): boolean {
-    return !!this.currentClient;
-  }
-
-  resetClient(): void {
-    this.currentClient = null;
   }
 }

@@ -1,19 +1,24 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { StreamsApi } from '../../../core/services/api/streams.api';
 import { Observable } from 'rxjs';
+import { StreamsApi } from '../../core/services/api/streams.api';
+import { CreateStreamRequest, EditStreamRequest, StreamResponse } from '../../core/models/stream.model';
 
 @UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
-export class EditStreamService implements OnDestroy {
+export class StreamService implements OnDestroy {
   constructor(private router: Router, private streamsApi: StreamsApi) {}
 
   ngOnDestroy(): void {}
 
-  getStream(id: number): Observable<unknown> {
+  createStream(stream: CreateStreamRequest): Observable<unknown> {
+    return this.streamsApi.createStream(stream);
+  }
+
+  getStream(id: number): Observable<StreamResponse> {
     return this.streamsApi.getStream(id);
   }
 
@@ -21,7 +26,7 @@ export class EditStreamService implements OnDestroy {
     return this.streamsApi.generatePrivateKey(id);
   }
 
-  editStream(id: number, newStreamData: any): Observable<unknown> {
+  editStream(id: number, newStreamData: EditStreamRequest): Observable<unknown> {
     return this.streamsApi.editStream(id, newStreamData);
   }
 }

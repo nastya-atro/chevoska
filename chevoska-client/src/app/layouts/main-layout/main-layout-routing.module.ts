@@ -11,22 +11,8 @@ export const MAIN_LAYOUT_ROUTES: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('../../features/add-new-stream/addNewStream.module').then(m => {
-            return m.AddNewStreamModule;
-          }),
-      },
-      {
-        path: '',
-        loadChildren: () =>
-          import('../../features/stream/done-stream-statistic/statisticStream.module').then(m => {
-            return m.StatisticStreamModule;
-          }),
-      },
-      {
-        path: '',
-        loadChildren: () =>
-          import('../../features/stream/pending-stream-editing/editStream.module').then(m => {
-            return m.EditStreamModule;
+          import('../../features/stream/stream.module').then(m => {
+            return m.StreamModule;
           }),
       },
       {

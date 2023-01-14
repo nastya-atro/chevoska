@@ -1,30 +1,21 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { catchError, map } from 'rxjs/operators';
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { EnterViewStreamRequest, ViewStreamResponse } from '../../models/view-stream.model';
 
 @UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
 export class ViewStreamsApi implements OnDestroy {
-  stream!: any;
-  rootPath!: any;
-
   constructor(private api: ApiService) {}
 
-  findStreamByEnterLink(enterLink: any): Observable<any> {
-    return this.api.get(`/streams/view/${enterLink}`).pipe(
-      map(result => {
-        this.rootPath = `/stream/${result.enterLink}`;
-        this.stream = result;
-      }),
-      catchError((error: any) => of(console.log(error)))
-    );
+  findStreamByEnterLink(enterLink: string): Observable<ViewStreamResponse> {
+    return this.api.get(`/streams/view/${enterLink}`);
   }
 
-  enterSystem(data: any, streamId: number) {
+  enterSystem(data: EnterViewStreamRequest, streamId: number) {
     return this.api.post(`/streams/view/enter/${streamId}`, data);
   }
 

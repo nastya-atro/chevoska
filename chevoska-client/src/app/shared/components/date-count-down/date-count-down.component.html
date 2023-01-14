@@ -1,7 +1,15 @@
 <div class="timer">
-    <h4>Stream coming soon...</h4>
-    <span id="days"> {{daysToDday}} </span>Day(s)
-    <span id="hours"> {{hoursToDday}} </span>Hrs
-    <span id="minutes"> {{minutesToDday}} </span>Min
-    <span id="seconds"> {{secondsToDday}} </span>S
+    <div *ngIf="this.timeDifference > 1">
+        <h4>Stream coming soon...</h4>
+        <span id="days"> {{daysToDday}} </span>Day(s)
+        <span id="hours"> {{hoursToDday}} </span>Hrs
+        <span id="minutes"> {{minutesToDday}} </span>Min
+        <span id="seconds"> {{secondsToDday}} </span>S
+    </div>
+    <div *ngIf="!(this.timeDifference > 0)">
+        <div>Stream Started  !</div>
+        <div>or</div>
+        <div>Stream  Finished  !</div>
+    </div>
+
 </div>

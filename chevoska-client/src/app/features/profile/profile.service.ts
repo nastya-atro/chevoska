@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ProfileApi } from '../../core/services/api/profile.api';
+import { EditProfileRequest } from '../../core/models/user.model';
 
 @UntilDestroy()
 @Injectable({
@@ -12,11 +13,11 @@ export class ProfileService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  findCurrentUser() {
-    return this.profileApi.getCurrentUser();
+  getProfileInfo() {
+    return this.profileApi.getProfileInfo();
   }
 
-  editProfile(data: any) {
+  editProfile(data: EditProfileRequest) {
     return this.profileApi.editProfile(data);
   }
 }

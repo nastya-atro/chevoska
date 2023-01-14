@@ -46,13 +46,15 @@ export class AuthController {
 
   @Post("signup")
   @ValidateDTO()
-  signUp(@Body() body: SignUpInputDto, @Host() domain) {
+  signUp(@Body() body: SignUpInputDto, @Host() domain): Promise<string> {
     return this.authService.signup(body);
   }
 
   // gey not active user info (email and phone)
   @Get("activate-profile")
-  validate(@Query("token") token: string) {
+  validate(
+    @Query("token") token: string
+  ): Promise<{ email: string; phone: string }> {
     return this.authService.getUserInfo(token);
   }
 
@@ -70,7 +72,7 @@ export class AuthController {
 
   // activate email by confirm-link
   @Get("activate")
-  activate(@Query("token") token: string) {
+  activate(@Query("token") token: string): Promise<{ statusCode: number }> {
     return this.authService.activate(token);
   }
 

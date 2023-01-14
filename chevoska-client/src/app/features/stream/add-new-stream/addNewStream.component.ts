@@ -2,16 +2,16 @@ import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
-import { AddNewStreamService } from './addNewStream.service';
-import { NotifyService } from '../../shared/modules/notifications/notify.service';
-import Utils from '../../core/utils/utils';
+import { StreamService } from '../stream.service';
+import { NotifyService } from '../../../shared/modules/notifications/notify.service';
+import Utils from '../../../core/utils/utils';
 import { Router } from '@angular/router';
 
 @UntilDestroy()
 @Component({
   selector: 'app-new-stream-stream',
   templateUrl: './addNewStream.component.html',
-  styleUrls: ['./addNewStream.component.scss', './datePicker.styles.scss'],
+  styleUrls: ['./addNewStream.component.scss', '../datePicker.styles.scss'],
 })
 export class AddNewStreamComponent {
   readonly dateForat: string = 'YYYY-MM-DD HH:mm:ss';
@@ -34,11 +34,7 @@ export class AddNewStreamComponent {
     keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),
   });
 
-  constructor(
-    private streamsService: AddNewStreamService,
-    private notifyService: NotifyService,
-    private router: Router
-  ) {}
+  constructor(private streamsService: StreamService, private notifyService: NotifyService, private router: Router) {}
 
   createStream() {
     if (this.form.valid) {

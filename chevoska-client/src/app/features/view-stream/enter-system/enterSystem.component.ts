@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewStreamService } from '../viewStream.service';
 import Utils from '../../../core/utils/utils';
-import { ViewStreamsApi } from '../../../core/services/api/view-stream.api';
 import { AuthenticationService } from '../../authentication/authentication.service';
+import { DateCountDownService } from '../../../shared/components/date-count-down/date-count-down.service';
+import { CurrentClientResponse } from '../../../core/models/client.model';
+import { CurrentUserResponse } from '../../../core/models/user.model';
+import { ViewStream } from '../../../core/models/view-stream.model';
 
 @UntilDestroy()
 @Component({
@@ -15,21 +18,23 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 })
 export class EnterSystemComponent {
   myForm: FormGroup;
-  stream!: any;
+  stream!: ViewStream;
+  client!: CurrentClientResponse | null;
+  user!: CurrentUserResponse | null;
 
   constructor(
-    private viewStream: ViewStreamsApi,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
     private viewStreamService: ViewStreamService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private dateCountDownService: DateCountDownService
   ) {
-    this.stream = this.viewStream.stream;
+    this.stream = this.viewStreamService.stream;
     this.myForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
+      username: [this.user?.firstName || this.client?.username || '', [Validators.required]],
       email: [
-        '',
+        this.user?.email || this.client?.email || '',
         [
           Validators.required,
           Validators.pattern('^(\\s+)?[a-zA-Z0-9+._-]+@[a-zA-Z0-9-]+[.]{1}[a-zA-Z]{2,4}([.]{1}[a-zA-Z]{2,4})?(\\s+)?$'),
@@ -37,7 +42,7 @@ export class EnterSystemComponent {
         ],
       ],
       timezone: [''],
-      phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
+      phone: [this.user?.phone || this.client?.phone || '', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
       key: [''],
     });
 
@@ -45,6 +50,21 @@ export class EnterSystemComponent {
       this.myForm.controls['key'].setValidators([Validators.required]);
       this.myForm.controls['key'].updateValueAndValidity();
     }
+    this.dateCountDownService.setInitialValue(this.firstAvailableValue() && !this.isStreamStarted);
+    this.firstAvailableValue() && !this.isStreamStarted && this.myForm.disable();
+  }
+
+  get isStreamEnterAvailable() {
+    this.dateCountDownService.isStreamEnterAvailable && this.myForm.enable();
+    return this.dateCountDownService.isStreamEnterAvailable;
+  }
+
+  get isStreamStarted() {
+    return this.dateCountDownService.isStreamStarted;
+  }
+
+  firstAvailableValue() {
+    return new Date(this.stream.startDate).getTime() - new Date().getTime() > 21600000;
   }
 
   submit(): void {
@@ -54,10 +74,10 @@ export class EnterSystemComponent {
         .pipe(untilDestroyed(this))
         .subscribe({
           next: res => {
-            this.authService
+            this.viewStreamService
               .findCurrentClient()
               .pipe(untilDestroyed(this))
-              .subscribe(() => this.router.navigate([`${this.viewStream.rootPath}/active`]));
+              .subscribe(() => this.router.navigate([`${this.viewStreamService.rootPath}/active`]));
           },
           error: () => {},
         });

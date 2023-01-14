@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from './profile.service';
 import Utils from '../../core/utils/utils';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
+import { ActivatedRoute } from '@angular/router';
+import { Profile } from '../../core/models/user.model';
 
 @UntilDestroy()
 @Component({
@@ -12,8 +14,8 @@ import { NotifyService } from '../../shared/modules/notifications/notify.service
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent {
-  profile!: any;
+export class ProfileComponent implements OnInit {
+  profile!: Profile;
   form: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
     lastName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
@@ -28,17 +30,32 @@ export class ProfileComponent {
   constructor(
     private authService: AuthenticationService,
     private profileService: ProfileService,
-    private notifyService: NotifyService
-  ) {
-    this.loadProfile();
+    private notifyService: NotifyService,
+    private activateRoute: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
+    this.activateRoute.data.pipe(untilDestroyed(this)).subscribe({
+      next: ({ profileComponentData }) => {
+        if (profileComponentData) {
+          this.profile = profileComponentData;
+          this.form.patchValue({
+            firstName: this.profile.firstName || '',
+            lastName: this.profile.lastName || '',
+            phone: this.profile.phone || '',
+            email: this.profile.email || '',
+          });
+        }
+      },
+    });
   }
 
   loadProfile() {
     this.profileService
-      .findCurrentUser()
+      .getProfileInfo()
       .pipe(untilDestroyed(this))
       .subscribe({
-        next: (result: any) => {
+        next: result => {
           this.profile = result;
           this.form.patchValue({
             firstName: result.firstName || '',

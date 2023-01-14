@@ -2,20 +2,25 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
-import { ViewStreamsApi } from '../services/api/view-stream.api';
+import { ViewStreamService } from '../../features/view-stream/viewStream.service';
 
 @Injectable({ providedIn: 'root' })
 export class ClientAccessGuard implements CanActivate {
-  constructor(private router: Router, private authService: AuthenticationService, private viewStream: ViewStreamsApi) {}
+  constructor(
+    private router: Router,
+    private authService: AuthenticationService,
+    private viewStreamService: ViewStreamService
+  ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const isClientSessionSave = this.authService.isClientSessionSave();
-    const isClientSessionToCurrentStream = this.authService.getCurrentClient()?.stream === this.viewStream.stream?.id;
+    const isClientSessionSave = this.viewStreamService.isClientSessionSave();
+    const isClientSessionToCurrentStream =
+      this.viewStreamService.getCurrentClient()?.stream === this.viewStreamService.stream?.id;
     if (isClientSessionSave && isClientSessionToCurrentStream) {
-      return this.router.navigate([`${this.viewStream.rootPath}/active`]);
+      return this.router.navigate([`${this.viewStreamService.rootPath}/active`]);
     } else {
       return !(isClientSessionSave && isClientSessionToCurrentStream);
     }

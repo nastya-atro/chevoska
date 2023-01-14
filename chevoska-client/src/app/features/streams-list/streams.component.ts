@@ -6,6 +6,7 @@ import * as tableConstant from '../../core/enums/table.constants';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
+import { StreamsList } from '../../core/models/stream.model';
 
 @UntilDestroy()
 @Component({
@@ -16,10 +17,8 @@ import { NotifyService } from '../../shared/modules/notifications/notify.service
 export class StreamsComponent {
   readonly tableConstant = tableConstant;
   rootPath = 'streams';
-
   queryParams!: Params;
-
-  streams!: null | any;
+  streams!: null | StreamsList[];
   displayedColumns: string[] = [...this.tableConstant.STREAMS_COLUMNS];
 
   state = {
@@ -71,7 +70,7 @@ export class StreamsComponent {
         finalize(() => (this.loading = false))
       )
       .subscribe({
-        next: (data: any) => {
+        next: data => {
           this.streams = data.results;
           this.state.pagination.page = data.page;
           this.state.pagination.total = data.total;

@@ -3,6 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { ApiService } from '../api.service';
 import { ResponseError } from '../../models/response-error.model';
 import { catchError, map } from 'rxjs/operators';
+import { CreateUserRequest } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,17 +15,17 @@ export class AuthApi {
   private formatErrors = (error: ResponseError) => throwError(error); // see error interceptor
   private formatResponse = (response: { payload: unknown }) => response?.payload;
 
-  login(username: string, password: string): Observable<any> {
+  login(username: string, password: string): Observable<unknown> {
     return this.api
       .post(`${this.SEGMENT}/login`, { username, password })
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  logout(): Observable<any> {
+  logout(): Observable<unknown> {
     return this.api.get(`${this.SEGMENT}/logout`).pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  signup(user: any): Observable<unknown> {
+  signup(user: CreateUserRequest): Observable<string> {
     return this.api.post(`${this.SEGMENT}/signup`, user);
   }
 
@@ -32,49 +33,37 @@ export class AuthApi {
     return this.api.get(`${this.SEGMENT}/activate-profile?token=${token}`);
   }
 
-  enterPrivateSystem(enterData: any, key: string): Observable<any> {
-    return this.api
-      .post(`${this.SEGMENT}/signin`, { enterData, key })
-      .pipe(map(this.formatResponse), catchError(this.formatErrors));
-  }
-
-  enterSystem(enterData: any): Observable<any> {
-    return this.api
-      .post(`${this.SEGMENT}/signin`, { enterData })
-      .pipe(map(this.formatResponse), catchError(this.formatErrors));
-  }
-
-  activate(token: string) {
+  activate(token: string): Observable<unknown> {
     return this.api
       .get(`${this.SEGMENT}/activate?token=${token}`)
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  developActivate(token: string) {
+  developActivate(token: string): Observable<unknown> {
     return this.api
       .get(`${this.SEGMENT}/develop-activate?token=${token}`)
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  sendConfirmEmailToken(token: string) {
+  sendConfirmEmailToken(token: string): Observable<unknown> {
     return this.api
       .get(`${this.SEGMENT}/validate-email?token=${token}`)
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  sendPhoneCode(token: string) {
+  sendPhoneCode(token: string): Observable<unknown> {
     return this.api
       .get(`${this.SEGMENT}/validate-phone?token=${token}`)
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  sendResetPasswordRequest(email: string) {
+  sendResetPasswordRequest(email: string): Observable<unknown> {
     return this.api
       .post(`${this.SEGMENT}/forgot`, { email })
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  setNewPassword(token: string, password: string) {
+  setNewPassword(token: string, password: string): Observable<unknown> {
     return this.api
       .post(`${this.SEGMENT}/recover`, { token, password })
       .pipe(map(this.formatResponse), catchError(this.formatErrors));

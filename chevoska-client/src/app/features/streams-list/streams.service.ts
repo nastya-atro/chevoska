@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { StreamsApi } from '../../core/services/api/streams.api';
+import { ResponseListInterface } from '../../core/interfaces/payload-list.interface';
+import { StreamsListResponse } from '../../core/models/stream.model';
 
 @UntilDestroy()
 @Injectable({
@@ -13,7 +15,7 @@ export class StreamsService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  getStreams(params: any): Observable<unknown> {
+  getStreams(params: any): Observable<ResponseListInterface<StreamsListResponse>> {
     return this.streamsApi.getStreams(params);
   }
 

@@ -1,6 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiService } from '../api.service';
+import { CreateStreamRequest, EditStreamRequest, StreamResponse, StreamsListResponse } from '../../models/stream.model';
+import { ResponseListInterface } from '../../interfaces/payload-list.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -8,27 +10,27 @@ import { ApiService } from '../api.service';
 export class StreamsApi implements OnDestroy {
   constructor(private api: ApiService) {}
 
-  createStream(stream: any): Observable<any> {
+  createStream(stream: CreateStreamRequest): Observable<unknown> {
     return this.api.post(`/streams`, stream);
   }
 
-  getStreams(params: any): Observable<any> {
+  getStreams(params: any): Observable<ResponseListInterface<StreamsListResponse>> {
     return this.api.get(`/streams`, params);
   }
 
-  getStream(id: number): Observable<any> {
+  getStream(id: number): Observable<StreamResponse> {
     return this.api.get(`/streams/${id}`);
   }
 
-  generatePrivateKey(id: number): Observable<any> {
+  generatePrivateKey(id: number): Observable<unknown> {
     return this.api.get(`/streams/key/${id}`);
   }
 
-  removeStream(id: number): Observable<any> {
+  removeStream(id: number): Observable<unknown> {
     return this.api.delete(`/streams/${id}`);
   }
 
-  editStream(id: number, newStreamData: any): Observable<any> {
+  editStream(id: number, newStreamData: EditStreamRequest): Observable<unknown> {
     return this.api.put(`/streams/${id}`, newStreamData);
   }
 

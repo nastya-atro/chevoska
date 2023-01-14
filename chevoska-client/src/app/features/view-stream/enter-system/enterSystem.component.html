@@ -1,80 +1,94 @@
-<div class="text-light text-start">
-    <p>
-        <small>
-            <b>Hello buddy!</b> <br />
-            Please fill in the fields to join a Stream.
-        </small>
-    </p>
-</div>
+<nav class="navbar bg-body-tertiary fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-light" href="/streams">StreamService</a>
+    </div>
+</nav>
 
-<div class="container w-100">
-    <div class="row d-flex justify-content-center align-items-stretch">
-        <div class="col-12 mt-3">
-            <div class="card text-bg-dark container-wrapper">
-                <img class="card-img im-blurry-anyway" src="assets/images/stream-banner.jpg"  alt="Card image">
-                <div class="card-img-overlay d-flex flex-column justify-content-center">
-                    <div class="mt-md-4 pb-1">
-                        <form [formGroup]="myForm" (ngSubmit)="submit()" class="form">
-                            <div class="form-outline mb-2">
-                                <input
-                                    formControlName="username"
-                                    type="text"
-                                    placeholder="Username"
-                                    class="form-control form-control-lg"
-                                    [ngClass]="
+<div *ngIf="stream">
+    <div  class="text-light text-start">
+        <p>
+            <small>
+                <b>Hello {{ this.client?.username || this.user?.firstName || "buddy" }} !</b> <br />
+                <span *ngIf="!isStreamEnterAvailable">Please fill in the fields to join a Stream.</span>
+                <span *ngIf="isStreamEnterAvailable"> You can enter the stream 6 hours before the start . </span>
+            </small>
+        </p>
+    </div>
+
+    <div class="container w-100" [ngClass]="isStreamEnterAvailable ? 'im-blurry-anyway' : ''">
+        <div class="row d-flex justify-content-center align-items-stretch">
+            <div class="col-12 mt-3">
+                <div class="card text-bg-dark container-wrapper">
+                    <img class="card-img im-blurry-anyway" src="assets/images/stream-banner.jpg" alt="Card image" />
+                    <div class="card-img-overlay d-flex flex-column justify-content-center">
+                        <div class="mt-md-4 pb-1">
+                            <form   [formGroup]="myForm" (ngSubmit)="submit()" class="form">
+                                <div class="form-outline mb-2">
+                                    <input
+                                            formControlName="username"
+                                            type="text"
+                                            placeholder="Username"
+                                            class="form-control form-control-lg"
+                                            [ngClass]="
                                         myForm.get('username')?.errors && myForm.get('username')?.touched
                                             ? 'is-invalid'
                                             : ''
                                     "
-                                />
-                                <div class="invalid-feedback" *ngIf="myForm.get('username')?.errors">
-                                    {{ myForm.get("username")?.errors }}
+                                    />
+                                    <div class="invalid-feedback" *ngIf="myForm.get('username')?.errors">
+                                        {{ myForm.get("username")?.errors }}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-outline mb-2">
-                                <input
-                                    formControlName="email"
-                                    type="email"
-                                    placeholder="Email"
-                                    class="form-control form-control-lg"
-                                    [ngClass]="
+                                <div class="form-outline mb-2">
+                                    <input
+
+                                            formControlName="email"
+                                            type="email"
+                                            placeholder="Email"
+                                            class="form-control form-control-lg"
+                                            [ngClass]="
                                         myForm.get('email')?.errors && myForm.get('email')?.touched ? 'is-invalid' : ''
                                     "
-                                />
-                                <div class="invalid-feedback" *ngIf="myForm.get('email')?.errors">
-                                    {{ myForm.get("email")?.errors | validateError: "email" }}
+                                    />
+                                    <div class="invalid-feedback" *ngIf="myForm.get('email')?.errors">
+                                        {{ myForm.get("email")?.errors | validateError: "email" }}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div *ngIf="stream.private" class="form-outline">
-                                <input
-                                        formControlName="key"
-                                        type="text"
-                                        placeholder="Key for Enter"
-                                        class="form-control form-control-lg"
-                                        [ngClass]="
+                                <div *ngIf="stream.private" class="form-outline">
+                                    <input
+                                            formControlName="key"
+                                            type="text"
+                                            placeholder="Key for Enter"
+                                            class="form-control form-control-lg"
+                                            [ngClass]="
                                         myForm.get('key')?.errors && myForm.get('key')?.touched ? 'is-invalid' : ''
                                     "
-                                />
-                                <div class="invalid-feedback" *ngIf="myForm.get('key')?.errors">
-                                    {{ myForm.get("key")?.errors }}
+                                    />
+                                    <div class="invalid-feedback" *ngIf="myForm.get('key')?.errors">
+                                        {{ myForm.get("key")?.errors }}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="pt-3 d-grid gap-2 col-6 mx-auto">
-                                <button class="btn btn-dark btn-lg btn-block">Join to stream</button>
-                            </div>
-                        </form>
+                                <div class="pt-3 d-grid gap-2 col-6 mx-auto">
+                                    <button [disabled]="this.isStreamEnterAvailable && !this.isStreamStarted" class="btn btn-dark btn-lg btn-block">Join to stream</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <figcaption class="figure-caption text-end mt-2 mb-3">
+        Stream start at {{ stream.startDate | date: "medium" }}
+    </figcaption>
+
+    <div class="text-light">
+        <app-date-count-down [day]="stream.startDate"></app-date-count-down>
+    </div>
 </div>
 
-<figcaption class="figure-caption text-end mt-2 mb-3">Stream start at {{ stream.startDate | date: "medium" }}</figcaption>
 
-<div class="text-light">
-    <app-date-count-down [day]="stream.startDate"></app-date-count-down>
-</div>

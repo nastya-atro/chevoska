@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { EditStreamService } from './editStream.service';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -8,12 +7,14 @@ import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
 import Utils from '../../../core/utils/utils';
 import { NotifyService } from '../../../shared/modules/notifications/notify.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { StreamService } from '../stream.service';
+import { Stream, StreamResolverData } from '../../../core/models/stream.model';
 
 @UntilDestroy()
 @Component({
   selector: 'app-edit-stream',
   templateUrl: './editStream.component.html',
-  styleUrls: ['./editStream.component.scss', './datePicker.styles.scss'],
+  styleUrls: ['./editStream.component.scss', '../datePicker.styles.scss'],
 })
 export class EditStreamComponent implements OnInit {
   readonly dateForat: string = 'YYYY-MM-DD HH:mm:ss';
@@ -28,7 +29,7 @@ export class EditStreamComponent implements OnInit {
     disableKeypress: true,
   };
   id!: number;
-  stream!: any;
+  stream!: Stream;
   loading = false;
 
   form: FormGroup = new FormGroup({
@@ -40,7 +41,7 @@ export class EditStreamComponent implements OnInit {
 
   constructor(
     private clipboard: Clipboard,
-    private editStreamService: EditStreamService,
+    private streamService: StreamService,
     private activatedRoute: ActivatedRoute,
     private notifyService: NotifyService
   ) {
@@ -52,19 +53,35 @@ export class EditStreamComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.id) {
-      this.loadStream();
-    }
+    this.activatedRoute.data.pipe(untilDestroyed(this)).subscribe({
+      next: data => {
+        const streamData = (data as StreamResolverData)?.streamComponentData || null;
+        if (streamData) {
+          this.stream = {
+            ...streamData,
+            enterLink: `${window.location.host}/stream/${streamData.enterLink}`,
+            hrefLink: `/stream/${streamData.enterLink}`,
+          };
+          this.form.patchValue({
+            title: this.stream.title,
+            description: this.stream.description,
+            startDate: Utils.utcDateStringToLocalString(this.stream.startDate, this.dateForat),
+            isPrivate: this.stream.private,
+          });
+        }
+      },
+      error: () => {},
+    });
   }
 
   loadStream() {
-    this.editStreamService
+    this.streamService
       .getStream(this.id)
       .pipe(
         untilDestroyed(this),
         finalize(() => (this.loading = false))
       )
-      .subscribe((result: any) => {
+      .subscribe(result => {
         this.form.patchValue({
           title: result.title,
           description: result.description,
@@ -80,7 +97,7 @@ export class EditStreamComponent implements OnInit {
   }
 
   generateKey() {
-    this.editStreamService
+    this.streamService
       .generatePrivateKey(this.id)
       .pipe(untilDestroyed(this))
       .subscribe({
@@ -97,9 +114,9 @@ export class EditStreamComponent implements OnInit {
       if (this.form.valid) {
         const data = {
           ...this.form.value,
-          startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
+          // startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
         };
-        this.editStreamService
+        this.streamService
           .editStream(this.id, data)
           .pipe(
             untilDestroyed(this),
