@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
 import { ApiService } from '../api.service';
 import { ResponseError } from '../../models/response-error.model';
 import { catchError, map } from 'rxjs/operators';

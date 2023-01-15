@@ -5,8 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ValidateErrorPipe } from '../core/pipes/validation.pipe';
 import { NotifyModule } from './modules/notifications/notify.module';
-import { DateCountDownComponent } from './components/date-count-down/date-count-down.component';
-import { DateCountDownModule } from './components/date-count-down/date-count-down.module';
+import { DateCountDownComponent } from './modules/date-count-down/date-count-down.component';
+import { DateCountDownModule } from './modules/date-count-down/date-count-down.module';
 
 const COMPONENTS = [PageNotFoundComponent, ValidateErrorPipe, DateCountDownComponent];
 

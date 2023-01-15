@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { StreamsApi } from '../../core/services/api/streams.api';
 import { ResponseListInterface } from '../../core/interfaces/payload-list.interface';
 import { StreamsListResponse } from '../../core/models/stream.model';
+import { QueryParams } from '../../core/interfaces/query-params.interfaces';
 
 @UntilDestroy()
 @Injectable({
@@ -15,7 +16,7 @@ export class StreamsService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  getStreams(params: any): Observable<ResponseListInterface<StreamsListResponse>> {
+  getStreams(params: QueryParams): Observable<ResponseListInterface<StreamsListResponse>> {
     return this.streamsApi.getStreams(params);
   }
 

@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { StreamsService } from './streams.service';
 import * as qs from 'qs';
-import * as tableConstant from '../../core/enums/table.constants';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
 import { StreamsList } from '../../core/models/stream.model';
+import { Order } from '../../core/enums/filters.enum';
+import { STREAMS_COLUMNS } from './constants/streams.constants';
+import { QueryParams } from '../../core/interfaces/query-params.interfaces';
 
 @UntilDestroy()
 @Component({
@@ -15,16 +17,15 @@ import { StreamsList } from '../../core/models/stream.model';
   styleUrls: ['./streams.component.scss'],
 })
 export class StreamsComponent {
-  readonly tableConstant = tableConstant;
   rootPath = 'streams';
-  queryParams!: Params;
+  queryParams!: QueryParams;
   streams!: null | StreamsList[];
-  displayedColumns: string[] = [...this.tableConstant.STREAMS_COLUMNS];
+  displayedColumns: string[] = [...STREAMS_COLUMNS];
 
   state = {
     order: {
       sortBy: 'id',
-      sortOrder: this.tableConstant.ASC,
+      sortOrder: Order.ASC,
     },
     pagination: {
       total: 0,
@@ -34,6 +35,7 @@ export class StreamsComponent {
     },
     filters: {},
   };
+
   loading = false;
 
   constructor(
@@ -44,7 +46,7 @@ export class StreamsComponent {
   ) {
     const { pagination, order } = this.state;
     this.activatedRoute.queryParams.subscribe(params => {
-      this.queryParams = qs.parse(qs.stringify(params));
+      this.queryParams = qs.parse(qs.stringify(params)) as QueryParams;
 
       if (!Object.keys(params).length) {
         const { page, limit } = pagination;
@@ -55,12 +57,12 @@ export class StreamsComponent {
         pagination.page = +page;
         pagination.limit = +limit;
 
-        this.loadStreams(params);
+        this.loadStreams(this.queryParams);
       }
     });
   }
 
-  loadStreams(params: any) {
+  loadStreams(params: QueryParams) {
     this.loading = true;
 
     this.streamService
@@ -93,7 +95,7 @@ export class StreamsComponent {
       });
   }
 
-  navigate(queryParams: any) {
+  navigate(queryParams: QueryParams) {
     return this.router.navigateByUrl(
       `${this.rootPath}?${qs.stringify({
         ...this.queryParams,
@@ -103,9 +105,12 @@ export class StreamsComponent {
   }
 
   handleChangePage({ page, pageSize }: { page: number; pageSize: number }) {
-    const { pagination } = this.state;
+    const {
+      pagination,
+      order: { sortOrder, sortBy },
+    } = this.state;
     pagination.page = page;
     pagination.limit = pageSize;
-    this.navigate({ page: page, limit: pageSize });
+    this.navigate({ page: String(page), limit: String(pageSize), sortOrder, sortBy });
   }
 }

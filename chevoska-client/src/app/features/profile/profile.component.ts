@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AuthenticationService } from '../authentication/authentication.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ProfileService } from './profile.service';
 import Utils from '../../core/utils/utils';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
 import { ActivatedRoute } from '@angular/router';
 import { Profile } from '../../core/models/user.model';
+import { UserProfileFormGroup } from '../../core/interfaces/forms/profile-forms.interface';
 
 @UntilDestroy()
 @Component({
@@ -16,23 +17,30 @@ import { Profile } from '../../core/models/user.model';
 })
 export class ProfileComponent implements OnInit {
   profile!: Profile;
-  form: FormGroup = new FormGroup({
-    firstName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    lastName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    phone: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(25),
-      Validators.pattern('^[+]*[-\\s\\./0-9]*$'),
-    ]),
-    email: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    avatar: new FormControl(''),
-  });
+  form: UserProfileFormGroup;
   constructor(
     private authService: AuthenticationService,
     private profileService: ProfileService,
     private notifyService: NotifyService,
-    private activateRoute: ActivatedRoute
-  ) {}
+    private activateRoute: ActivatedRoute,
+    private formBuilder: FormBuilder
+  ) {
+    this.form = this.formBuilder.group({
+      firstName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      lastName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      phone: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(25),
+        Validators.pattern('^[+]*[-\\s\\./0-9]*$'),
+      ]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^(\\s+)?[a-zA-Z0-9+._-]+@[a-zA-Z0-9-]+[.]{1}[a-zA-Z]{2,4}([.]{1}[a-zA-Z]{2,4})?(\\s+)?$'),
+        Validators.maxLength(80),
+      ]),
+      avatar: new FormControl(''),
+    }) as UserProfileFormGroup;
+  }
 
   ngOnInit() {
     this.activateRoute.data.pipe(untilDestroyed(this)).subscribe({

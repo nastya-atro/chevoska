@@ -1,4 +1,4 @@
-export interface CurrentClientResponse {
+export interface CurrentClient {
   id: number;
   username: string;
   phone: string;
@@ -7,12 +7,4 @@ export interface CurrentClientResponse {
   stream: number;
 }
 
-// export default class ProfileUsage {
-//   constructor(partial: Partial<ProfileResponse> = {}) {
-//     Object.assign(this, partial);
-//   }
-//
-//   static deserialize(partial: Partial<ProfileResponse>) {
-//     return new ProfileUsage(partial);
-//   }
-// }
+export interface CurrentClientResponse extends CurrentClient {}

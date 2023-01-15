@@ -31,8 +31,7 @@ export class ValidateErrorPipe implements PipeTransform {
           return 'Required field';
         }
         case 'pattern': {
-          // @ts-ignore
-          return PatternMessage[patternEntity];
+          return (PatternMessage as any)[patternEntity];
         }
         case 'maxlength': {
           return `Field maximum length is ${errors[lastError].requiredLength} chars`;

@@ -5,14 +5,15 @@ import { Observable, of } from 'rxjs';
 import { CurrentSessionApi } from '../../core/services/api/current-session.api';
 import { catchError, map } from 'rxjs/operators';
 import { AuthApi } from '../../core/services/api/auth.api';
-import { CreateUserRequest, CurrentUserResponse } from '../../core/models/user.model';
+import { CreateUserRequest, CurrentUser, CurrentUserResponse } from '../../core/models/user.model';
+import * as appActions from '../../store/app.actions';
 
 @UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService implements OnDestroy {
-  private currentUser: CurrentUserResponse | null = null;
+  private currentUser: CurrentUser | null = null;
 
   constructor(private router: Router, private authApi: AuthApi, private usersApi: CurrentSessionApi) {}
 
@@ -65,6 +66,7 @@ export class AuthenticationService implements OnDestroy {
   findCurrentUser(): Observable<void | CurrentUserResponse> {
     return this.usersApi.findCurrentUser().pipe(
       map(user => {
+        appActions.findUserProfileSuccess({ user: user });
         this.currentUser = user;
         return user;
       }),
@@ -72,7 +74,7 @@ export class AuthenticationService implements OnDestroy {
     );
   }
 
-  getCurrentUser(): any {
+  getCurrentUser(): CurrentUser | null {
     return this.currentUser;
   }
 

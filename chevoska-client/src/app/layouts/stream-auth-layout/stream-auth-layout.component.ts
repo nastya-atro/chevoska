@@ -4,7 +4,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
 import { ViewStreamService } from '../../features/view-stream/viewStream.service';
 import { ViewStream } from '../../core/models/view-stream.model';
-import { CurrentUserResponse } from '../../core/models/user.model';
+import { CurrentUser } from '../../core/models/user.model';
 
 @UntilDestroy()
 @Component({
@@ -14,7 +14,7 @@ import { CurrentUserResponse } from '../../core/models/user.model';
 })
 export class StreamAuthLayoutComponent {
   stream!: ViewStream;
-  user!: CurrentUserResponse | null;
+  user!: CurrentUser | null;
   rootPath!: string;
   isUserActiveInStream!: boolean;
 

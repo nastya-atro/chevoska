@@ -1,13 +1,10 @@
+import { Order } from '../enums/filters.enum';
+
 export interface QueryParams {
-  order: {
-    sortBy: string;
-    sortOrder: string;
-  };
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-  filters: any;
+  page: string;
+  limit: string;
+  sortBy: string;
+  sortOrder: Order.ASC | Order.DESC;
+  filters?: { [key: string]: any };
+  [p: string]: any;
 }

@@ -14,11 +14,11 @@ export default class Utils {
     });
   }
 
-  static localDateToUtcString(date: string, format?: string | undefined): string | null {
-    return date ? moment(new Date(date)).utc().format(format) : null;
+  static localDateToUtcString(date: string, format?: string | undefined): string {
+    return moment(new Date(date)).utc().format(format);
   }
 
-  static utcDateStringToLocalString(date: string, format?: string | undefined): string | null {
-    return date ? moment(new Date(date)).format(format) : null;
+  static utcDateStringToLocalString(date: string, format?: string | undefined): string {
+    return moment(new Date(date)).format(format);
   }
 }

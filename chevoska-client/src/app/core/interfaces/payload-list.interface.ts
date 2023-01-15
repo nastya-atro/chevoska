@@ -1,5 +1,3 @@
-import { Order } from '../enums/filters.enum';
-
 export interface ResponseListInterface<T> {
   results: Array<T>;
   limit: number;

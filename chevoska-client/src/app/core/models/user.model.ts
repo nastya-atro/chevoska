@@ -11,12 +11,12 @@ export interface CreateUserRequest {
 export interface EditProfileRequest {
   firstName: string;
   lastName: string;
-  emil: string;
+  email: string;
   phone: string;
   avatar: string;
 }
 
-export interface CurrentUserResponse {
+export interface CurrentUser {
   id: number;
   email: string;
   firstName: string;
@@ -27,6 +27,8 @@ export interface CurrentUserResponse {
   enabled: boolean;
   role: string;
 }
+
+export interface CurrentUserResponse extends CurrentUser {}
 
 export interface Profile {
   id: number;
@@ -40,17 +42,8 @@ export interface Profile {
   role: string;
 }
 
-export interface ProfileResponse {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  phone: string;
-  avatar: string;
-  enabled: boolean;
-  role: string;
-}
+export interface ProfileResponse extends Profile {}
+
 // export default class ProfileUsage {
 //   constructor(partial: Partial<ProfileResponse> = {}) {
 //     Object.assign(this, partial);

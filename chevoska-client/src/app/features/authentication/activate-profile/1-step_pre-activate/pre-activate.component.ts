@@ -49,7 +49,6 @@ export class PreActivateComponent implements OnInit {
   sendPhoneCode() {
     this.service.sendPhoneCode(this.token).subscribe({
       next: () => {
-        console.log('success');
         this.router.navigateByUrl(`/confirm-email`, {
           state: { phone: '+123' },
         });

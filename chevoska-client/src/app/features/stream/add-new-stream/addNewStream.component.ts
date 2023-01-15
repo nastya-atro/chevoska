@@ -6,6 +6,7 @@ import { StreamService } from '../stream.service';
 import { NotifyService } from '../../../shared/modules/notifications/notify.service';
 import Utils from '../../../core/utils/utils';
 import { Router } from '@angular/router';
+import { NewStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
 
 @UntilDestroy()
 @Component({
@@ -14,8 +15,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./addNewStream.component.scss', '../datePicker.styles.scss'],
 })
 export class AddNewStreamComponent {
-  readonly dateForat: string = 'YYYY-MM-DD HH:mm:ss';
+  form: NewStreamFormGroup;
 
+  readonly dateForat: string = 'YYYY-MM-DD HH:mm:ss';
   dayPickerconfig: IDatePickerDirectiveConfig = {
     enableMonthSelector: false,
     showNearMonthDays: false,
@@ -26,21 +28,21 @@ export class AddNewStreamComponent {
     disableKeypress: true,
   };
 
-  form: FormGroup = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    description: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    isPrivate: new FormControl(false),
-    keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),
-  });
-
-  constructor(private streamsService: StreamService, private notifyService: NotifyService, private router: Router) {}
+  constructor(private streamsService: StreamService, private notifyService: NotifyService, private router: Router) {
+    this.form = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      description: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      isPrivate: new FormControl(false),
+      keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),
+    }) as NewStreamFormGroup;
+  }
 
   createStream() {
     if (this.form.valid) {
       const data = {
         ...this.form.value,
-        startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
+        startDate: Utils.localDateToUtcString(this.form.controls.startDate.value, this.dateForat),
       };
       this.streamsService
         .createStream(data)
@@ -58,6 +60,6 @@ export class AddNewStreamComponent {
   }
 
   dateIntervalChange() {
-    this.form.get('startDate')?.updateValueAndValidity();
+    this.form.controls.startDate.value.updateValueAndValidity();
   }
 }

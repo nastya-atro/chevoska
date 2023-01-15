@@ -10,7 +10,6 @@ import { AuthLayoutModule } from './layouts/auth-layout/auth-layout.module';
 import { MainLayoutModule } from './layouts/main-layout/main-layout.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
-import { StreamAuthLayoutComponent } from './layouts/stream-auth-layout/stream-auth-layout.component';
 import { StreamAuthLayoutModule } from './layouts/stream-auth-layout/stream-auth-layout.module';
 
 const config: any = {

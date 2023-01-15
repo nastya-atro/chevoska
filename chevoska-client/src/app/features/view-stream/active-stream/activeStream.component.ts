@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { ViewStreamService } from '../viewStream.service';
 import { AuthenticationService } from '../../authentication/authentication.service';
-import { CurrentUserResponse } from '../../../core/models/user.model';
-import { CurrentClientResponse } from '../../../core/models/client.model';
+import { CurrentUser } from '../../../core/models/user.model';
+import { CurrentClient } from '../../../core/models/client.model';
 import { ViewStream } from '../../../core/models/view-stream.model';
 
 @UntilDestroy()
@@ -13,13 +13,12 @@ import { ViewStream } from '../../../core/models/view-stream.model';
   styleUrls: ['./activeStream.component.scss'],
 })
 export class ActiveStreamComponent {
-  user!: CurrentUserResponse | null;
-  client!: CurrentClientResponse | null;
+  user!: CurrentUser | null;
+  client!: CurrentClient | null;
   stream!: ViewStream;
   constructor(private authService: AuthenticationService, private viewStreamService: ViewStreamService) {
     this.client = this.viewStreamService.getCurrentClient();
     this.user = this.authService.getCurrentUser();
-
     this.stream = this.viewStreamService.stream;
   }
 

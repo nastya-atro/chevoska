@@ -9,6 +9,7 @@ import { NotifyService } from '../../../shared/modules/notifications/notify.serv
 import { Clipboard } from '@angular/cdk/clipboard';
 import { StreamService } from '../stream.service';
 import { Stream, StreamResolverData } from '../../../core/models/stream.model';
+import { EditStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
 
 @UntilDestroy()
 @Component({
@@ -17,8 +18,12 @@ import { Stream, StreamResolverData } from '../../../core/models/stream.model';
   styleUrls: ['./editStream.component.scss', '../datePicker.styles.scss'],
 })
 export class EditStreamComponent implements OnInit {
-  readonly dateForat: string = 'YYYY-MM-DD HH:mm:ss';
+  id!: number;
+  stream!: Stream;
+  form: EditStreamFormGroup;
+  loading = false;
 
+  readonly dateForat: string = 'YYYY-MM-DD HH:mm:ss';
   dayPickerconfig: IDatePickerDirectiveConfig = {
     enableMonthSelector: false,
     showNearMonthDays: false,
@@ -28,16 +33,6 @@ export class EditStreamComponent implements OnInit {
     monthFormat: 'MMMM YYYY',
     disableKeypress: true,
   };
-  id!: number;
-  stream!: Stream;
-  loading = false;
-
-  form: FormGroup = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    description: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-    isPrivate: new FormControl(false),
-  });
 
   constructor(
     private clipboard: Clipboard,
@@ -45,11 +40,12 @@ export class EditStreamComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private notifyService: NotifyService
   ) {
-    this.activatedRoute.params.subscribe(({ id: idQuery }) => {
-      if (idQuery) {
-        this.id = Number(idQuery);
-      }
-    });
+    this.form = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      description: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      isPrivate: new FormControl(false),
+    }) as EditStreamFormGroup;
   }
 
   ngOnInit(): void {
@@ -62,6 +58,7 @@ export class EditStreamComponent implements OnInit {
             enterLink: `${window.location.host}/stream/${streamData.enterLink}`,
             hrefLink: `/stream/${streamData.enterLink}`,
           };
+          this.id = streamData.id;
           this.form.patchValue({
             title: this.stream.title,
             description: this.stream.description,

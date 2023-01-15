@@ -20,22 +20,14 @@ export interface StreamsList {
   private: boolean;
   startDate: string;
   enterLink: string;
-  status: string;
-}
-
-export interface StreamsListResponse {
-  id: number;
-  title: string;
-  description: string;
-  private: boolean;
-  startDate: string;
-  enterLink: string;
   createDate: string;
   updateDate: string;
   downloadLink: string;
   enterKey: string;
   status: string;
 }
+
+export interface StreamsListResponse extends StreamsList {}
 
 export interface Stream {
   id: number;

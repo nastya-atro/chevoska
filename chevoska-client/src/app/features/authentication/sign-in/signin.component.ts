@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AuthenticationService } from '../authentication.service';
 import { Router } from '@angular/router';
+import { UserSignInFormGroup } from '../../../core/interfaces/forms/auth-forms.interface';
 
 @UntilDestroy()
 @Component({
@@ -10,11 +11,11 @@ import { Router } from '@angular/router';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss'],
 })
-export class SigninComponent {
-  myForm: FormGroup;
+export class SignInComponent {
+  form: UserSignInFormGroup;
 
-  constructor(private service: AuthenticationService, private router: Router) {
-    this.myForm = new FormGroup({
+  constructor(private service: AuthenticationService, private router: Router, private formBuilder: FormBuilder) {
+    this.form = this.formBuilder.group({
       username: new FormControl('', [
         Validators.required,
         Validators.maxLength(80),
@@ -28,13 +29,13 @@ export class SigninComponent {
         Validators.maxLength(255),
         Validators.pattern('(?=^.{6,}$)(?=.*[A-Z])(?=.*[a-z]).*'),
       ]),
-    });
+    }) as UserSignInFormGroup;
   }
 
   submit(): void {
-    if (this.myForm.valid) {
+    if (this.form.valid) {
       this.service
-        .login(this.myForm.value.username, this.myForm.value.password)
+        .login(this.form.value.username, this.form.value.password)
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => this.afterLogin(),

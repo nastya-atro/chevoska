@@ -7,7 +7,7 @@ import { SelectionModel } from '@angular/cdk/collections';
   styleUrls: ['./table.component.scss'],
 })
 export class TableComponent {
-  @Input() content!: any[];
+  @Input() content!: { [key: string]: any }[];
   @Input() displayedColumns: string[] = [];
   @Input() pathToDetailPage!: string;
   @Output() handleChangeStatus = new EventEmitter<{ id: number; status: string; comment: string }>();

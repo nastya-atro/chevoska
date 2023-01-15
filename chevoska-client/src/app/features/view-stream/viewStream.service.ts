@@ -5,7 +5,7 @@ import { ViewStreamsApi } from '../../core/services/api/view-stream.api';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CurrentSessionApi } from '../../core/services/api/current-session.api';
-import { CurrentClientResponse } from '../../core/models/client.model';
+import { CurrentClient, CurrentClientResponse } from '../../core/models/client.model';
 import { EnterViewStreamRequest, ViewStream, ViewStreamResponse } from '../../core/models/view-stream.model';
 
 @UntilDestroy()
@@ -13,7 +13,7 @@ import { EnterViewStreamRequest, ViewStream, ViewStreamResponse } from '../../co
   providedIn: 'root',
 })
 export class ViewStreamService implements OnDestroy {
-  private currentClient: CurrentClientResponse | null = null;
+  private currentClient: CurrentClient | null = null;
   stream!: ViewStream;
   rootPath!: string;
 
@@ -21,11 +21,11 @@ export class ViewStreamService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  enterSystem(data: EnterViewStreamRequest, streamId: number) {
+  enterSystem(data: EnterViewStreamRequest, streamId: number): Observable<unknown> {
     return this.viewStreamApi.enterSystem(data, streamId);
   }
 
-  getCurrentClient(): CurrentClientResponse | null {
+  getCurrentClient(): CurrentClient | null {
     return this.currentClient;
   }
 

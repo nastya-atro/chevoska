@@ -8,7 +8,7 @@ import { DateCountDownService } from './date-count-down.service';
   styleUrls: ['./date-count-down.component.scss'],
 })
 export class DateCountDownComponent implements OnInit, OnDestroy {
-  @Input() day!: any;
+  @Input() day!: string;
   private subscription!: Subscription;
   public dateNow = new Date();
   public dDay!: Date;
@@ -18,11 +18,11 @@ export class DateCountDownComponent implements OnInit, OnDestroy {
   minutesInAnHour = 60;
   SecondsInAMinute = 60;
 
-  public timeDifference!: any;
-  public secondsToDday!: any;
-  public minutesToDday!: any;
-  public hoursToDday!: any;
-  public daysToDday!: any;
+  public timeDifference!: number;
+  public secondsToDday!: number;
+  public minutesToDday!: number;
+  public hoursToDday!: number;
+  public daysToDday!: number;
 
   constructor(private dateCountDownService: DateCountDownService) {}
 
@@ -31,7 +31,7 @@ export class DateCountDownComponent implements OnInit, OnDestroy {
     this.allocateTimeUnits(this.timeDifference);
   }
 
-  private allocateTimeUnits(timeDifference: any) {
+  private allocateTimeUnits(timeDifference: number) {
     this.secondsToDday = Math.floor((timeDifference / this.milliSecondsInASecond) % this.SecondsInAMinute);
     this.minutesToDday = Math.floor(
       (timeDifference / (this.milliSecondsInASecond * this.minutesInAnHour)) % this.SecondsInAMinute
@@ -53,12 +53,6 @@ export class DateCountDownComponent implements OnInit, OnDestroy {
       .subscribe(x => {
         this.getTimeDifference();
       });
-
-    // this.subscription = interval(1000)
-    //   .pipe(takeWhile(value => this.timeDifference > 0))
-    //   .subscribe(x => {
-    //     this.getTimeDifference();
-    //   });
   }
 
   ngOnDestroy() {

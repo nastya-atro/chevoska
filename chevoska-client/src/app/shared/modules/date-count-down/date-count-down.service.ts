@@ -4,8 +4,8 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class DateCountDownService {
-  public isStreamEnterAvailable!: any;
-  public isStreamStarted!: any;
+  public isStreamEnterAvailable!: boolean;
+  public isStreamStarted!: boolean;
 
   constructor() {}
 

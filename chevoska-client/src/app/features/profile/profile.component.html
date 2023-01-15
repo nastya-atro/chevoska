@@ -15,59 +15,59 @@
     <div class="form-outline mb-4">
         <label class="form-label" for="firstName">First Name</label>
         <input
-            formControlName="firstName"
+            [formControl]="form.controls.firstName"
             type="text"
             id="firstName"
             class="form-control form-control-lg"
-            [ngClass]="form.get('firstName')?.errors && form.get('firstName')?.touched ? 'is-invalid' : ''"
+            [ngClass]="form.controls.firstName.errors && form.controls.firstName.touched ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback" *ngIf="form.get('firstName')?.errors">
-            {{ form.get("firstName")?.errors | validateError }}
+        <div class="invalid-feedback" *ngIf="form.controls.firstName.errors">
+            {{ form.controls.firstName.errors | validateError }}
         </div>
     </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" for="lastName">Last Name</label>
         <input
-                formControlName="lastName"
+                [formControl]="form.controls.lastName"
                 type="text"
                 id="lastName"
                 class="form-control form-control-lg"
-                [ngClass]="form.get('lastName')?.errors && form.get('lastName')?.touched ? 'is-invalid' : ''"
+                [ngClass]="form.controls.lastName.errors && form.controls.lastName.touched ? 'is-invalid' : ''"
         />
 
-        <div class="invalid-feedback" *ngIf="form.get('lastName')?.errors">
-            {{ form.get("lastName")?.errors | validateError }}
+        <div class="invalid-feedback" *ngIf="form.controls.lastName.errors">
+            {{ form.controls.lastName.errors | validateError }}
         </div>
     </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" for="email">Email</label>
         <input
-                formControlName="email"
+                [formControl]="form.controls.email"
                 type="email"
                 id="email"
                 class="form-control form-control-lg"
-                [ngClass]="form.get('email')?.errors && form.get('email')?.touched ? 'is-invalid' : ''"
+                [ngClass]="form.controls.email.errors && form.controls.email.touched ? 'is-invalid' : ''"
         />
 
-        <div class="invalid-feedback" *ngIf="form.get('email')?.errors">
-            {{ form.get("email")?.errors | validateError: 'email' }}
+        <div class="invalid-feedback" *ngIf="form.controls.email.errors">
+            {{ form.controls.email.errors | validateError: 'email' }}
         </div>
     </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" for="email">Phone</label>
         <input
-                formControlName="phone"
+                [formControl]="form.controls.phone"
                 type="phone"
                 id="phone"
                 class="form-control form-control-lg"
-                [ngClass]="form.get('phone')?.errors && form.get('phone')?.touched ? 'is-invalid' : ''"
+                [ngClass]="form.controls.phone.errors && form.controls.phone.touched ? 'is-invalid' : ''"
         />
 
-        <div class="invalid-feedback" *ngIf="form.get('phone')?.errors">
-            {{ form.get("phone")?.errors | validateError }}
+        <div class="invalid-feedback" *ngIf="form.controls.phone.errors">
+            {{ form.controls.phone.errors | validateError: 'phone' }}
         </div>
     </div>
 </form>

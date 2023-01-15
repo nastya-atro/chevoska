@@ -7,14 +7,16 @@ import { EditProfileRequest, ProfileResponse } from '../../models/user.model';
   providedIn: 'root',
 })
 export class ProfileApi implements OnDestroy {
+  SEGMENT = '/profile';
+
   constructor(private api: ApiService) {}
   ngOnDestroy(): void {}
 
   editProfile(data: EditProfileRequest): Observable<unknown> {
-    return this.api.put(`/profile`, data);
+    return this.api.put(`${this.SEGMENT}`, data);
   }
 
   getProfileInfo(): Observable<ProfileResponse> {
-    return this.api.get(`/profile`);
+    return this.api.get(`${this.SEGMENT}`);
   }
 }

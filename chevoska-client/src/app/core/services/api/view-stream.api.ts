@@ -9,14 +9,16 @@ import { EnterViewStreamRequest, ViewStreamResponse } from '../../models/view-st
   providedIn: 'root',
 })
 export class ViewStreamsApi implements OnDestroy {
+  SEGMENT = '/streams/view';
+
   constructor(private api: ApiService) {}
 
   findStreamByEnterLink(enterLink: string): Observable<ViewStreamResponse> {
-    return this.api.get(`/streams/view/${enterLink}`);
+    return this.api.get(`${this.SEGMENT}/${enterLink}`);
   }
 
-  enterSystem(data: EnterViewStreamRequest, streamId: number) {
-    return this.api.post(`/streams/view/enter/${streamId}`, data);
+  enterSystem(data: EnterViewStreamRequest, streamId: number): Observable<unknown> {
+    return this.api.post(`${this.SEGMENT}/enter/${streamId}`, data);
   }
 
   ngOnDestroy(): void {}

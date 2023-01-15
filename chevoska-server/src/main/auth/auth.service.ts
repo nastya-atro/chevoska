@@ -246,12 +246,8 @@ export class AuthService {
       },
       json: true,
     })
-      .then((response) => {
-        console.log("__________Response:", response);
-      })
-      .catch((error) => {
-        console.log("____________Error:", error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
     return { statusCode: 204 };
   }
 

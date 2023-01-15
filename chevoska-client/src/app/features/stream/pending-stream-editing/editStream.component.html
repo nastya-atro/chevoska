@@ -67,35 +67,35 @@
             <div class="form-outline mb-4">
                 <label class="form-label" for="title">Title</label>
                 <input
-                        formControlName="title"
+                        [formControl]="form.controls.title"
                         type="text"
                         id="title"
                         class="form-control form-control-lg"
-                        [ngClass]="form.get('title')?.errors && form.get('title')?.touched ? 'is-invalid' : ''"
+                        [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
                 />
-                <div class="invalid-feedback" *ngIf="form.get('title')?.errors">
-                    {{ form.get("title")?.errors | validateError }}
+                <div class="invalid-feedback" *ngIf="form.controls.title.errors">
+                    {{ form.controls.title.errors | validateError }}
                 </div>
             </div>
 
             <div class="form-outline mb-4">
                 <label class="form-label" for="description">Description</label>
                 <input
-                        formControlName="description"
+                        [formControl]="form.controls.description"
                         type="text"
                         id="description"
                         class="form-control form-control-lg"
-                        [ngClass]="form.get('description')?.errors && form.get('description')?.touched ? 'is-invalid' : ''"
+                        [ngClass]="form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''"
                 />
 
-                <div class="invalid-feedback" *ngIf="form.get('description')?.errors">
-                    {{ form.get("description")?.errors | validateError }}
+                <div class="invalid-feedback" *ngIf="form.controls.description.errors">
+                    {{ form.controls.description.errors | validateError }}
                 </div>
             </div>
 
             <div class="form-outline mb-4">
                 <div class="form-check">
-                    <input formControlName="isPrivate" class="form-check-input" type="checkbox" id="isPrivate" />
+                    <input [formControl]="form.controls.isPrivate" class="form-check-input" type="checkbox" id="isPrivate" />
                     <label class="form-check-label" for="isPrivate"> Private stream </label>
                 </div>
             </div>
@@ -103,16 +103,16 @@
             <div class="form-outline mb-4">
                 <label class="form-label" for="startDate">Start Date</label>
                 <input
-                        formControlName="startDate"
+                        [formControl]="form.controls.startDate"
                         mode="daytime"
                         id="startDate"
                         class="form-control form-control-lg"
                         [dpDayPicker]="dayPickerconfig"
                         (onChange)="dateIntervalChange()"
-                        [ngClass]="form.get('startDate')?.errors && form.get('startDate')?.touched ? 'is-invalid' : ''"
+                        [ngClass]="form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''"
                 />
-                <div class="invalid-feedback" *ngIf="form.get('startDate')?.errors">
-                    {{ form.get("startDate")?.errors | validateError }}
+                <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
+                    {{ form.controls.startDate.errors | validateError }}
                 </div>
             </div>
 

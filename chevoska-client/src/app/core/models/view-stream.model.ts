@@ -16,13 +16,3 @@ export interface ViewStream {
 }
 
 export interface ViewStreamResponse extends ViewStream {}
-
-// export default class ProfileUsage {
-//   constructor(partial: Partial<ProfileResponse> = {}) {
-//     Object.assign(this, partial);
-//   }
-//
-//   static deserialize(partial: Partial<ProfileResponse>) {
-//     return new ProfileUsage(partial);
-//   }
-// }

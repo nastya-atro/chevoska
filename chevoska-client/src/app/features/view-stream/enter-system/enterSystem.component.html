@@ -22,52 +22,52 @@
                     <img class="card-img im-blurry-anyway" src="assets/images/stream-banner.jpg" alt="Card image" />
                     <div class="card-img-overlay d-flex flex-column justify-content-center">
                         <div class="mt-md-4 pb-1">
-                            <form   [formGroup]="myForm" (ngSubmit)="submit()" class="form">
+                            <form   [formGroup]="form" (ngSubmit)="submit()" class="form">
                                 <div class="form-outline mb-2">
                                     <input
-                                            formControlName="username"
+                                            [formControl]="form.controls.username"
                                             type="text"
                                             placeholder="Username"
                                             class="form-control form-control-lg"
                                             [ngClass]="
-                                        myForm.get('username')?.errors && myForm.get('username')?.touched
+                                        form.controls.username.errors && form.controls.username.touched
                                             ? 'is-invalid'
                                             : ''
                                     "
                                     />
-                                    <div class="invalid-feedback" *ngIf="myForm.get('username')?.errors">
-                                        {{ myForm.get("username")?.errors }}
+                                    <div class="invalid-feedback" *ngIf="form.controls.username.errors">
+                                        {{ form.controls.username.errors }}
                                     </div>
                                 </div>
 
                                 <div class="form-outline mb-2">
                                     <input
 
-                                            formControlName="email"
+                                            [formControl]="form.controls.email"
                                             type="email"
                                             placeholder="Email"
                                             class="form-control form-control-lg"
                                             [ngClass]="
-                                        myForm.get('email')?.errors && myForm.get('email')?.touched ? 'is-invalid' : ''
+                                        form.controls.email.errors && form.controls.email.touched ? 'is-invalid' : ''
                                     "
                                     />
-                                    <div class="invalid-feedback" *ngIf="myForm.get('email')?.errors">
-                                        {{ myForm.get("email")?.errors | validateError: "email" }}
+                                    <div class="invalid-feedback" *ngIf="form.controls.email.errors">
+                                        {{ form.controls.email.errors | validateError: "email" }}
                                     </div>
                                 </div>
 
                                 <div *ngIf="stream.private" class="form-outline">
                                     <input
-                                            formControlName="key"
+                                            [formControl]="form.controls.key"
                                             type="text"
                                             placeholder="Key for Enter"
                                             class="form-control form-control-lg"
                                             [ngClass]="
-                                        myForm.get('key')?.errors && myForm.get('key')?.touched ? 'is-invalid' : ''
+                                        form.controls.key.errors && form.controls.key.touched ? 'is-invalid' : ''
                                     "
                                     />
-                                    <div class="invalid-feedback" *ngIf="myForm.get('key')?.errors">
-                                        {{ myForm.get("key")?.errors }}
+                                    <div class="invalid-feedback" *ngIf="form.controls.key.errors">
+                                        {{ form.controls.key.errors }}
                                     </div>
                                 </div>
 
