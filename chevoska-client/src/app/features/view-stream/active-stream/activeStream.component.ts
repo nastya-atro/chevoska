@@ -5,6 +5,10 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 import { CurrentUser } from '../../../core/models/user.model';
 import { CurrentClient } from '../../../core/models/client.model';
 import { ViewStream } from '../../../core/models/view-stream.model';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../store/app.state';
+import { selectUser } from '../../../store/app.selectors';
 
 @UntilDestroy()
 @Component({
@@ -13,12 +17,15 @@ import { ViewStream } from '../../../core/models/view-stream.model';
   styleUrls: ['./activeStream.component.scss'],
 })
 export class ActiveStreamComponent {
-  user!: CurrentUser | null;
+  user$: Observable<CurrentUser | null> = this.store.select(selectUser);
   client!: CurrentClient | null;
   stream!: ViewStream;
-  constructor(private authService: AuthenticationService, private viewStreamService: ViewStreamService) {
+  constructor(
+    private authService: AuthenticationService,
+    private viewStreamService: ViewStreamService,
+    private store: Store<AppState>
+  ) {
     this.client = this.viewStreamService.getCurrentClient();
-    this.user = this.authService.getCurrentUser();
     this.stream = this.viewStreamService.stream;
   }
 

@@ -5,6 +5,10 @@ import { AuthenticationService } from '../../features/authentication/authenticat
 import { ViewStreamService } from '../../features/view-stream/viewStream.service';
 import { ViewStream } from '../../core/models/view-stream.model';
 import { CurrentUser } from '../../core/models/user.model';
+import { Observable } from 'rxjs';
+import { selectUser } from '../../store/app.selectors';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../store/app.state';
 
 @UntilDestroy()
 @Component({
@@ -14,7 +18,6 @@ import { CurrentUser } from '../../core/models/user.model';
 })
 export class StreamAuthLayoutComponent {
   stream!: ViewStream;
-  user!: CurrentUser | null;
   rootPath!: string;
   isUserActiveInStream!: boolean;
 
@@ -26,7 +29,6 @@ export class StreamAuthLayoutComponent {
     const isClientSessionSave = this.viewStreamService.isClientSessionSave();
     const isClientSessionToCurrentStream =
       this.viewStreamService.getCurrentClient()?.stream === this.viewStreamService.stream?.id;
-    this.user = this.authService.getCurrentUser();
     this.isUserActiveInStream = isClientSessionSave && isClientSessionToCurrentStream;
 
     this.stream = this.viewStreamService.stream;

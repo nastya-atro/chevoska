@@ -12,13 +12,17 @@ import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../store/app.state';
+import * as appActions from '../../store/app.actions';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(
     private authenticationService: AuthenticationService,
     private notifyService: NotifyService,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -27,7 +31,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         let errors: string[] = [];
         switch (err.status) {
           case HttpStatusCode.Unauthorized:
-            this.authenticationService.resetUser();
+            this.store.dispatch(appActions.clearStoreData());
             this.router.navigate(['/signin']);
             errors.push(err.error.message || 'Unauthorized');
             break;

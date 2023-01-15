@@ -10,6 +10,10 @@ import { CurrentClient } from '../../../core/models/client.model';
 import { CurrentUser } from '../../../core/models/user.model';
 import { ViewStream } from '../../../core/models/view-stream.model';
 import { EnterViewStreamFormGroup } from '../../../core/interfaces/forms/view-stream-forms.interface';
+import { Observable } from 'rxjs';
+import { selectUser } from '../../../store/app.selectors';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../store/app.state';
 
 @UntilDestroy()
 @Component({
@@ -18,10 +22,10 @@ import { EnterViewStreamFormGroup } from '../../../core/interfaces/forms/view-st
   styleUrls: ['./enterSystem.component.scss'],
 })
 export class EnterSystemComponent {
+  user$: Observable<CurrentUser | null> = this.store.select(selectUser);
   form: EnterViewStreamFormGroup;
   stream!: ViewStream;
   client!: CurrentClient | null;
-  user!: CurrentUser | null;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -29,13 +33,14 @@ export class EnterSystemComponent {
     private formBuilder: FormBuilder,
     private viewStreamService: ViewStreamService,
     private authService: AuthenticationService,
-    private dateCountDownService: DateCountDownService
+    private dateCountDownService: DateCountDownService,
+    private store: Store<AppState>
   ) {
     this.stream = this.viewStreamService.stream;
     this.form = this.formBuilder.group({
-      username: [this.user?.firstName || this.client?.username || '', [Validators.required]],
+      username: ['', [Validators.required]],
       email: [
-        this.user?.email || this.client?.email || '',
+        '',
         [
           Validators.required,
           Validators.pattern('^(\\s+)?[a-zA-Z0-9+._-]+@[a-zA-Z0-9-]+[.]{1}[a-zA-Z]{2,4}([.]{1}[a-zA-Z]{2,4})?(\\s+)?$'),
@@ -43,9 +48,17 @@ export class EnterSystemComponent {
         ],
       ],
       timezone: [''],
-      phone: [this.user?.phone || this.client?.phone || '', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
+      phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
       key: [''],
     }) as EnterViewStreamFormGroup;
+
+    this.user$.pipe(untilDestroyed(this)).subscribe(user => {
+      this.form.patchValue({
+        username: user?.firstName || this.client?.username,
+        email: user?.email || this.client?.email,
+        phone: user?.phone || this.client?.phone,
+      });
+    });
 
     if (this.stream.private) {
       this.form.controls.key.setValidators([Validators.required]);

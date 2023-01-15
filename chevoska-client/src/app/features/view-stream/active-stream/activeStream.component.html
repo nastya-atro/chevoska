@@ -2,14 +2,13 @@
     <div class="container-fluid">
         <a class="navbar-brand text-light" href="/streams">StreamService</a>
         <div class="d-flex flex-row gap-3">
-            <div class="navbar-nav d-flex flex-row gap-3">
-            </div>
-            <button *ngIf="!this.user"  (click)="logout()" type="button" class="btn btn-outline-light ">Leave Stream page</button>
-            <button *ngIf="this.user" (click)="logout()" type="button" class="btn btn-outline-light ">Log out</button>
+            <div class="navbar-nav d-flex flex-row gap-3"></div>
+            <button (click)="logout()" type="button" class="btn btn-outline-light">
+                {{ (this.user$ | async) ? "Log out" : "Leave Stream page" }}
+            </button>
         </div>
     </div>
 </nav>
-
 
 <div *ngIf="client && stream">
     <div class="text-light text-end">

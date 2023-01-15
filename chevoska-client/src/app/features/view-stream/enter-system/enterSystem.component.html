@@ -8,7 +8,7 @@
     <div  class="text-light text-start">
         <p>
             <small>
-                <b>Hello {{ this.client?.username || this.user?.firstName || "buddy" }} !</b> <br />
+                <b>Hello {{ this.client?.username || (this.user$ | async).firstName || "buddy" }} !</b> <br />
                 <span *ngIf="!isStreamEnterAvailable">Please fill in the fields to join a Stream.</span>
                 <span *ngIf="isStreamEnterAvailable"> You can enter the stream 6 hours before the start . </span>
             </small>

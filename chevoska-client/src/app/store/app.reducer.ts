@@ -6,5 +6,6 @@ export const rootReducer = createReducer(
   initialState,
   on(appActions.findUserProfileSuccess, (state, { user }) => {
     return { ...state, user: { ...user } }; // merge params
-  })
+  }),
+  on(appActions.clearStoreData, () => ({ ...initialState }))
 );

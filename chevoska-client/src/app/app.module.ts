@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, Inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
@@ -11,6 +11,10 @@ import { MainLayoutModule } from './layouts/main-layout/main-layout.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { StreamAuthLayoutModule } from './layouts/stream-auth-layout/stream-auth-layout.module';
+import { Store, StoreModule } from '@ngrx/store';
+import { appInitializer } from './app.initializer';
+import { rootReducer as root } from './store/app.reducer';
+import { ProfileApi } from './core/services/api/profile.api';
 
 const config: any = {
   useHash: false,
@@ -25,6 +29,7 @@ const config: any = {
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(APP_ROUTES, config),
+    StoreModule.forRoot({ root }, {}),
     HttpClientModule,
     AuthLayoutModule,
     MainLayoutModule,
@@ -33,6 +38,12 @@ const config: any = {
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: appInitializer,
+    //   deps: [ProfileApi, [new Inject(Store)]],
+    //   multi: true,
+    // },
   ],
   bootstrap: [AppComponent],
 })

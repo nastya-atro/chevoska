@@ -5,17 +5,23 @@ import { Observable, of } from 'rxjs';
 import { CurrentSessionApi } from '../../core/services/api/current-session.api';
 import { catchError, map } from 'rxjs/operators';
 import { AuthApi } from '../../core/services/api/auth.api';
-import { CreateUserRequest, CurrentUser, CurrentUserResponse } from '../../core/models/user.model';
+import { CreateUserRequest, CurrentUserResponse } from '../../core/models/user.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../store/app.state';
 import * as appActions from '../../store/app.actions';
+import { selectUser } from '../../store/app.selectors';
 
 @UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService implements OnDestroy {
-  private currentUser: CurrentUser | null = null;
-
-  constructor(private router: Router, private authApi: AuthApi, private usersApi: CurrentSessionApi) {}
+  constructor(
+    private router: Router,
+    private authApi: AuthApi,
+    private usersApi: CurrentSessionApi,
+    private store: Store<AppState>
+  ) {}
 
   ngOnDestroy(): void {}
 
@@ -53,41 +59,35 @@ export class AuthenticationService implements OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe({
         next: () => {
-          this.resetUser();
+          this.store.dispatch(appActions.clearStoreData());
           this.router.navigate(['/signin']);
         },
         error: () => {
-          this.resetUser();
+          this.store.dispatch(appActions.clearStoreData());
           this.router.navigate(['/signin']);
         },
       });
   }
 
-  findCurrentUser(): Observable<void | CurrentUserResponse> {
+  findCurrentUser(): Observable<void | CurrentUserResponse | null> {
     return this.usersApi.findCurrentUser().pipe(
       map(user => {
-        appActions.findUserProfileSuccess({ user: user });
-        this.currentUser = user;
+        console.log(user);
+        this.store.dispatch(appActions.findUserProfileSuccess({ user } as any));
         return user;
       }),
-      catchError((error: any) => of(console.log(error)))
+      catchError(error => {
+        return of(console.log(error));
+      })
     );
   }
 
-  getCurrentUser(): CurrentUser | null {
-    return this.currentUser;
-  }
-
-  isAuthorized(): boolean {
-    return !!this.currentUser;
+  isAuthorized(): Observable<boolean> {
+    return this.store.select(selectUser).pipe(map(user => !!user?.id));
   }
 
   initializer() {
     return this.findCurrentUser();
-  }
-
-  resetUser(): void {
-    this.currentUser = null;
   }
 
   sendResetPasswordRequest(email: string) {

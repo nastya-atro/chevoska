@@ -5,23 +5,13 @@ export interface AppState {
 }
 
 export interface RootState {
-  user: CurrentUser;
+  user: CurrentUser | null;
   isInitialized: boolean;
   isLoading: boolean;
 }
 
 export const initialState: RootState = {
-  user: {
-    id: 0,
-    email: '',
-    firstName: '',
-    lastName: '',
-    username: '',
-    phone: '',
-    avatar: '',
-    enabled: true,
-    role: '',
-  },
+  user: null,
   isInitialized: false,
   isLoading: false,
 };

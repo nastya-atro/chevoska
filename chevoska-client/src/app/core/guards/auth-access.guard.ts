@@ -1,7 +1,8 @@
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthAccessGuard implements CanActivate {
@@ -11,10 +12,13 @@ export class AuthAccessGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.authService.isAuthorized()) {
-      return this.router.navigate(['/streams']);
-    } else {
-      return !this.authService.isAuthorized();
-    }
+    return this.authService.isAuthorized().pipe(
+      map(isAuthorized => {
+        if (isAuthorized) {
+          this.router.navigate(['/streams']);
+        }
+        return !isAuthorized;
+      })
+    );
   }
 }
