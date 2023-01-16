@@ -1,3 +1,5 @@
+import { StreamResponse } from './stream.model';
+
 export interface CreateUserRequest {
   firstName: string;
   lastName: string;
@@ -43,6 +45,10 @@ export interface Profile {
 }
 
 export interface ProfileResponse extends Profile {}
+
+export interface ProfileResolverData {
+  profileComponentData: ProfileResponse;
+}
 
 // export default class ProfileUsage {
 //   constructor(partial: Partial<ProfileResponse> = {}) {

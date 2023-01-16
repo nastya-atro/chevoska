@@ -19,6 +19,9 @@ export class ProfileEntity {
   @Column({ name: "last_name", type: "varchar", length: 80 })
   lastName: string;
 
+  @Column({ type: "varchar", length: 80 })
+  username: string;
+
   @Column({ type: "varchar", length: 25 })
   phone: string;
 

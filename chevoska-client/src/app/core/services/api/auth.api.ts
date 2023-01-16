@@ -51,12 +51,6 @@ export class AuthApi {
       .pipe(map(this.formatResponse), catchError(this.formatErrors));
   }
 
-  sendPhoneCode(token: string): Observable<unknown> {
-    return this.api
-      .get(`${this.SEGMENT}/validate-phone?token=${token}`)
-      .pipe(map(this.formatResponse), catchError(this.formatErrors));
-  }
-
   sendResetPasswordRequest(email: string): Observable<unknown> {
     return this.api
       .post(`${this.SEGMENT}/forgot`, { email })
@@ -72,4 +66,10 @@ export class AuthApi {
   validateRecoveryToken(token: string): Observable<string> {
     return this.api.get(`${this.SEGMENT}/forgot/${token}`);
   }
+
+  // sendPhoneCode(token: string): Observable<unknown> {
+  //   return this.api
+  //       .get(`${this.SEGMENT}/validate-phone?token=${token}`)
+  //       .pipe(map(this.formatResponse), catchError(this.formatErrors));
+  // }
 }

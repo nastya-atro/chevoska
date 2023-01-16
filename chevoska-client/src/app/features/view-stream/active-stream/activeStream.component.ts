@@ -8,7 +8,7 @@ import { ViewStream } from '../../../core/models/view-stream.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../store/app.state';
-import { selectUser } from '../../../store/app.selectors';
+import { selectClient, selectUser, selectViewStream } from '../../../store/app.selectors';
 
 @UntilDestroy()
 @Component({
@@ -18,16 +18,14 @@ import { selectUser } from '../../../store/app.selectors';
 })
 export class ActiveStreamComponent {
   user$: Observable<CurrentUser | null> = this.store.select(selectUser);
-  client!: CurrentClient | null;
-  stream!: ViewStream;
+  client$: Observable<CurrentClient | null> = this.store.select(selectClient);
+  viewStream$: Observable<ViewStream | null> = this.store.select(selectViewStream);
+
   constructor(
     private authService: AuthenticationService,
     private viewStreamService: ViewStreamService,
     private store: Store<AppState>
-  ) {
-    this.client = this.viewStreamService.getCurrentClient();
-    this.stream = this.viewStreamService.stream;
-  }
+  ) {}
 
   logout() {
     this.authService.logout();

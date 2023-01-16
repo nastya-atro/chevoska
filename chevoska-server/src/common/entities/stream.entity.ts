@@ -19,7 +19,7 @@ export class StreamEntity {
   @Column({ name: "title", type: "varchar", length: 80 })
   title: string;
 
-  @Column({ name: "description", type: "varchar", length: 80 })
+  @Column({ type: "varchar", length: 255 })
   description: string;
 
   @Column({ name: "enter_link", type: "varchar", length: 255 })

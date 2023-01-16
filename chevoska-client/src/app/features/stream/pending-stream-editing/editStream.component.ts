@@ -10,12 +10,24 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { StreamService } from '../stream.service';
 import { Stream, StreamResolverData } from '../../../core/models/stream.model';
 import { EditStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { fadeIn } from 'ng-animate';
 
 @UntilDestroy()
 @Component({
   selector: 'app-edit-stream',
   templateUrl: './editStream.component.html',
   styleUrls: ['./editStream.component.scss', '../datePicker.styles.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(
+        '* => *',
+        useAnimation(fadeIn, {
+          params: { timing: 0.4, delay: 0 },
+        })
+      ),
+    ]),
+  ],
 })
 export class EditStreamComponent implements OnInit {
   id!: number;
@@ -42,7 +54,7 @@ export class EditStreamComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-      description: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      description: new FormControl('', [Validators.required]),
       startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       isPrivate: new FormControl(false),
     }) as EditStreamFormGroup;

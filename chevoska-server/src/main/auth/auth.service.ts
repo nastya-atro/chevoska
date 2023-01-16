@@ -226,30 +226,31 @@ export class AuthService {
     );
     return { statusCode: 204 };
   }
-  async validateUserPhone(token: string, domain: string) {
-    const user = await this.findUserByToken(token, "token");
 
-    post({
-      uri: "https://api.zenvia.com/v2/channels/sms/messages",
-      headers: {
-        "X-API-TOKEN": "WajyfHoetoY7DZAnPZOiicT4Aop74kFmfqhS",
-      },
-      body: {
-        from: "belle.nastja",
-        to: "+375295209720",
-        contents: [
-          {
-            type: "text",
-            text: "Yoo from chevoska service",
-          },
-        ],
-      },
-      json: true,
-    })
-      .then((response) => {})
-      .catch((error) => {});
-    return { statusCode: 204 };
-  }
+  // async validateUserPhone(token: string, domain: string) {
+  //   const user = await this.findUserByToken(token, "token");
+  //
+  //   post({
+  //     uri: "https://api.zenvia.com/v2/channels/sms/messages",
+  //     headers: {
+  //       "X-API-TOKEN": "WajyfHoetoY7DZAnPZOiicT4Aop74kFmfqhS",
+  //     },
+  //     body: {
+  //       from: "belle.nastja",
+  //       to: "+375295209720",
+  //       contents: [
+  //         {
+  //           type: "text",
+  //           text: "Yoo from chevoska service",
+  //         },
+  //       ],
+  //     },
+  //     json: true,
+  //   })
+  //     .then((response) => {})
+  //     .catch((error) => {});
+  //   return { statusCode: 204 };
+  // }
 
   async activateUserWithoutValidate(token: string) {
     const user = await this.findUserByToken(token, "token");

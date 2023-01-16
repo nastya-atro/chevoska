@@ -31,7 +31,7 @@ export class AddNewStreamComponent {
   constructor(private streamsService: StreamService, private notifyService: NotifyService, private router: Router) {
     this.form = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
-      description: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      description: new FormControl('', [Validators.required]),
       startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       isPrivate: new FormControl(false),
       keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),

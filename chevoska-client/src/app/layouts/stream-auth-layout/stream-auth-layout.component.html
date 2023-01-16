@@ -1,11 +1,11 @@
-<section class="pt-3 vh-100 gradient-custom bg-dark">
+<section [@fadeIn]="'fadeIn'" class="pt-3 vh-100 gradient-custom bg-dark">
     <div *ngIf="stream" class="container py-5 h-100 ">
         <div class="text-light text-center">
             <blockquote class="blockquote">
                 <p>{{stream.title}}</p>
             </blockquote>
             <figcaption class="blockquote-footer">
-                {{stream.description}}
+                {{stream.description}}x
             </figcaption>
         </div>
         <router-outlet></router-outlet>

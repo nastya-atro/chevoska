@@ -37,10 +37,6 @@ export class AuthenticationService implements OnDestroy {
     return this.authApi.sendConfirmEmailToken(token);
   }
 
-  sendPhoneCode(token: string) {
-    return this.authApi.sendPhoneCode(token);
-  }
-
   login(username: string, password: string): Observable<unknown> {
     return this.authApi.login(username, password);
   }
@@ -72,8 +68,7 @@ export class AuthenticationService implements OnDestroy {
   findCurrentUser(): Observable<void | CurrentUserResponse | null> {
     return this.usersApi.findCurrentUser().pipe(
       map(user => {
-        console.log(user);
-        this.store.dispatch(appActions.findUserProfileSuccess({ user } as any));
+        this.store.dispatch(appActions.findUserProfileSuccess({ user }));
         return user;
       }),
       catchError(error => {
@@ -101,4 +96,8 @@ export class AuthenticationService implements OnDestroy {
   validateRecoveryToken(token: string): Observable<string> {
     return this.authApi.validateRecoveryToken(token);
   }
+
+  // sendPhoneCode(token: string) {
+  //   return this.authApi.sendPhoneCode(token);
+  // }
 }

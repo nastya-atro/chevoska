@@ -64,11 +64,11 @@ export class AuthController {
     return this.authService.validateUserEmail(token, domain);
   }
 
-  // validate email by sending confirm link
-  @Get("validate-phone")
-  validatePhone(@Query("token") token: string, @Host() domain) {
-    return this.authService.validateUserPhone(token, domain);
-  }
+  // // validate email by sending confirm link
+  // @Get("validate-phone")
+  // validatePhone(@Query("token") token: string, @Host() domain) {
+  //   return this.authService.validateUserPhone(token, domain);
+  // }
 
   // activate email by confirm-link
   @Get("activate")

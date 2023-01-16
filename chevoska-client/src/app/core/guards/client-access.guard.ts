@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
 import { ViewStreamService } from '../../features/view-stream/viewStream.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ClientAccessGuard implements CanActivate {
@@ -16,13 +17,13 @@ export class ClientAccessGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const isClientSessionSave = this.viewStreamService.isClientSessionSave();
-    const isClientSessionToCurrentStream =
-      this.viewStreamService.getCurrentClient()?.stream === this.viewStreamService.stream?.id;
-    if (isClientSessionSave && isClientSessionToCurrentStream) {
-      return this.router.navigate([`${this.viewStreamService.rootPath}/active`]);
-    } else {
-      return !(isClientSessionSave && isClientSessionToCurrentStream);
-    }
+    return this.viewStreamService.isClientSessionToCurrentStreamActive().pipe(
+      map(isActive => {
+        if (isActive) {
+          this.router.navigate([`${this.viewStreamService.rootViewStreamPath}/active`]);
+        }
+        return !isActive;
+      })
+    );
   }
 }

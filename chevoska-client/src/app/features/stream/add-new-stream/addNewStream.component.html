@@ -43,13 +43,13 @@
 
         <div class="form-outline mb-4">
             <label class="form-label" for="description">Description</label>
-            <input
+            <textarea
                 [formControl]="form.controls.description"
                 type="text"
                 id="description"
                 class="form-control form-control-lg"
                 [ngClass]="form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''"
-            />
+            ></textarea>
 
             <div class="invalid-feedback" *ngIf="form.controls.description.errors">
                 {{ form.controls.description.errors | validateError }}

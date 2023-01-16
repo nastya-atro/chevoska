@@ -6,14 +6,26 @@ import { ProfileService } from './profile.service';
 import Utils from '../../core/utils/utils';
 import { NotifyService } from '../../shared/modules/notifications/notify.service';
 import { ActivatedRoute } from '@angular/router';
-import { Profile } from '../../core/models/user.model';
+import { Profile, ProfileResolverData } from '../../core/models/user.model';
 import { UserProfileFormGroup } from '../../core/interfaces/forms/profile-forms.interface';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { fadeIn } from 'ng-animate';
 
 @UntilDestroy()
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(
+        '* => *',
+        useAnimation(fadeIn, {
+          params: { timing: 0.4, delay: 0 },
+        })
+      ),
+    ]),
+  ],
 })
 export class ProfileComponent implements OnInit {
   profile!: Profile;
@@ -28,6 +40,7 @@ export class ProfileComponent implements OnInit {
     this.form = this.formBuilder.group({
       firstName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       lastName: new FormControl('', [Validators.required, Validators.maxLength(80)]),
+      username: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       phone: new FormControl('', [
         Validators.required,
         Validators.maxLength(25),
@@ -44,12 +57,14 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.activateRoute.data.pipe(untilDestroyed(this)).subscribe({
-      next: ({ profileComponentData }) => {
-        if (profileComponentData) {
-          this.profile = profileComponentData;
+      next: data => {
+        const profileData = (data as ProfileResolverData)?.profileComponentData || null;
+        if (profileData) {
+          this.profile = profileData;
           this.form.patchValue({
             firstName: this.profile.firstName || '',
             lastName: this.profile.lastName || '',
+            username: this.profile.username || '',
             phone: this.profile.phone || '',
             email: this.profile.email || '',
           });
@@ -68,6 +83,7 @@ export class ProfileComponent implements OnInit {
           this.form.patchValue({
             firstName: result.firstName || '',
             lastName: result.lastName || '',
+            username: result.username || '',
             phone: result.phone || '',
             email: result.email || '',
           });

@@ -1,1 +1,1 @@
-export const STREAMS_COLUMNS = ['Title', 'Description', 'Starting Date', 'Private', ''];
+export const STREAMS_COLUMNS = ['Title', 'Starting Date', 'Private', ''];

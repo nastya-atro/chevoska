@@ -127,62 +127,71 @@ export class StreamsService {
     session: SessionService
   ) {
     const { email, username, phone, timezone, key } = client;
+    try {
+      const stream = await this.streamRepository.findOneBy({
+        id: streamId,
+      });
 
-    const existClient = await this.dataSource
-      .createQueryBuilder(StreamClientsEntity, "stream_clients")
-      .leftJoinAndSelect("stream_clients.stream", "stream")
-      .andWhere(`stream_clients.email = (:email)`, { email })
-      .andWhere(`stream.id = (:streamId)`, { streamId })
-      .getOne();
+      const newClientData = {
+        email,
+        username,
+        phone,
+        timezone,
+        stream,
+      };
 
-    if (existClient) {
-      if (username !== existClient.username) {
-        await this.replaceExistedClient(existClient.id, username);
-      }
-      session.setClient(existClient.id, email, "client");
-      return new ViewStreamClientOutputDto(existClient);
-    } else {
-      try {
-        const stream = await this.streamRepository.findOneBy({
-          id: streamId,
-        });
-
-        if (stream.private) {
-          if (stream.enterKey === key) {
-            const user = await this.streamClientsRepository.save({
-              email,
-              username,
-              phone,
-              timezone,
-              stream,
-            });
-            session.setClient(user.id, user.email, "client");
-            return new ViewStreamClientOutputDto(user);
-          } else {
-            throw new ConflictException("Enter key not correct");
-          }
+      if (stream.private) {
+        if (stream.enterKey === key) {
+          return await this.saveNewClient(newClientData, session, streamId);
         } else {
-          const user = await this.streamClientsRepository.save({
-            email,
-            username,
-            phone,
-            timezone,
-            stream,
-            active: true,
-          });
-          session.setClient(user.id, user.email, "client");
-          return new ViewStreamClientOutputDto(user);
+          throw new ConflictException("Enter key not correct");
         }
-      } catch (e) {
-        if (e.code === "ER_DUP_ENTRY") {
-          throw new ConflictException();
-        }
-        throw e;
+      } else {
+        return await this.saveNewClient(newClientData, session, streamId);
       }
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") {
+        throw new ConflictException();
+      }
+      throw e;
     }
   }
 
-  async replaceExistedClient(clientId: number, username: string) {
+  private async saveNewClient(
+    newClient: StreamClientModel,
+    session: SessionService,
+    streamId: number
+  ) {
+    try {
+      const existClient = await this.dataSource
+        .createQueryBuilder(StreamClientsEntity, "stream_clients")
+        .leftJoinAndSelect("stream_clients.stream", "stream")
+        .andWhere(`stream_clients.email = (:email)`, { email: newClient.email })
+        .andWhere(`stream.id = (:streamId)`, { streamId })
+        .getOne();
+
+      if (existClient) {
+        if (newClient.username !== existClient.username) {
+          await this.replaceExistedClient(existClient.id, newClient.username);
+        }
+        session.setClient(existClient.id, newClient.email, "client");
+        return new ViewStreamClientOutputDto(existClient);
+      } else {
+        const user = await this.streamClientsRepository.save({
+          ...newClient,
+        });
+        session.setClient(user.id, user.email, "client");
+        return new ViewStreamClientOutputDto(user);
+      }
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") {
+        throw new ConflictException();
+      }
+      throw e;
+    }
+  }
+
+  private async replaceExistedClient(clientId: number, username: string) {
     try {
       await this.dataSource
         .createQueryBuilder()
@@ -220,17 +229,15 @@ export class StreamsService {
 
   async create(stream: CreateStreamModel, domain: string, userId: number) {
     const { title, description, keyWord, startDate, isPrivate } = stream;
-
     const enterLink = generateLink("sha1", keyWord, title);
-
     const profile = await this.profileRepository.findOneBy({
       id: userId,
     });
     const status = await this.streamStatusRepository.findOneBy({
       id: 1,
-    }); // pending status
+    });
     try {
-      const stream = await this.streamRepository.save({
+      await this.streamRepository.save({
         title,
         description,
         startDate,
@@ -273,7 +280,6 @@ export class StreamsService {
   }
 
   async remove(id: number): Promise<{ statusCode: number }> {
-    //check if used
     await this.streamRepository
       .createQueryBuilder()
       .delete()

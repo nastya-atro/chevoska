@@ -46,19 +46,6 @@ export class PreActivateComponent implements OnInit {
     });
   }
 
-  sendPhoneCode() {
-    this.service.sendPhoneCode(this.token).subscribe({
-      next: () => {
-        this.router.navigateByUrl(`/confirm-email`, {
-          state: { phone: '+123' },
-        });
-      },
-      error: () => {
-        this.error = true;
-      },
-    });
-  }
-
   activateProfileWithoutValidate() {
     this.service.developActivateProfile(this.token).subscribe({
       next: () => {
@@ -69,4 +56,17 @@ export class PreActivateComponent implements OnInit {
       },
     });
   }
+
+  // sendPhoneCode() {
+  //   this.service.sendPhoneCode(this.token).subscribe({
+  //     next: () => {
+  //       this.router.navigateByUrl(`/confirm-email`, {
+  //         state: { phone: '+123' },
+  //       });
+  //     },
+  //     error: () => {
+  //       this.error = true;
+  //     },
+  //   });
+  // }
 }

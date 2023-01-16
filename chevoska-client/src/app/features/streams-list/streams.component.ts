@@ -9,12 +9,24 @@ import { StreamsList } from '../../core/models/stream.model';
 import { Order } from '../../core/enums/filters.enum';
 import { STREAMS_COLUMNS } from './constants/streams.constants';
 import { QueryParams } from '../../core/interfaces/query-params.interfaces';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { fadeIn } from 'ng-animate';
 
 @UntilDestroy()
 @Component({
   selector: 'app-streams',
   templateUrl: './streams.component.html',
   styleUrls: ['./streams.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(
+        '* => *',
+        useAnimation(fadeIn, {
+          params: { timing: 0.4, delay: 0 },
+        })
+      ),
+    ]),
+  ],
 })
 export class StreamsComponent {
   rootPath = 'streams';

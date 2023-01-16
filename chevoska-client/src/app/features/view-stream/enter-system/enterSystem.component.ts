@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 import { DateCountDownService } from '../../../shared/modules/date-count-down/date-count-down.service';
 import { CurrentClient } from '../../../core/models/client.model';
 import { CurrentUser } from '../../../core/models/user.model';
-import { ViewStream } from '../../../core/models/view-stream.model';
+import { ViewStream, viewStreamResolverData } from '../../../core/models/view-stream.model';
 import { EnterViewStreamFormGroup } from '../../../core/interfaces/forms/view-stream-forms.interface';
 import { Observable } from 'rxjs';
 import { selectUser } from '../../../store/app.selectors';
@@ -21,11 +21,25 @@ import { AppState } from '../../../store/app.state';
   templateUrl: './enterSystem.component.html',
   styleUrls: ['./enterSystem.component.scss'],
 })
-export class EnterSystemComponent {
+export class EnterSystemComponent implements OnInit {
   user$: Observable<CurrentUser | null> = this.store.select(selectUser);
-  form: EnterViewStreamFormGroup;
   stream!: ViewStream;
   client!: CurrentClient | null;
+
+  form: EnterViewStreamFormGroup = this.formBuilder.group({
+    username: ['', [Validators.required]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern('^(\\s+)?[a-zA-Z0-9+._-]+@[a-zA-Z0-9-]+[.]{1}[a-zA-Z]{2,4}([.]{1}[a-zA-Z]{2,4})?(\\s+)?$'),
+        Validators.maxLength(80),
+      ],
+    ],
+    timezone: [''],
+    phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
+    key: [''],
+  }) as EnterViewStreamFormGroup;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -36,36 +50,35 @@ export class EnterSystemComponent {
     private dateCountDownService: DateCountDownService,
     private store: Store<AppState>
   ) {
-    this.stream = this.viewStreamService.stream;
-    this.form = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^(\\s+)?[a-zA-Z0-9+._-]+@[a-zA-Z0-9-]+[.]{1}[a-zA-Z]{2,4}([.]{1}[a-zA-Z]{2,4})?(\\s+)?$'),
-          Validators.maxLength(80),
-        ],
-      ],
-      timezone: [''],
-      phone: ['', [Validators.pattern('^[+]*[-\\s\\./0-9]*$')]],
-      key: [''],
-    }) as EnterViewStreamFormGroup;
+    this.activatedRoute.parent?.data.pipe(untilDestroyed(this)).subscribe({
+      next: data => {
+        const viewStreamData = (data as viewStreamResolverData)?.viewStreamComponentData || null;
+        if (viewStreamData) {
+          this.stream = viewStreamData.viewStream as any;
+          this.client = viewStreamData.client;
+        }
+      },
+    });
+  }
 
+  ngOnInit() {
     this.user$.pipe(untilDestroyed(this)).subscribe(user => {
       this.form.patchValue({
-        username: user?.firstName || this.client?.username,
-        email: user?.email || this.client?.email,
-        phone: user?.phone || this.client?.phone,
+        username: user?.username || this.client?.username || '',
+        email: user?.email || this.client?.email || '',
+        phone: user?.phone || this.client?.phone || '',
       });
     });
 
-    if (this.stream.private) {
+    this.dateCountDownService.setInitialValue(this.firstAvailableValue() && !this.isStreamStarted);
+    if (this.firstAvailableValue() && !this.isStreamStarted) {
+      this.form.disable();
+    }
+
+    if (this.stream?.private) {
       this.form.controls.key.setValidators([Validators.required]);
       this.form.controls.key.updateValueAndValidity();
     }
-    this.dateCountDownService.setInitialValue(this.firstAvailableValue() && !this.isStreamStarted);
-    this.firstAvailableValue() && !this.isStreamStarted && this.form.disable();
   }
 
   get isStreamEnterAvailable() {
@@ -91,7 +104,9 @@ export class EnterSystemComponent {
             this.viewStreamService
               .findCurrentClient()
               .pipe(untilDestroyed(this))
-              .subscribe(() => this.router.navigate([`${this.viewStreamService.rootPath}/active`]));
+              .subscribe(() => {
+                this.router.navigate([`${this.viewStreamService.rootViewStreamPath}/active`]);
+              });
           },
           error: () => {},
         });

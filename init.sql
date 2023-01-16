@@ -82,7 +82,7 @@ CREATE TABLE `stream` (
   KEY `status_id` (`status_id`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`status_id`) REFERENCES `stream_statuses` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
 DROP TABLE IF EXISTS `stream_reviews`;
@@ -94,7 +94,7 @@ CREATE TABLE `stream_reviews` (
   KEY `user_id` (`user_id`),
   KEY `stream_id` (`stream_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)
+  FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)  ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
 CREATE TABLE `stream_clients` (
@@ -107,7 +107,7 @@ CREATE TABLE `stream_clients` (
   `active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `stream_id` (`stream_id`),
-  FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)
+  FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)  ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
 

@@ -9,12 +9,11 @@
         </div>
     </div>
 </nav>
-
-<div *ngIf="client && stream">
+<div *ngIf="{ client: client$ | async, viewStream: viewStream$ | async } as data">
     <div class="text-light text-end">
         <p>
             <small>
-                Hello <b>{{ client.username }}, </b> <br />Thanks for joining our stream !
+                Hello <b>{{ data.client.username }}, </b> <br />Thanks for joining our stream !
             </small>
         </p>
     </div>
@@ -30,10 +29,10 @@
     </div>
 
     <figcaption class="figure-caption text-end mt-2 mb-3">
-        Stream start at {{ stream.startDate | date: "medium" }}
+        Stream start at {{ data.viewStream.startDate | date: "medium" }}
     </figcaption>
 
     <div class="text-light">
-        <app-date-count-down [day]="stream.startDate"></app-date-count-down>
+        <app-date-count-down [day]="data.viewStream.startDate"></app-date-count-down>
     </div>
 </div>
