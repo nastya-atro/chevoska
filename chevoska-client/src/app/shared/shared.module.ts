@@ -10,13 +10,23 @@ import { DateCountDownModule } from './modules/date-count-down/date-count-down.m
 import { LoaderComponent } from './directives/loader/loader.component';
 import { LoaderDirective } from './directives/loader/loader.directive';
 import { ModalRequestComponent } from './components/modals/modal-request/modal-request.component';
+import { SelectComponent } from './components/select/select.component';
+import { MultiselectSearchComponent } from './components/multiselect-search/multiselect-search.component';
+import { MultiSelectFilterPipe } from '../core/pipes/multi-select-filter.pipe';
+import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
+import { MultiselectComponent } from './components/multiselect/multiselect.component';
 
 const COMPONENTS = [
   PageNotFoundComponent,
   ValidateErrorPipe,
+  MultiSelectFilterPipe,
   DateCountDownComponent,
   LoaderComponent,
   ModalRequestComponent,
+  SelectComponent,
+  MultiselectSearchComponent,
+  InfiniteScrollComponent,
+  MultiselectComponent,
 ];
 
 @NgModule({

@@ -24,6 +24,9 @@ import { Session } from "../../common/session/decorators/session.decorator";
 import { SessionService } from "../../common/session/session.service";
 import { CurrentClient } from "../../common/decorators/current-client.decorators";
 import { EmailRequestInputDto } from "./dto/stream-for-client-dto/emailRequest.input.dto";
+import { FiltersPipe } from "../../common/pipes/filters.pipe";
+import { StreamListForUserFiltersOutputDto } from "./dto/stream-for-user-dto/stream-list-filters.output.dto";
+import { StreamListForClientFiltersOutputDto } from "./dto/stream-for-client-dto/stream-list-filters.output.dto";
 
 @Controller("streams")
 @UseGuards()
@@ -32,9 +35,20 @@ export class StreamsController {
 
   @Get("all")
   @ValidateDTO()
-  async findForClientAll(@Query(new PaginationPipe(), new OrderPipe()) query) {
-    const { pagination, order } = query;
-    return await this.streamService.findForClientAll(pagination, order);
+  async findForClientAll(
+    @Query(
+      new PaginationPipe(),
+      new OrderPipe(),
+      new FiltersPipe(StreamListForClientFiltersOutputDto)
+    )
+    query
+  ) {
+    const { pagination, order, filters } = query;
+    return await this.streamService.findForClientAll(
+      pagination,
+      order,
+      filters
+    );
   }
 
   @Get("client")
@@ -67,11 +81,21 @@ export class StreamsController {
   @Get()
   @ValidateDTO()
   async findForUserAll(
-    @Query(new PaginationPipe(), new OrderPipe()) query,
+    @Query(
+      new PaginationPipe(),
+      new OrderPipe(),
+      new FiltersPipe(StreamListForUserFiltersOutputDto)
+    )
+    query,
     @CurrentUser() user: SessionUser
   ) {
-    const { pagination, order } = query;
-    return await this.streamService.findForUserAll(pagination, order, user?.id);
+    const { pagination, order, filters } = query;
+    return await this.streamService.findForUserAll(
+      pagination,
+      order,
+      filters,
+      user?.id
+    );
   }
 
   @Get("view/:enterLink")

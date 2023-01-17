@@ -1,0 +1,76 @@
+<div class="h-100">
+    <!-- if you want to open multiselect upward, use class "multiselect_upward" -->
+    <div #$el class="multiselect">
+        <div class="mb-2">
+            <div class="form-outline mb-1" (click)="toggleMultiselect($el)">
+                <div class="form-floating">
+                    <input
+                        (search)="handleSearch($event)"
+                        (keyup)="handleSearch($event)"
+                        [value]="''"
+                        class="form-control form-control-md"
+                        type="text"
+                        id="multiselect"
+                        name="multiselect"
+                        [placeholder]="'Search content by creator...'"
+                    />
+                    <label for="multiselect" class="d-flex gap-3">
+                        <svg class="icon">
+                            <use href="#search" height="100%" width="100%"></use>
+                        </svg>
+                        <span>Search content by creator...</span>
+                    </label>
+                </div>
+            </div>
+
+            <app-infinite-scroll
+                class="multiselect__list-wrapper tableFixHead custom-scrollbar bg-dark"
+                (scrolled)="infiniteContentScroll()"
+            >
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th
+                                *ngFor="let title of displayedColumns"
+                                [ngClass]="title === 'email' ? 'text-end' : ''"
+                                scope="col"
+                                class="font-monospace text-uppercase"
+                            >
+                                {{ title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="scrolled_items">
+                        <tr
+                            (click)="addSelectItem($event, option)"
+                            class="align-middle"
+                            *ngFor="let option of options | msf: selected"
+                        >
+                            <td>{{ option.id }}</td>
+                            <td>{{ option.firstName }}</td>
+                            <td>{{ option.lastName }}</td>
+                            <td class="text-end">{{ option.email }}</td>
+                        </tr>
+                        <tr *ngIf="(options && options.length < 1) || this.selected.length === this.options.length">
+                            <td class="text-center" colspan="4">No Creators</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </app-infinite-scroll>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap mt-2 selected__list-wrapper" *ngIf="selected">
+            <div class="d-flex gap-1" *ngFor="let itemSelect of selected">
+                <button disabled class="btn btn-sm btn-outline-dark">
+                    <div>{{ itemSelect.firstName }} {{ itemSelect.lastName }}</div>
+                    <div>{{ itemSelect.email }}</div>
+                </button>
+                <button (click)="removeSelectItem($event, itemSelect)" class="btn btn-sm btn-dark">
+                    <svg class="icon">
+                        <use href="#close" height="100%" width="100%"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

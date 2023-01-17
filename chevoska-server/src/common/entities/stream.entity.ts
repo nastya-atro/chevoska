@@ -43,7 +43,7 @@ export class StreamEntity {
   @Column()
   private: boolean;
 
-  @ManyToOne(() => StreamStatusesEntity, (status) => status.title)
+  @ManyToOne(() => StreamStatusesEntity, (status) => status.id)
   @JoinColumn({ name: "status_id" })
   status?: StreamStatusesEntity;
 

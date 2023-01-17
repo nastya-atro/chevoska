@@ -30,6 +30,8 @@ import { StreamForClientOneOutputDto } from "./dto/stream-for-client-dto/streamF
 import { StreamForClientListOutputDto } from "./dto/stream-for-client-dto/streamsForClientList.output.dto";
 import { TemplateType } from "../../common/constants/email-templates";
 import { TransportService } from "../../shared/transport/transport.service";
+import { StreamsFilters } from "./models/streams-filters.model";
+import { Privacy } from "../../common/constants/privacy.constants";
 
 @Injectable()
 export class StreamsService {
@@ -48,20 +50,45 @@ export class StreamsService {
     private transport: TransportService
   ) {}
 
-  async findForClientAll(pagination: Pagination, order: Order) {
+  async findForClientAll(
+    pagination: Pagination,
+    order: Order,
+    filters: StreamsFilters
+  ) {
     const { limit, page, offset } = pagination;
     const { sortOrder } = order;
 
+    const isPrivateArray =
+      filters.privacy?.map((e: Privacy) => e === Privacy.PRIVATE) || null;
+
     const sortBy: string = getSortByAllowed(order.sortBy, {
       id: "streams.id",
+      startDate: "streams.startDate",
     });
 
     const query = this.dataSource
       .createQueryBuilder(StreamEntity, "streams")
-      .leftJoinAndSelect("streams.status", "status")
-      .orderBy(sortBy, sortOrder)
-      .skip(offset)
-      .take(limit);
+      .leftJoinAndSelect("streams.status", "status");
+
+    //Filter by q search
+    filters.q &&
+      query.andWhere("streams.title LIKE :q", { q: `%${filters.q}%` });
+
+    //Filter by statuses
+    Array.isArray(filters.statuses) &&
+      filters.statuses.length > 0 &&
+      query.andWhere(`status.title in (:statuses)`, {
+        statuses: filters.statuses,
+      });
+
+    //Filter by private / social
+    Array.isArray(isPrivateArray) &&
+      isPrivateArray.length > 0 &&
+      query.andWhere(`streams.private in (:privacyFilter)`, {
+        privacyFilter: isPrivateArray,
+      });
+
+    query.orderBy(sortBy, sortOrder).skip(offset).take(limit);
 
     const $count = query.getCount();
     const [total, results] = await Promise.all([$count, query.getMany()]);
@@ -77,22 +104,47 @@ export class StreamsService {
     };
   }
 
-  async findForUserAll(pagination: Pagination, order: Order, userId: number) {
+  async findForUserAll(
+    pagination: Pagination,
+    order: Order,
+    filters: StreamsFilters,
+    userId: number
+  ) {
     const { limit, page, offset } = pagination;
     const { sortOrder } = order;
 
+    const isPrivateArray =
+      filters.privacy?.map((e: Privacy) => e === Privacy.PRIVATE) || null;
+
     const sortBy: string = getSortByAllowed(order.sortBy, {
       id: "streams.id",
+      startDate: "streams.startDate",
     });
 
     const query = this.dataSource
       .createQueryBuilder(StreamEntity, "streams")
       .leftJoinAndSelect("streams.profile", "profile")
       .leftJoinAndSelect("streams.status", "status")
-      .andWhere(`streams.user_id in (:usersIds)`, { usersIds: [userId] })
-      .orderBy(sortBy, sortOrder)
-      .skip(offset)
-      .take(limit);
+      .andWhere(`streams.user_id in (:usersIds)`, { usersIds: [userId] });
+
+    //Filter by q search
+    filters.q &&
+      query.andWhere("streams.title LIKE :q", { q: `%${filters.q}%` });
+
+    //Filter by statuses
+    filters.statuses &&
+      query.andWhere(`streams.status in (:statuses)`, {
+        statuses: filters.statuses,
+      });
+
+    //Filter by private / social
+    Array.isArray(isPrivateArray) &&
+      isPrivateArray.length > 0 &&
+      query.andWhere(`streams.private in (:privacyFilter)`, {
+        privacyFilter: isPrivateArray,
+      });
+
+    query.orderBy(sortBy, sortOrder).skip(offset).take(limit);
 
     const $count = query.getCount();
     const [total, results] = await Promise.all([$count, query.getMany()]);

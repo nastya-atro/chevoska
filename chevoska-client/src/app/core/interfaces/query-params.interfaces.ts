@@ -1,10 +1,14 @@
 import { Order } from '../enums/filters.enum';
 
 export interface QueryParams {
-  page: string;
-  limit: string;
+  page: any;
+  limit: any;
   sortBy: string;
   sortOrder: Order.ASC | Order.DESC;
-  filters?: { [key: string]: any };
   [p: string]: any;
+}
+
+export interface FilterOptions {
+  id: number;
+  title: string;
 }

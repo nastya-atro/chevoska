@@ -2,21 +2,27 @@ import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { MainPageService } from '../main-page.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import debounce from 'lodash.debounce';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
-import { QueryParams } from '../../../core/interfaces/query-params.interfaces';
-import { STREAMS_COLUMNS } from '../../streams-list/constants/streams.constants';
+import { FilterOptions, QueryParams } from '../../../core/interfaces/query-params.interfaces';
 import { Order } from '../../../core/enums/filters.enum';
 import * as qs from 'qs';
 import { finalize } from 'rxjs';
-import { StreamsForUserList } from '../../../core/models/streams/stream-for-user.model';
 import { StreamsForClientList } from '../../../core/models/streams/stream-for-client.model';
+import {
+  SORT_BY_STREAMS_LIST,
+  STREAMS_COLUMNS,
+  STREAMS_DEFAULT_FILTERS,
+  STREAMS_PRIVACY_FILTER,
+  STREAMS_STATUSES_FILTER,
+} from '../../../core/constants/main-streams.constants';
 
 @UntilDestroy()
 @Component({
   selector: 'app-main-streams-list',
   templateUrl: './main-streams-list.component.html',
-  styleUrls: ['./main-streams-list..component.scss'],
+  styleUrls: ['./main-streams-list.component.scss'],
   animations: [
     trigger('fadeIn', [
       transition(
@@ -34,6 +40,15 @@ export class MainStreamsListComponent {
   streams = [] as null | StreamsForClientList[];
   displayedColumns: string[] = [...STREAMS_COLUMNS];
 
+  filtersOptions = {
+    privacy: [...STREAMS_PRIVACY_FILTER],
+    statuses: [...STREAMS_STATUSES_FILTER],
+    sortBy: { ...SORT_BY_STREAMS_LIST },
+  };
+  defaultFilters = { ...STREAMS_DEFAULT_FILTERS };
+  selectedPrivacy = [] as FilterOptions[];
+  selectedStatuses = [] as FilterOptions[];
+
   state = {
     order: {
       sortBy: 'id',
@@ -45,23 +60,36 @@ export class MainStreamsListComponent {
       limit: 9,
       totalPages: 0,
     },
-    filters: {},
+    filters: {
+      privacy: [],
+      statuses: [],
+      q: '',
+    } as any,
   };
   loading = false;
 
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private mainService: MainPageService) {
-    const { pagination, order } = this.state;
+    this.handleSearch = debounce(this.handleSearch, 700);
+
+    const { pagination, order, filters } = this.state;
     this.activatedRoute.queryParams.subscribe(params => {
       this.queryParams = qs.parse(qs.stringify(params)) as QueryParams;
 
       if (!Object.keys(params).length) {
         const { page, limit } = pagination;
         const { sortBy, sortOrder } = order;
-        this.router.navigateByUrl(`${this.rootPath}?${qs.stringify({ page, limit, sortBy, sortOrder })}`);
+        this.router.navigateByUrl(`${this.rootPath}?${qs.stringify({ page, limit, sortBy, sortOrder, ...filters })}`);
       } else {
-        const { page, limit } = this.queryParams;
+        const { page, limit, q, privacy, statuses } = this.queryParams;
         pagination.page = +page;
         pagination.limit = +limit;
+        filters.q = q || '';
+        filters.privacy = privacy || [];
+        filters.statuses = statuses || [];
+
+        this.selectedPrivacy = this.filtersOptions.privacy.filter(el => privacy?.join(', ').includes(el.title)) || [];
+        this.selectedStatuses =
+          this.filtersOptions.statuses.filter(el => statuses?.join(', ').includes(el.title)) || [];
 
         this.loadStreams(this.queryParams);
       }
@@ -101,9 +129,58 @@ export class MainStreamsListComponent {
     const {
       pagination,
       order: { sortOrder, sortBy },
+      filters,
     } = this.state;
     pagination.page = page;
     pagination.limit = pageSize;
-    this.navigate({ page: String(page), limit: String(pageSize), sortOrder, sortBy });
+    this.navigate({ page, limit: pageSize, sortOrder, sortBy, ...filters });
+  }
+
+  handleChangeSortByFilter(item: any) {
+    const { value } = item;
+    const [sortBy, sortOrder] = value.split('_');
+    const {
+      pagination: { limit },
+      order,
+      filters,
+    } = this.state;
+    order.sortOrder = sortOrder;
+    order.sortBy = sortBy;
+
+    this.navigate({ sortBy, sortOrder, page: '1', limit, ...filters });
+  }
+
+  handleMultiselect({ selectedOptions, entity }: any) {
+    const {
+      pagination: { limit },
+      order: { sortOrder, sortBy },
+      filters,
+    } = this.state;
+    filters[entity] = selectedOptions.map((el: any) => el.title);
+
+    this.navigate({
+      sortOrder,
+      sortBy,
+      page: 1,
+      limit,
+      ...filters,
+    });
+  }
+
+  handleSearch(event: any) {
+    const {
+      pagination: { limit },
+      filters,
+      order: { sortOrder, sortBy },
+    } = this.state;
+    filters.q = event.target.value;
+
+    this.navigate({
+      sortOrder,
+      sortBy,
+      page: 1,
+      limit,
+      ...filters,
+    });
   }
 }

@@ -1,0 +1,44 @@
+.multiselect {
+  position: relative;
+
+  .multiselect__list-wrapper {
+    display: none;
+    position: absolute;
+    width: 100%;
+    z-index: 20;
+  }
+
+  &_opened {
+    .multiselect__list-wrapper {
+      display: block;
+    }
+  }
+}
+
+.list-group-item:hover {
+  color: white;
+}
+
+.multiselect__list-wrapper {
+  width: 100%;
+}
+
+.tableFixHead {
+  overflow-y: auto;
+  max-height: 200px;
+  td {
+    cursor: pointer;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #343434;
+    color: #e3e2e2;
+  }
+}
+
+.selected__list-wrapper {
+  max-height: 110px;
+  overflow: auto;
+}
