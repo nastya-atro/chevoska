@@ -12,6 +12,19 @@
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
             <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+                <div class="d-flex flex-row gap-2">
+                    <button [routerLink]="[stream.hrefLink]" class="btn btn-outline-dark">View Stream Page</button>
+                    <button type="button" (click)="copyToClipboard(stream.enterLink)" class="btn btn-outline-dark">
+                        Copy path to clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gy-2 justify-content-start mb-1">
+        <div class="col">
+            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
                 <div>Create Date</div>
                 <div>{{ stream.createDate | date }}</div>
             </div>

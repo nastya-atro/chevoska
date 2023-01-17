@@ -39,6 +39,10 @@ export class StreamsApi implements OnDestroy {
     return this.api.get(`${this.SEGMENT}/detail/${id}`);
   }
 
+  sendEnterLinkRequest(email: string, id: number): Observable<unknown> {
+    return this.api.post(`${this.SEGMENT}/detail/${id}`, { email });
+  }
+
   generatePrivateKey(id: number): Observable<unknown> {
     return this.api.get(`${this.SEGMENT}/key/${id}`);
   }

@@ -23,6 +23,7 @@ import { ViewStreamClientInputDto } from "./dto/view-stream-dto/viewStreamClient
 import { Session } from "../../common/session/decorators/session.decorator";
 import { SessionService } from "../../common/session/session.service";
 import { CurrentClient } from "../../common/decorators/current-client.decorators";
+import { EmailRequestInputDto } from "./dto/stream-for-client-dto/emailRequest.input.dto";
 
 @Controller("streams")
 @UseGuards()
@@ -45,6 +46,16 @@ export class StreamsController {
   @ValidateDTO()
   async findForClientOne(@Param("id", ParseIntPipe) id: number) {
     return await this.streamService.findForClientOne(id);
+  }
+
+  @Post("detail/:id")
+  @ValidateDTO()
+  sendEnterLinkRequest(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() body: EmailRequestInputDto,
+    @Host() domain
+  ) {
+    return this.streamService.sendEnterLinkRequest(id, body.email, domain);
   }
 
   @Get(":id")

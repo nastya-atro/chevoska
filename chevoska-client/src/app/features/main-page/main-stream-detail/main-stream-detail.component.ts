@@ -49,5 +49,19 @@ export class MainStreamDetailComponent implements OnInit {
     });
   }
 
-  requestLink() {}
+  requestLink(email: string) {
+    this.mainService
+      .sendEnterLinkRequest(email, this.stream.id)
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: () => {
+          this.notifyService.notifier.success(
+            `${
+              this.stream.private ? 'Join stream instructions sent successfully' : 'Link sent successfully'
+            } </br>Check your email`
+          );
+        },
+        error: () => {},
+      });
+  }
 }

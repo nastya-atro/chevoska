@@ -28,6 +28,8 @@ import { UserEntity } from "../../common/entities/user.entity";
 import { SessionUser } from "../../common/session/models/session.model";
 import { StreamForClientOneOutputDto } from "./dto/stream-for-client-dto/streamForClientOne.output.dto";
 import { StreamForClientListOutputDto } from "./dto/stream-for-client-dto/streamsForClientList.output.dto";
+import { TemplateType } from "../../common/constants/email-templates";
+import { TransportService } from "../../shared/transport/transport.service";
 
 @Injectable()
 export class StreamsService {
@@ -42,7 +44,8 @@ export class StreamsService {
     private streamStatusRepository: Repository<StreamStatusesEntity>,
     @InjectRepository(StreamClientsEntity)
     private streamClientsRepository: Repository<StreamClientsEntity>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private transport: TransportService
   ) {}
 
   async findForClientAll(pagination: Pagination, order: Order) {
@@ -131,6 +134,45 @@ export class StreamsService {
     }
 
     return StreamForClientOneOutputDto.new(stream);
+  }
+
+  async sendEnterLinkRequest(id: number, email: string, domain: string) {
+    const stream = await this.dataSource
+      .createQueryBuilder(StreamEntity, "stream")
+      .whereInIds([id])
+      .getOne();
+
+    if (stream.private) {
+      await this.transport.send(
+        TemplateType.JoinStreamInstruction,
+        {
+          from: '"Do not reply" <stream-service@example.com>',
+          to: email,
+          subject: "Join To Stream Instruction",
+        },
+        {
+          stream_title: stream.title,
+          stream_start_date: stream.startDate,
+          stream_details: `${domain}/detail/${id}`,
+          stream_instructions: `...`,
+        }
+      );
+    } else {
+      await this.transport.send(
+        TemplateType.EnterLinkRequest,
+        {
+          from: '"Do not reply" <stream-service@example.com>',
+          to: email,
+          subject: "Enter Link to Stream",
+        },
+        {
+          stream_title: stream.title,
+          stream_start_date: stream.startDate,
+          stream_details: `${domain}/detail/${id}`,
+          stream_enter_link: `${domain}/stream/${stream.enterLink}`,
+        }
+      );
+    }
   }
 
   async findViewStream(enterLink: string) {

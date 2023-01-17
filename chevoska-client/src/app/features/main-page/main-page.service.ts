@@ -26,4 +26,8 @@ export class MainPageService implements OnDestroy {
   getStreamDetail(id: number): Observable<StreamForClientResponse> {
     return this.streamsApi.getStreamDetail(id);
   }
+
+  sendEnterLinkRequest(email: string, id: number): Observable<unknown> {
+    return this.streamsApi.sendEnterLinkRequest(email, id);
+  }
 }

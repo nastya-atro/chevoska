@@ -27,8 +27,6 @@ import { SessionService } from "../../common/session/session.service";
 import { UserProfileOutputDto } from "./dto/user-profile.output.dto";
 import { ForgotPasswordModel } from "./models/forgotPassword.model";
 
-import { post } from "request-promise";
-
 @Injectable()
 export class AuthService {
   constructor(

@@ -10,9 +10,9 @@
                 <td>{{ (stream.startDate | date: "medium") || "—" }}</td>
                 <td>{{ stream.private ? "private" : "social" }}</td>
                 <td class="text-end">
-                    <button (click)="removeStream(stream.id)" class="btn btn-outline-dark">Delete</button>
-
-                    <button class="btn btn-dark" [routerLink]="['/edit/', stream.id]">Show</button>
+                    <button class="btn btn-outline-dark m-1" [routerLink]="['/detail/', stream.id]">Show</button>
+                    <button class="btn btn-dark m-1" [routerLink]="['/edit/', stream.id]">Edit</button>
+                    <button (click)="removeStream(stream.id)" class="btn btn-outline-dark m-1">Delete</button>
                 </td>
             </tr>
             <tr *ngIf="streams && streams.length < 1">

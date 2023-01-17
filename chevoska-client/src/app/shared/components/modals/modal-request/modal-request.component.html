@@ -1,0 +1,42 @@
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="font-monospace fw-bold fs-5">
+                {{ isPrivate ? "Join To Stream Request" : "Stream Link Request" }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-outline mb-3">
+                <label for="comment" class="form-label">{{
+                    isPrivate
+                        ? "We will sent joining stream instruction to your email-address"
+                        : "We will send enter stream link to your email"
+                }}</label>
+                <input
+                    [formControl]="email"
+                    type="email"
+                    class="form-control"
+                    id="comment"
+                    placeholder="Your email"
+                    [ngClass]="email.errors && email.touched ? 'is-invalid' : ''"
+                    rows="3"
+                />
+                <div class="invalid-feedback" *ngIf="email.errors">
+                    {{ email.errors | validateError: "email" }}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button
+                [disabled]="email.invalid"
+                type="button"
+                class="btn btn-dark"
+                (click)="send()"
+                data-bs-dismiss="modal"
+            >
+                Send {{ isPrivate ? "instructions" : "enter link" }}
+            </button>
+        </div>
+    </div>
+</div>

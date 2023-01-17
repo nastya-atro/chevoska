@@ -11,7 +11,7 @@
 
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+            <div class="p-3 border bg-light d-flex flex-row gap-4 justify-content-between">
                 <div>Title</div>
                 <div>{{ stream.title }}</div>
             </div>
@@ -20,7 +20,7 @@
 
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+            <div class="p-3 border bg-light d-flex flex-row gap-4  justify-content-between">
                 <div>Description</div>
                 <div>{{ stream.description }}</div>
             </div>
@@ -29,22 +29,75 @@
 
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+            <div class="p-3 border bg-light d-flex flex-row gap-4 justify-content-between">
                 <div>Start Date</div>
-                <div>{{ stream.startDate | date : "medium" }}</div>
+                <div>{{ stream.startDate | date: "medium" }}</div>
             </div>
         </div>
     </div>
 
-    <div class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
-                <div>Make request a link to join the stream</div>
-                <button (click)="requestLink()" class="btn btn-outline-dark">Requst Link</button>
+    <ng-container *ngIf="!stream.private; else privateStream">
+        <div class="row gy-2 justify-content-start mb-1">
+            <div class="col">
+                <div class="p-3 border bg-light d-flex flex-row gap-4  justify-content-between">
+                    <div>Make request a link to join the stream</div>
+                    <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-request"
+                        class="btn btn-outline-dark"
+                    >
+                        Request Join Link
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 
+    <ng-template #privateStream>
+        <div *ngIf="stream.private" class="row gy-2 justify-content-start mb-1">
+            <div class="col">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button
+                                class="accordion-button"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne"
+                                aria-expanded="true"
+                                aria-controls="collapseOne"
+                            >
+                                This stream is PRIVATE - How to access the stream ?
+                            </button>
+                        </h2>
+                        <div
+                            id="collapseOne"
+                            class="accordion-collapse collapse show"
+                            aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample"
+                        >
+                            <div class="accordion-body d-flex flex-column gap-2">
+                                <strong>Conditions for joining the stream:</strong>
+                                <div>...</div>
+                                <div class="d-flex flex-row justify-content-between">
+                                    <div></div>
+                                    <button
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-request"
+                                        class="btn btn-outline-dark"
+                                    >
+                                        Request Join Link and Private Key
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
 
     <div class="row mt-2">
         <div class="form col d-flex flex-column align-self-center">
@@ -56,3 +109,14 @@
         </div>
     </div>
 </div>
+
+<app-modal-request
+    (makeRequest)="requestLink($event)"
+    [isPrivate]="stream.private"
+    class="modal"
+    id="modal-request"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+>
+</app-modal-request>

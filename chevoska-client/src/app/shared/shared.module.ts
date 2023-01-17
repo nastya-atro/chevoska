@@ -9,8 +9,15 @@ import { DateCountDownComponent } from './modules/date-count-down/date-count-dow
 import { DateCountDownModule } from './modules/date-count-down/date-count-down.module';
 import { LoaderComponent } from './directives/loader/loader.component';
 import { LoaderDirective } from './directives/loader/loader.directive';
+import { ModalRequestComponent } from './components/modals/modal-request/modal-request.component';
 
-const COMPONENTS = [PageNotFoundComponent, ValidateErrorPipe, DateCountDownComponent, LoaderComponent];
+const COMPONENTS = [
+  PageNotFoundComponent,
+  ValidateErrorPipe,
+  DateCountDownComponent,
+  LoaderComponent,
+  ModalRequestComponent,
+];
 
 @NgModule({
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NotifyModule, DateCountDownModule],
