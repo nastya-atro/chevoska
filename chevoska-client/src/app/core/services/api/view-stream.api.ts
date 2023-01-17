@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { EnterViewStreamRequest, ViewStreamResponse } from '../../models/view-stream.model';
+import { EnterViewStreamRequest, ViewStreamResponse } from '../../models/streams/view-stream.model';
 
 @UntilDestroy()
 @Injectable({

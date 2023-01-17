@@ -3,7 +3,11 @@ import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { StreamsApi } from '../../core/services/api/streams.api';
-import { CreateStreamRequest, EditStreamRequest, StreamResponse } from '../../core/models/stream.model';
+import {
+  CreateStreamRequest,
+  EditStreamRequest,
+  StreamForUserResponse,
+} from '../../core/models/streams/stream-for-user.model';
 
 @UntilDestroy()
 @Injectable({
@@ -18,7 +22,7 @@ export class StreamService implements OnDestroy {
     return this.streamsApi.createStream(stream);
   }
 
-  getStream(id: number): Observable<StreamResponse> {
+  getStream(id: number): Observable<StreamForUserResponse> {
     return this.streamsApi.getStream(id);
   }
 

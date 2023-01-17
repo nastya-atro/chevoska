@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { AppState, RootState } from './app.state';
 import { CurrentUser } from '../core/models/user.model';
 import { CurrentClient } from '../core/models/client.model';
-import { ViewStream } from '../core/models/view-stream.model';
+import { ViewStream } from '../core/models/streams/view-stream.model';
 
 export const selectRoot = (state: AppState): RootState => state.root;
 

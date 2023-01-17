@@ -1,0 +1,58 @@
+<div [@fadeIn]="'fadeIn'" *ngIf="stream">
+    <div class="row mb-2">
+        <div class="col">
+            <div class="images-container">
+                <div class="images-container_area images-container_area_banner">
+                    <img class="img_banner_cover" [src]="'assets/images/stream-banner.jpg'" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gy-2 justify-content-start mb-1">
+        <div class="col">
+            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+                <div>Title</div>
+                <div>{{ stream.title }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gy-2 justify-content-start mb-1">
+        <div class="col">
+            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+                <div>Description</div>
+                <div>{{ stream.description }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gy-2 justify-content-start mb-1">
+        <div class="col">
+            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+                <div>Start Date</div>
+                <div>{{ stream.startDate | date : "medium" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gy-2 justify-content-start mb-1">
+        <div class="col">
+            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
+                <div>Make request a link to join the stream</div>
+                <button (click)="requestLink()" class="btn btn-outline-dark">Requst Link</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="form col d-flex flex-column align-self-center">
+            <div class="images-container">
+                <div class="images-container_area images-container_area_preview">
+                    <img [src]="'assets/images/stream-preview.jpg'" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

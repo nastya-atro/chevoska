@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { StreamsService } from './streams.service';
-import * as qs from 'qs';
+import { MainPageService } from '../main-page.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs';
-import { NotifyService } from '../../shared/modules/notifications/notify.service';
-import { Order } from '../../core/enums/filters.enum';
-import { STREAMS_COLUMNS } from './constants/streams.constants';
-import { QueryParams } from '../../core/interfaces/query-params.interfaces';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
-import { StreamsForUserList } from '../../core/models/streams/stream-for-user.model';
+import { QueryParams } from '../../../core/interfaces/query-params.interfaces';
+import { STREAMS_COLUMNS } from '../../streams-list/constants/streams.constants';
+import { Order } from '../../../core/enums/filters.enum';
+import * as qs from 'qs';
+import { finalize } from 'rxjs';
+import { StreamsForUserList } from '../../../core/models/streams/stream-for-user.model';
+import { StreamsForClientList } from '../../../core/models/streams/stream-for-client.model';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-streams',
-  templateUrl: './streams.component.html',
-  styleUrls: ['./streams.component.scss'],
+  selector: 'app-main-streams-list',
+  templateUrl: './main-streams-list.component.html',
+  styleUrls: ['./main-streams-list..component.scss'],
   animations: [
     trigger('fadeIn', [
       transition(
@@ -28,10 +28,10 @@ import { StreamsForUserList } from '../../core/models/streams/stream-for-user.mo
     ]),
   ],
 })
-export class StreamsComponent {
-  rootPath = 'streams';
+export class MainStreamsListComponent {
+  rootPath = 'main';
   queryParams!: QueryParams;
-  streams!: null | StreamsForUserList[];
+  streams = [] as null | StreamsForClientList[];
   displayedColumns: string[] = [...STREAMS_COLUMNS];
 
   state = {
@@ -47,15 +47,9 @@ export class StreamsComponent {
     },
     filters: {},
   };
-
   loading = false;
 
-  constructor(
-    private notifyService: NotifyService,
-    private streamService: StreamsService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router
-  ) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private mainService: MainPageService) {
     const { pagination, order } = this.state;
     this.activatedRoute.queryParams.subscribe(params => {
       this.queryParams = qs.parse(qs.stringify(params)) as QueryParams;
@@ -77,8 +71,8 @@ export class StreamsComponent {
   loadStreams(params: QueryParams) {
     this.loading = true;
 
-    this.streamService
-      .getMyStreams(params)
+    this.mainService
+      .getAllStreams(params)
       .pipe(
         untilDestroyed(this),
         finalize(() => (this.loading = false))
@@ -89,19 +83,6 @@ export class StreamsComponent {
           this.state.pagination.page = data.page;
           this.state.pagination.total = data.total;
           this.state.pagination.totalPages = data.totalPages;
-        },
-        error: () => {},
-      });
-  }
-
-  removeStream(id: number) {
-    this.streamService
-      .removeStream(id)
-      .pipe(untilDestroyed(this))
-      .subscribe({
-        next: () => {
-          this.notifyService.notifier.success('stream deleted successfully');
-          this.loadStreams(this.queryParams);
         },
         error: () => {},
       });

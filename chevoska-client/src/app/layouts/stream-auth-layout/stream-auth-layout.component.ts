@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AuthenticationService } from '../../features/authentication/authentication.service';
 import { ViewStreamService } from '../../features/view-stream/viewStream.service';
-import { ViewStream, viewStreamResolverData } from '../../core/models/view-stream.model';
+import { ViewStream, viewStreamResolverData } from '../../core/models/streams/view-stream.model';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
 

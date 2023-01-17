@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.state';
 import { selectClient, selectViewStream } from '../../store/app.selectors';
 import { CurrentClient } from '../models/client.model';
-import { ViewStream } from '../models/view-stream.model';
+import { ViewStream } from '../models/streams/view-stream.model';
 
 @Injectable({ providedIn: 'root' })
 export class ViewStreamResolver implements Resolve<any> {

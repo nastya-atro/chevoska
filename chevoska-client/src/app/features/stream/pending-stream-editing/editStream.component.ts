@@ -8,7 +8,7 @@ import Utils from '../../../core/utils/utils';
 import { NotifyService } from '../../../shared/modules/notifications/notify.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { StreamService } from '../stream.service';
-import { Stream, StreamResolverData } from '../../../core/models/stream.model';
+import { StreamForUser, StreamForUserResolverData } from '../../../core/models/streams/stream-for-user.model';
 import { EditStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
@@ -31,7 +31,7 @@ import { fadeIn } from 'ng-animate';
 })
 export class EditStreamComponent implements OnInit {
   id!: number;
-  stream!: Stream;
+  stream!: StreamForUser;
   form: EditStreamFormGroup;
   loading = false;
 
@@ -63,7 +63,7 @@ export class EditStreamComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.pipe(untilDestroyed(this)).subscribe({
       next: data => {
-        const streamData = (data as StreamResolverData)?.streamComponentData || null;
+        const streamData = (data as StreamForUserResolverData)?.streamComponentData || null;
         if (streamData) {
           this.stream = {
             ...streamData,

@@ -1,9 +1,15 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiService } from '../api.service';
-import { CreateStreamRequest, EditStreamRequest, StreamResponse, StreamsListResponse } from '../../models/stream.model';
+import {
+  CreateStreamRequest,
+  EditStreamRequest,
+  StreamForUserResponse,
+  StreamsForUserListResponse,
+} from '../../models/streams/stream-for-user.model';
 import { ResponseListInterface } from '../../interfaces/payload-list.interface';
 import { QueryParams } from '../../interfaces/query-params.interfaces';
+import { StreamForClientResponse, StreamsForClientListResponse } from '../../models/streams/stream-for-client.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,12 +23,20 @@ export class StreamsApi implements OnDestroy {
     return this.api.post(`${this.SEGMENT}`, stream);
   }
 
-  getStreams(params: QueryParams): Observable<ResponseListInterface<StreamsListResponse>> {
+  getMyStreams(params: QueryParams): Observable<ResponseListInterface<StreamsForUserListResponse>> {
     return this.api.get(`${this.SEGMENT}`, params);
   }
 
-  getStream(id: number): Observable<StreamResponse> {
+  getAllStreams(params: QueryParams): Observable<ResponseListInterface<StreamsForClientListResponse>> {
+    return this.api.get(`${this.SEGMENT}/all`, params);
+  }
+
+  getStream(id: number): Observable<StreamForUserResponse> {
     return this.api.get(`${this.SEGMENT}/${id}`);
+  }
+
+  getStreamDetail(id: number): Observable<StreamForClientResponse> {
+    return this.api.get(`${this.SEGMENT}/detail/${id}`);
   }
 
   generatePrivateKey(id: number): Observable<unknown> {

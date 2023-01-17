@@ -44,6 +44,8 @@ export class ErrorInterceptor implements HttpInterceptor {
           case HttpStatusCode.InternalServerError:
             errors.push(err.error.message || 'Internal Server Error');
             break;
+          case HttpStatusCode.NotFound:
+            break;
           default:
             errors.push(err.error.message || 'Something went wrong');
         }

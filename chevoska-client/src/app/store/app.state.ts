@@ -1,6 +1,6 @@
 import { CurrentUser } from '../core/models/user.model';
 import { CurrentClient } from '../core/models/client.model';
-import { ViewStream } from '../core/models/view-stream.model';
+import { ViewStream } from '../core/models/streams/view-stream.model';
 
 export interface AppState {
   root: RootState;

@@ -14,18 +14,20 @@ import {
   generateLink,
   generateTokenHash,
 } from "../../common/utils/streams.utils";
-import { StreamListOutputDto } from "./dto/streamsList.output.dto";
+import { StreamsForUserListOutputDto } from "./dto/stream-for-user-dto/streamsForUserList.output.dto";
 import { Order, Pagination } from "../../common/models/pagination.model";
 import { getSortByAllowed } from "../../common/utils/pagination.utils";
-import { StreamOneOutputDto } from "./dto/streamOne.output.dto";
+import { StreamForUserOneOutputDto } from "./dto/stream-for-user-dto/streamForUserOne.output.dto";
 import { EditStreamModel } from "./models/editStream.model";
-import { StreamViewOutputDto } from "./dto/streamView.output.dto";
+import { StreamViewOutputDto } from "./dto/view-stream-dto/streamView.output.dto";
 import { StreamClientsEntity } from "../../common/entities/stream-clients.entity";
 import { StreamClientModel } from "./models/streamClient.model";
-import { ViewStreamClientOutputDto } from "./dto/viewStreamClient.output.dto";
+import { ViewStreamClientOutputDto } from "./dto/view-stream-dto/viewStreamClient.output.dto";
 import { SessionService } from "../../common/session/session.service";
 import { UserEntity } from "../../common/entities/user.entity";
 import { SessionUser } from "../../common/session/models/session.model";
+import { StreamForClientOneOutputDto } from "./dto/stream-for-client-dto/streamForClientOne.output.dto";
+import { StreamForClientListOutputDto } from "./dto/stream-for-client-dto/streamsForClientList.output.dto";
 
 @Injectable()
 export class StreamsService {
@@ -43,7 +45,36 @@ export class StreamsService {
     private dataSource: DataSource
   ) {}
 
-  async findList(pagination: Pagination, order: Order, userId: number) {
+  async findForClientAll(pagination: Pagination, order: Order) {
+    const { limit, page, offset } = pagination;
+    const { sortOrder } = order;
+
+    const sortBy: string = getSortByAllowed(order.sortBy, {
+      id: "streams.id",
+    });
+
+    const query = this.dataSource
+      .createQueryBuilder(StreamEntity, "streams")
+      .leftJoinAndSelect("streams.status", "status")
+      .orderBy(sortBy, sortOrder)
+      .skip(offset)
+      .take(limit);
+
+    const $count = query.getCount();
+    const [total, results] = await Promise.all([$count, query.getMany()]);
+
+    return {
+      results: results.map(StreamForClientListOutputDto.new),
+      totalPages: Math.ceil(total / limit),
+      total,
+      sortOrder,
+      sortBy: order.sortBy,
+      limit,
+      page,
+    };
+  }
+
+  async findForUserAll(pagination: Pagination, order: Order, userId: number) {
     const { limit, page, offset } = pagination;
     const { sortOrder } = order;
 
@@ -64,7 +95,7 @@ export class StreamsService {
     const [total, results] = await Promise.all([$count, query.getMany()]);
 
     return {
-      results: results.map(StreamListOutputDto.new),
+      results: results.map(StreamsForUserListOutputDto.new),
       totalPages: Math.ceil(total / limit),
       total,
       sortOrder,
@@ -74,7 +105,7 @@ export class StreamsService {
     };
   }
 
-  async findOne(id: number) {
+  async findForUserOne(id: number) {
     const stream = await this.dataSource
       .createQueryBuilder(StreamEntity, "stream")
       .leftJoinAndSelect("stream.status", "status")
@@ -85,7 +116,21 @@ export class StreamsService {
       throw new NotFoundException();
     }
 
-    return StreamOneOutputDto.new(stream);
+    return StreamForUserOneOutputDto.new(stream);
+  }
+
+  async findForClientOne(id: number) {
+    const stream = await this.dataSource
+      .createQueryBuilder(StreamEntity, "stream")
+      .leftJoinAndSelect("stream.status", "status")
+      .whereInIds([id])
+      .getOne();
+
+    if (!stream) {
+      throw new NotFoundException();
+    }
+
+    return StreamForClientOneOutputDto.new(stream);
   }
 
   async findViewStream(enterLink: string) {

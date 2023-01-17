@@ -12,14 +12,14 @@ import {
 } from "@nestjs/common";
 import { StreamsService } from "./streams.service";
 import { ValidateDTO } from "../../common/decorators/validate-dto.decorator";
-import { CreateStreamInputDto } from "./dto/createStream.input.dto";
+import { CreateStreamInputDto } from "./dto/stream-for-user-dto/createStream.input.dto";
 import { Host } from "../../common/decorators/host.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorators";
 import { SessionUser } from "../../common/session/models/session.model";
 import { PaginationPipe } from "../../common/pipes/pagination.pipe";
 import { OrderPipe } from "../../common/pipes/order.pipe";
-import { EditStreamInputDto } from "./dto/editStream.input.dto";
-import { ViewStreamClientInputDto } from "./dto/viewStreamClient.input.dto";
+import { EditStreamInputDto } from "./dto/stream-for-user-dto/editStream.input.dto";
+import { ViewStreamClientInputDto } from "./dto/view-stream-dto/viewStreamClient.input.dto";
 import { Session } from "../../common/session/decorators/session.decorator";
 import { SessionService } from "../../common/session/session.service";
 import { CurrentClient } from "../../common/decorators/current-client.decorators";
@@ -29,25 +29,38 @@ import { CurrentClient } from "../../common/decorators/current-client.decorators
 export class StreamsController {
   constructor(private readonly streamService: StreamsService) {}
 
+  @Get("all")
+  @ValidateDTO()
+  async findForClientAll(@Query(new PaginationPipe(), new OrderPipe()) query) {
+    const { pagination, order } = query;
+    return await this.streamService.findForClientAll(pagination, order);
+  }
+
   @Get("client")
   findCurrentClient(@CurrentClient() client: SessionUser) {
     return this.streamService.findCurrentClient(client?.id);
   }
 
+  @Get("detail/:id")
+  @ValidateDTO()
+  async findForClientOne(@Param("id", ParseIntPipe) id: number) {
+    return await this.streamService.findForClientOne(id);
+  }
+
   @Get(":id")
   @ValidateDTO()
-  async findOne(@Param("id", ParseIntPipe) id: number) {
-    return await this.streamService.findOne(id);
+  async findForUserOne(@Param("id", ParseIntPipe) id: number) {
+    return await this.streamService.findForUserOne(id);
   }
 
   @Get()
   @ValidateDTO()
-  async findAll(
+  async findForUserAll(
     @Query(new PaginationPipe(), new OrderPipe()) query,
     @CurrentUser() user: SessionUser
   ) {
     const { pagination, order } = query;
-    return await this.streamService.findList(pagination, order, user?.id);
+    return await this.streamService.findForUserAll(pagination, order, user?.id);
   }
 
   @Get("view/:enterLink")

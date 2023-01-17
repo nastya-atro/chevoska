@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { CurrentUser } from '../core/models/user.model';
 import { CurrentClient } from '../core/models/client.model';
-import { ViewStream } from '../core/models/view-stream.model';
+import { ViewStream } from '../core/models/streams/view-stream.model';
 
 export const enum AppActionsTypes {
   UserFindProfileSuccess = '[UserSession] Find User Session Success',

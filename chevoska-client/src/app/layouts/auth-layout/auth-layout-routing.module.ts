@@ -5,7 +5,7 @@ import { AuthAccessGuard } from '../../core/guards/auth-access.guard';
 export const AUTH_LAYOUT_ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'signin',
+    redirectTo: 'main',
     pathMatch: 'full',
   },
   {

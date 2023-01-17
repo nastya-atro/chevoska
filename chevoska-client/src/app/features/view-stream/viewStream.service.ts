@@ -6,7 +6,7 @@ import { forkJoin, Observable, of, take } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CurrentSessionApi } from '../../core/services/api/current-session.api';
 import { CurrentClient, CurrentClientResponse } from '../../core/models/client.model';
-import { EnterViewStreamRequest, ViewStream, ViewStreamResponse } from '../../core/models/view-stream.model';
+import { EnterViewStreamRequest, ViewStream, ViewStreamResponse } from '../../core/models/streams/view-stream.model';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.state';
 import { selectClient, selectViewStream } from '../../store/app.selectors';

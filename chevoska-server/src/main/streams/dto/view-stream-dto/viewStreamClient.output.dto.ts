@@ -1,7 +1,7 @@
 import { Expose, Type } from "class-transformer";
-import { StreamClientsEntity } from "../../../common/entities/stream-clients.entity";
-import { RoleOutputDto } from "../../auth/dto/role.output.dto";
-import { StreamOneOutputDto } from "./streamOne.output.dto";
+import { StreamClientsEntity } from "../../../../common/entities/stream-clients.entity";
+import { RoleOutputDto } from "../../../auth/dto/role.output.dto";
+import { StreamForUserOneOutputDto } from "../stream-for-user-dto/streamForUserOne.output.dto";
 
 export class ViewStreamClientOutputDto {
   @Expose()
@@ -24,8 +24,8 @@ export class ViewStreamClientOutputDto {
     return this.stream.id;
   }
 
-  @Type(() => StreamOneOutputDto)
-  stream: StreamOneOutputDto;
+  @Type(() => StreamForUserOneOutputDto)
+  stream: StreamForUserOneOutputDto;
 
   constructor(partial: Partial<StreamClientsEntity>) {
     Object.assign(this, partial);

@@ -10,7 +10,7 @@ import { AuthenticationService } from '../../features/authentication/authenticat
   styleUrls: ['./main-layout.component.scss'],
 })
 export class MainLayoutComponent {
-  constructor(private authService: AuthenticationService) {}
+  constructor(public authService: AuthenticationService) {}
 
   logout() {
     this.authService.logout();

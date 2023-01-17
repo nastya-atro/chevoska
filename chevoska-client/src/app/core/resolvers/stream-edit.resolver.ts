@@ -4,7 +4,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { StreamService } from '../../features/stream/stream.service';
 
 @Injectable({ providedIn: 'root' })
-export class StreamResolver implements Resolve<any> {
+export class StreamEditResolver implements Resolve<any> {
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private streamService: StreamService) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {

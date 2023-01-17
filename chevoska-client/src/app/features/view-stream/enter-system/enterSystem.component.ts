@@ -8,7 +8,7 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 import { DateCountDownService } from '../../../shared/modules/date-count-down/date-count-down.service';
 import { CurrentClient } from '../../../core/models/client.model';
 import { CurrentUser } from '../../../core/models/user.model';
-import { ViewStream, viewStreamResolverData } from '../../../core/models/view-stream.model';
+import { ViewStream, viewStreamResolverData } from '../../../core/models/streams/view-stream.model';
 import { EnterViewStreamFormGroup } from '../../../core/interfaces/forms/view-stream-forms.interface';
 import { Observable } from 'rxjs';
 import { selectUser } from '../../../store/app.selectors';

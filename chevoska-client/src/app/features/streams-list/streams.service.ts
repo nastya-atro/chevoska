@@ -4,8 +4,8 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { StreamsApi } from '../../core/services/api/streams.api';
 import { ResponseListInterface } from '../../core/interfaces/payload-list.interface';
-import { StreamsListResponse } from '../../core/models/stream.model';
 import { QueryParams } from '../../core/interfaces/query-params.interfaces';
+import { StreamsForUserListResponse } from '../../core/models/streams/stream-for-user.model';
 
 @UntilDestroy()
 @Injectable({
@@ -16,8 +16,8 @@ export class StreamsService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  getStreams(params: QueryParams): Observable<ResponseListInterface<StreamsListResponse>> {
-    return this.streamsApi.getStreams(params);
+  getMyStreams(params: QueryParams): Observable<ResponseListInterface<StreamsForUserListResponse>> {
+    return this.streamsApi.getMyStreams(params);
   }
 
   removeStream(id: number): Observable<unknown> {

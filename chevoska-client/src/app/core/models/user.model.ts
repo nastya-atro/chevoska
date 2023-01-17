@@ -1,5 +1,3 @@
-import { StreamResponse } from './stream.model';
-
 export interface CreateUserRequest {
   firstName: string;
   lastName: string;

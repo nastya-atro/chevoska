@@ -1,9 +1,9 @@
 import { Exclude, Expose } from "class-transformer";
-import { StreamEntity } from "../../../common/entities/stream.entity";
-import { StreamStatusesEntity } from "../../../common/entities/stream-statuses.entity";
+import { StreamEntity } from "../../../../common/entities/stream.entity";
+import { StreamStatusesEntity } from "../../../../common/entities/stream-statuses.entity";
 
 @Exclude()
-export class StreamListOutputDto {
+export class StreamsForUserListOutputDto {
   @Expose()
   id: number;
 
@@ -11,16 +11,10 @@ export class StreamListOutputDto {
   title: number;
 
   @Expose()
-  description: string;
-
-  @Expose()
   private: boolean;
 
   @Expose()
   startDate: Date;
-
-  @Expose()
-  enterLink: string;
 
   status: StreamStatusesEntity;
 
@@ -34,6 +28,6 @@ export class StreamListOutputDto {
   }
 
   static new(partial: Partial<StreamEntity>) {
-    return new StreamListOutputDto(partial);
+    return new StreamsForUserListOutputDto(partial);
   }
 }

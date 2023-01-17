@@ -56,11 +56,11 @@ export class AuthenticationService implements OnDestroy {
       .subscribe({
         next: () => {
           this.store.dispatch(appActions.clearStoreData());
-          this.router.navigate(['/signin']);
+          this.router.navigate(['/main']);
         },
         error: () => {
           this.store.dispatch(appActions.clearStoreData());
-          this.router.navigate(['/signin']);
+          this.router.navigate(['/main']);
         },
       });
   }

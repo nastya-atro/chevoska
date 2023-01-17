@@ -1,5 +1,4 @@
-import { StreamResponse } from './stream.model';
-import { CurrentClient } from './client.model';
+import { CurrentClient } from '../client.model';
 
 export interface EnterViewStreamRequest {
   username: string;
