@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { DpDatePickerModule } from 'ng2-date-picker';
 import { EditStreamComponent } from './pending-stream-editing/editStream.component';
 import { StatisticStreamComponent } from './done-stream-statistic/statisticStream.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { StatisticStreamComponent } from './done-stream-statistic/statisticStrea
     CommonModule,
     SharedModule,
     DpDatePickerModule,
+    QuillModule,
   ],
   declarations: [AddNewStreamComponent, EditStreamComponent, StatisticStreamComponent],
 })

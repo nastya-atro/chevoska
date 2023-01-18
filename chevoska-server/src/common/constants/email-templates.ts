@@ -8,5 +8,6 @@ export enum TemplateType {
 export enum EmailTemplates {
   EMAIL_CONFIRMATION = "confirmation",
   FORGOT_PASSWORD = "forgot-password",
+  ENTER_LINK_REQUEST = "enter-link-request",
   JOIN_STREAM_INSTRUCTION = "join-stream-instruction",
 }

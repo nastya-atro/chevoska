@@ -12,8 +12,7 @@
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
             <div class="p-3 border bg-light d-flex flex-row gap-4 justify-content-between">
-                <div>Title</div>
-                <div>{{ stream.title }}</div>
+                <h2>{{ stream.title }}</h2>
             </div>
         </div>
     </div>
@@ -21,8 +20,7 @@
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
             <div class="p-3 border bg-light d-flex flex-row gap-4  justify-content-between">
-                <div>Description</div>
-                <div>{{ stream.description }}</div>
+                <quill-view-html [content]="stream.description || '_'"></quill-view-html>
             </div>
         </div>
     </div>

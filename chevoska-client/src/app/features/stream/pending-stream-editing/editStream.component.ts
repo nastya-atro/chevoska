@@ -12,6 +12,7 @@ import { StreamForUser, StreamForUserResolverData } from '../../../core/models/s
 import { EditStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
+import { TextEditorService } from '../../../shared/modules/text-editor/text-editor.service';
 
 @UntilDestroy()
 @Component({
@@ -45,13 +46,17 @@ export class EditStreamComponent implements OnInit {
     monthFormat: 'MMMM YYYY',
     disableKeypress: true,
   };
+  quillConfig!: {};
 
   constructor(
     private clipboard: Clipboard,
     private streamService: StreamService,
     private activatedRoute: ActivatedRoute,
-    private notifyService: NotifyService
+    private notifyService: NotifyService,
+    private textEditorService: TextEditorService
   ) {
+    this.quillConfig = textEditorService.quillConfig;
+
     this.form = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       description: new FormControl('', [Validators.required]),

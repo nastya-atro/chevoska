@@ -15,6 +15,7 @@ import { MultiselectSearchComponent } from './components/multiselect-search/mult
 import { MultiSelectFilterPipe } from '../core/pipes/multi-select-filter.pipe';
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { MultiselectComponent } from './components/multiselect/multiselect.component';
+import { QuillEditorComponent, QuillViewHTMLComponent } from 'ngx-quill';
 
 const COMPONENTS = [
   PageNotFoundComponent,
@@ -30,7 +31,16 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NotifyModule, DateCountDownModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NotifyModule,
+    DateCountDownModule,
+    QuillViewHTMLComponent,
+    QuillEditorComponent,
+  ],
   declarations: [...COMPONENTS, LoaderDirective],
   exports: [...COMPONENTS, LoaderDirective],
 })

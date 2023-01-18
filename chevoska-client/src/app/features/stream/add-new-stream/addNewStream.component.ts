@@ -7,6 +7,7 @@ import { NotifyService } from '../../../shared/modules/notifications/notify.serv
 import Utils from '../../../core/utils/utils';
 import { Router } from '@angular/router';
 import { NewStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
+import { TextEditorService } from '../../../shared/modules/text-editor/text-editor.service';
 
 @UntilDestroy()
 @Component({
@@ -27,8 +28,16 @@ export class AddNewStreamComponent {
     monthFormat: 'MMMM YYYY',
     disableKeypress: true,
   };
+  quillConfig!: {};
 
-  constructor(private streamsService: StreamService, private notifyService: NotifyService, private router: Router) {
+  constructor(
+    private streamsService: StreamService,
+    private notifyService: NotifyService,
+    private router: Router,
+    private textEditorService: TextEditorService
+  ) {
+    this.quillConfig = textEditorService.quillConfig;
+
     this.form = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       description: new FormControl('', [Validators.required]),
@@ -60,6 +69,6 @@ export class AddNewStreamComponent {
   }
 
   dateIntervalChange() {
-    this.form.controls.startDate.value.updateValueAndValidity();
+    this.form.controls.startDate.updateValueAndValidity();
   }
 }

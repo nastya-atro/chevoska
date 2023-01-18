@@ -1,26 +1,13 @@
 <div [@fadeIn]="'fadeIn'" *ngIf="stream">
-    <div class="row mb-2">
-        <div class="col">
-            <div class="images-container">
-                <div class="images-container_area images-container_area_banner">
-                    <img class="img_banner_cover" [src]="'assets/images/stream-banner.jpg'" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row justify-content-between">
-                <div class="d-flex flex-row gap-2">
-                    <button [routerLink]="[stream.hrefLink]" class="btn btn-outline-dark">View Stream Page</button>
-                    <button type="button" (click)="copyToClipboard(stream.enterLink)" class="btn btn-outline-dark">
-                        Copy path to clipboard
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!--    <div class="row mb-2">-->
+    <!--        <div class="col">-->
+    <!--            <div class="images-container">-->
+    <!--                <div class="images-container_area images-container_area_banner">-->
+    <!--                    <img class="img_banner_cover" [src]="'assets/images/stream-banner.jpg'" />-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
     <div class="row gy-2 justify-content-start mb-1">
         <div class="col">
@@ -62,85 +49,99 @@
                 </button>
                 <div class="d-flex flex-row gap-2 align-items-center">
                     <div>{{ stream.enterKey ? stream.enterKey?.slice(0, 5) + "*****" : "N/A" }}</div>
-                    <button *ngIf="stream.enterKey" type="button" (click)="copyToClipboard(stream.enterKey)" class="btn btn-outline-dark">
+                    <button
+                        *ngIf="stream.enterKey"
+                        type="button"
+                        (click)="copyToClipboard(stream.enterKey)"
+                        class="btn btn-outline-dark"
+                    >
                         Copy key to clipboard
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="row mt-2">
-        <div class="form col d-flex flex-column align-self-center">
-            <div class="images-container">
-                <div class="images-container_area images-container_area_preview">
-                    <img [src]="'assets/images/stream-preview.jpg'" />
-                </div>
-            </div>
-        </div>
-        <form [formGroup]="form" class="form col-6">
+    <form [formGroup]="form" class="form">
+        <div class="row mt-2">
             <div class="col text-end">
                 <button type="button" (click)="editStream()" class="btn btn-dark">Edit Stream</button>
             </div>
+        </div>
 
+        <div class="row">
             <div class="form-outline mb-4">
-                <label class="form-label" for="title">Title</label>
-                <input
-                    [formControl]="form.controls.title"
-                    type="text"
-                    id="title"
-                    class="form-control form-control-lg"
-                    [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
-                />
-                <div class="invalid-feedback" *ngIf="form.controls.title.errors">
-                    {{ form.controls.title.errors | validateError }}
+                <label class="form-label">Description</label>
+                <div
+                        [ngClass]="form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''"
+                        class="form-control form-control-lg"
+                >
+                    <quill-editor
+                            [placeholder]="'Insert description here...'"
+                            [formControl]="form.controls.description"
+                            [modules]="quillConfig"
+                    ></quill-editor>
                 </div>
-            </div>
-
-            <div class="form-outline mb-4">
-                <label class="form-label" for="description">Description</label>
-                <textarea
-                    [formControl]="form.controls.description"
-                    type="text"
-                    id="description"
-                    class="form-control form-control-lg"
-                    [ngClass]="
-                        form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''
-                    "
-                ></textarea>
 
                 <div class="invalid-feedback" *ngIf="form.controls.description.errors">
                     {{ form.controls.description.errors | validateError }}
                 </div>
             </div>
+        </div>
+        <div class="row mt-2">
+            <div class="form col d-flex flex-column align-self-center">
+                <div class="images-container">
+                    <div class="images-container_area images-container_area_preview">
+                        <img [src]="'assets/images/stream-preview.jpg'" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
 
-            <div class="form-outline mb-4">
-                <div class="form-check">
+
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="title">Title</label>
                     <input
-                        [formControl]="form.controls.isPrivate"
-                        class="form-check-input"
-                        type="checkbox"
-                        id="isPrivate"
+                        [formControl]="form.controls.title"
+                        type="text"
+                        id="title"
+                        class="form-control form-control-lg"
+                        [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
                     />
-                    <label class="form-check-label" for="isPrivate"> Private stream </label>
+                    <div class="invalid-feedback" *ngIf="form.controls.title.errors">
+                        {{ form.controls.title.errors | validateError }}
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-outline mb-4">
-                <label class="form-label" for="startDate">Start Date</label>
-                <input
-                    [formControl]="form.controls.startDate"
-                    mode="daytime"
-                    id="startDate"
-                    class="form-control form-control-lg"
-                    [dpDayPicker]="dayPickerconfig"
-                    (onChange)="dateIntervalChange()"
-                    [ngClass]="form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''"
-                />
-                <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
-                    {{ form.controls.startDate.errors | validateError }}
+                <div class="form-outline mb-4">
+                    <div class="form-check">
+                        <input
+                            [formControl]="form.controls.isPrivate"
+                            class="form-check-input"
+                            type="checkbox"
+                            id="isPrivate"
+                        />
+                        <label class="form-check-label" for="isPrivate"> Private stream </label>
+                    </div>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="startDate">Start Date</label>
+                    <input
+                        [formControl]="form.controls.startDate"
+                        mode="daytime"
+                        id="startDate"
+                        class="form-control form-control-lg"
+                        [dpDayPicker]="dayPickerconfig"
+                        (onChange)="dateIntervalChange()"
+                        [ngClass]="
+                            form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''
+                        "
+                    />
+                    <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
+                        {{ form.controls.startDate.errors | validateError }}
+                    </div>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>

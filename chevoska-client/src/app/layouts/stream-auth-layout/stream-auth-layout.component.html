@@ -1,12 +1,13 @@
 <section [@fadeIn]="'fadeIn'" class="pt-3 gradient-custom bg-dark">
     <div *ngIf="stream" class="container py-5 h-100 ">
-        <div class="text-light text-center">
-            <blockquote class="blockquote">
-                <p>{{stream.title}}</p>
+        <div class="mb-3">
+            <blockquote class="blockquote text-light text-center">
+                <h2>{{stream.title}}</h2>
             </blockquote>
-            <figcaption class="blockquote-footer">
-                {{stream.description}}x
-            </figcaption>
+
+            <div class="border border-light bg-light">
+                <quill-view-html [content]="stream.description || '_'"></quill-view-html>
+            </div>
         </div>
         <router-outlet></router-outlet>
     </div>

@@ -8,6 +8,7 @@ import { MainStreamsListComponent } from './main-streams-list/main-streams-list.
 import { TableModule } from '../../shared/modules/table/table.module';
 import { PaginationModule } from '../../shared/modules/pagination/pagination.module';
 import { MainStreamDetailComponent } from './main-stream-detail/main-stream-detail.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { MainStreamDetailComponent } from './main-stream-detail/main-stream-deta
     SharedModule,
     TableModule,
     PaginationModule,
+    QuillModule,
   ],
   declarations: [MainStreamsListComponent, MainStreamDetailComponent],
 })

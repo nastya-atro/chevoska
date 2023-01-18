@@ -1,1 +1,15 @@
 @import "app/shared/modules/notifications/styles/style";
+
+
+// styles for Quill Text Editor
+.ql-editor {
+  max-height: 400px;
+}
+
+.ql-toolbar.ql-snow {
+  margin-bottom: 10px;
+  border: 1px solid #e8e8e8;
+}
+.ql-container.ql-snow {
+  border: none !important;
+}
