@@ -25,13 +25,16 @@ import { StreamClientModel } from "./models/streamClient.model";
 import { ViewStreamClientOutputDto } from "./dto/view-stream-dto/viewStreamClient.output.dto";
 import { SessionService } from "../../common/session/session.service";
 import { UserEntity } from "../../common/entities/user.entity";
-import { SessionUser } from "../../common/session/models/session.model";
 import { StreamForClientOneOutputDto } from "./dto/stream-for-client-dto/streamForClientOne.output.dto";
 import { StreamForClientListOutputDto } from "./dto/stream-for-client-dto/streamsForClientList.output.dto";
 import { TemplateType } from "../../common/constants/email-templates";
 import { TransportService } from "../../shared/transport/transport.service";
 import { StreamsFilters } from "./models/streams-filters.model";
 import { Privacy } from "../../common/constants/privacy.constants";
+import { UploadPath } from "../../common/constants/uploadPath.constants";
+import { StreamsFilesModel } from "./models/files.model";
+import { cleaningDirectory, uploadImage } from "../../common/utils/fs.utils";
+import * as path from "path";
 
 @Injectable()
 export class StreamsService {
@@ -366,27 +369,88 @@ export class StreamsService {
     }
   }
 
-  async create(stream: CreateStreamModel, domain: string, userId: number) {
+  async create(
+    stream: CreateStreamModel,
+    domain: string,
+    userId: number,
+    files: StreamsFilesModel
+  ) {
     const { title, description, keyWord, startDate, isPrivate } = stream;
     const enterLink = generateLink("sha1", keyWord, title);
     const profile = await this.profileRepository.findOneBy({
       id: userId,
     });
-    const status = await this.streamStatusRepository.findOneBy({
-      id: 1,
-    });
     try {
-      await this.streamRepository.save({
-        title,
-        description,
-        startDate,
-        private: isPrivate,
-        createDate: moment.utc().toDate(),
-        enterLink: `${enterLink}`,
-        updateDate: "",
-        downloadLink: null,
-        profile,
-        status,
+      const status = await this.streamStatusRepository.findOneBy({
+        id: 1,
+      });
+
+      await this.dataSource.transaction(async (manager) => {
+        const newStream = await manager.save(StreamEntity, {
+          title,
+          description,
+          startDate,
+          private: isPrivate,
+          createDate: moment.utc().toDate(),
+          enterLink: `${enterLink}`,
+          updateDate: "",
+          downloadLink: null,
+          profile,
+          status,
+        });
+
+        const globalPath = UploadPath.globalStreamsStoragePath;
+        const localPath = UploadPath.localStreamsStoragePath;
+        const originBannerFilename = files?.bannerFile
+          ? uploadImage(
+              String(newStream.id),
+              files.bannerFile[0],
+              globalPath,
+              localPath,
+              "origin-banner"
+            )
+          : stream.originBanner || "";
+
+        const croppedBannerFilename = files?.croppedBannerFile
+          ? uploadImage(
+              String(newStream.id),
+              files.croppedBannerFile[0],
+              globalPath,
+              localPath,
+              "banner"
+            )
+          : stream.banner || "";
+
+        const streamForUpdating = {
+          ...newStream,
+          originBanner: originBannerFilename,
+          banner: croppedBannerFilename,
+          bannerCropSettings: stream.bannerCropSettings,
+        };
+
+        await manager
+          .createQueryBuilder()
+          .update(StreamEntity, { ...streamForUpdating })
+          .whereInIds([newStream.id])
+          .execute();
+
+        if (files) {
+          const uploadPath = path.join(
+            UploadPath.globalStreamsStoragePath,
+            `${newStream.id}`
+          );
+          const banner = path.basename(croppedBannerFilename || "");
+          const originBanner = path.basename(originBannerFilename || "");
+
+          try {
+            await cleaningDirectory(
+              uploadPath,
+              (file) => ![banner, originBanner].includes(file)
+            );
+          } catch (e) {
+            // throw new ConflictException();
+          }
+        }
       });
       return { statusCode: 204 };
     } catch (e) {
@@ -397,18 +461,62 @@ export class StreamsService {
     }
   }
 
-  async edit(id: number, body: EditStreamModel) {
+  async edit(id: number, body: EditStreamModel, files: StreamsFilesModel) {
     try {
+      const globalPath = UploadPath.globalStreamsStoragePath;
+      const localPath = UploadPath.localStreamsStoragePath;
+      const originBannerFilename = files?.bannerFile
+        ? uploadImage(
+            String(id),
+            files.bannerFile[0],
+            globalPath,
+            localPath,
+            "origin-banner"
+          )
+        : body.originBanner || "";
+
+      const croppedBannerFilename = files?.croppedBannerFile
+        ? uploadImage(
+            String(id),
+            files.croppedBannerFile[0],
+            globalPath,
+            localPath,
+            "banner"
+          )
+        : body.banner || "";
+
+      const streamForUpdating = {
+        title: body.title,
+        description: body.title,
+        startDate: body.startDate,
+        private: body.isPrivate,
+        originBanner: originBannerFilename,
+        bannerCropSettings: body.bannerCropSettings,
+        banner: croppedBannerFilename,
+      };
       await this.dataSource
         .createQueryBuilder()
-        .update(StreamEntity, {
-          title: body.title,
-          description: body.description,
-          startDate: body.startDate,
-          private: body.isPrivate,
-        })
+        .update(StreamEntity, streamForUpdating)
         .whereInIds([id])
         .execute();
+
+      if (files) {
+        const uploadPath = path.join(
+          UploadPath.globalStreamsStoragePath,
+          `${id}`
+        );
+        const banner = path.basename(croppedBannerFilename || "");
+        const originBanner = path.basename(originBannerFilename || "");
+
+        try {
+          await cleaningDirectory(
+            uploadPath,
+            (file) => ![banner, originBanner].includes(file)
+          );
+        } catch (e) {
+          // throw new ConflictException();
+        }
+      }
       return { statusCode: 204 };
     } catch (e) {
       if (e.code === "ER_DUP_ENTRY") {

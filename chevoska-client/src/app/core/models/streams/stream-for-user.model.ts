@@ -1,3 +1,5 @@
+import { FormControl } from '@angular/forms';
+
 export interface CreateStreamRequest {
   title: string;
   description: string;
@@ -35,6 +37,9 @@ export interface StreamForUser {
   downloadLink: string;
   enterKey: string;
   streamStatus: string;
+  banner: string;
+  bannerCropSettings: any;
+  originBanner: string;
   //
   hrefLink: string;
 }

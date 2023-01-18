@@ -1,6 +1,7 @@
-import { Exclude, Expose } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 import { StreamEntity } from "../../../../common/entities/stream.entity";
 import { StreamStatusesEntity } from "../../../../common/entities/stream-statuses.entity";
+import { StreamBannerCropSettingOutputDto } from "../stream-for-user-dto/stream-banner-crop-setting.output";
 
 @Exclude()
 export class StreamViewOutputDto {
@@ -21,6 +22,9 @@ export class StreamViewOutputDto {
 
   @Expose()
   startDate: Date;
+
+  @Expose()
+  banner: string;
 
   status: StreamStatusesEntity;
 

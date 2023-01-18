@@ -9,6 +9,7 @@ import { DpDatePickerModule } from 'ng2-date-picker';
 import { EditStreamComponent } from './pending-stream-editing/editStream.component';
 import { StatisticStreamComponent } from './done-stream-statistic/statisticStream.component';
 import { QuillModule } from 'ngx-quill';
+import { ImageUploadModule } from '../../shared/directives/image-upload/imageUpload.module';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { QuillModule } from 'ngx-quill';
     SharedModule,
     DpDatePickerModule,
     QuillModule,
+    ImageUploadModule,
   ],
   declarations: [AddNewStreamComponent, EditStreamComponent, StatisticStreamComponent],
 })

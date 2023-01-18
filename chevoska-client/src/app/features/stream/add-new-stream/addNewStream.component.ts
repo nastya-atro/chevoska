@@ -8,6 +8,7 @@ import Utils from '../../../core/utils/utils';
 import { Router } from '@angular/router';
 import { NewStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
 import { TextEditorService } from '../../../shared/modules/text-editor/text-editor.service';
+import { CroppedState } from '../../../shared/directives/image-upload/image-upload.component';
 
 @UntilDestroy()
 @Component({
@@ -44,17 +45,35 @@ export class AddNewStreamComponent {
       startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       isPrivate: new FormControl(false),
       keyWord: new FormControl('', [Validators.required, Validators.maxLength(20)]),
+
+      banner: new FormControl(''),
+      bannerCropSettings: new FormControl(''),
+      originBanner: new FormControl(''),
+      bannerFile: new FormControl(null),
+      croppedBannerFile: new FormControl(null),
     }) as NewStreamFormGroup;
   }
 
   createStream() {
     if (this.form.valid) {
       const data = {
-        ...this.form.value,
+        title: this.form.controls.title.value,
+        description: this.form.controls.description.value,
+        isPrivate: this.form.controls.isPrivate.value,
+        keyWord: this.form.controls.keyWord.value,
+        banner: this.form.controls.banner.value,
+        bannerCropSettings: this.form.controls.bannerCropSettings.value,
+        originBanner: this.form.controls.originBanner.value,
         startDate: Utils.localDateToUtcString(this.form.controls.startDate.value, this.dateForat),
       };
+      const formData = new FormData();
+      this.form.get('bannerFile')?.value && formData.append('bannerFile', this.form.get('bannerFile')?.value);
+      this.form.get('croppedBannerFile')?.value &&
+        formData.append('croppedBannerFile', this.form.get('croppedBannerFile')?.value);
+      formData.append('stream', JSON.stringify({ ...data }));
+
       this.streamsService
-        .createStream(data)
+        .createStream(formData)
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => {
@@ -70,5 +89,30 @@ export class AddNewStreamComponent {
 
   dateIntervalChange() {
     this.form.controls.startDate.updateValueAndValidity();
+  }
+
+  onUploadBackgroundFinished({ file }: { file: File; type: string }) {
+    this.form.patchValue({
+      originBanner: '',
+      bannerFile: file,
+    });
+  }
+
+  setCroppedBackgroundState({ file, position }: CroppedState) {
+    this.form.patchValue({
+      bannerCropSettings: position,
+      croppedBannerFile: file,
+      banner: '',
+    });
+  }
+
+  resetBackgroundImage() {
+    this.form.patchValue({
+      croppedBannerFile: null,
+      backgroundFile: null,
+      originBackground: null,
+      backgroundCropSettings: null,
+      background: null,
+    });
   }
 }

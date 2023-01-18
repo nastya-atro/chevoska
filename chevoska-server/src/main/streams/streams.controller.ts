@@ -8,7 +8,9 @@ import {
   Post,
   Put,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { StreamsService } from "./streams.service";
 import { ValidateDTO } from "../../common/decorators/validate-dto.decorator";
@@ -27,6 +29,10 @@ import { EmailRequestInputDto } from "./dto/stream-for-client-dto/emailRequest.i
 import { FiltersPipe } from "../../common/pipes/filters.pipe";
 import { StreamListForUserFiltersOutputDto } from "./dto/stream-for-user-dto/stream-list-filters.output.dto";
 import { StreamListForClientFiltersOutputDto } from "./dto/stream-for-client-dto/stream-list-filters.output.dto";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { StreamsFilesModel } from "./models/files.model";
+import { StreamCreateFileInputDto } from "./dto/stream-for-user-dto/stream-create-file.input.dto";
+import { StreamEditFileInputDto } from "./dto/stream-for-user-dto/stream-edit-file.input.dto";
 
 @Controller("streams")
 @UseGuards()
@@ -114,23 +120,44 @@ export class StreamsController {
     return await this.streamService.enterViewStream(body, streamId, session);
   }
 
-  @Post()
   @ValidateDTO()
+  @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "bannerFile", maxCount: 1 },
+      { name: "croppedBannerFile", maxCount: 1 },
+    ])
+  )
   async create(
-    @Body() body: CreateStreamInputDto,
+    @UploadedFiles()
+    files: StreamsFilesModel,
+    @Body() body: StreamCreateFileInputDto,
     @Host() domain,
     @CurrentUser() user: SessionUser
   ) {
-    return await this.streamService.create(body, domain, user?.id);
+    return await this.streamService.create(
+      body.stream,
+      domain,
+      user?.id,
+      files
+    );
   }
 
-  @Put(":id")
   @ValidateDTO()
-  async edit(
+  @Put(":id")
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "bannerFile", maxCount: 1 },
+      { name: "croppedBannerFile", maxCount: 1 },
+    ])
+  )
+  edit(
+    @UploadedFiles()
+    files: StreamsFilesModel,
     @Param("id", ParseIntPipe) id: number,
-    @Body() body: EditStreamInputDto
+    @Body() body: StreamEditFileInputDto
   ) {
-    return await this.streamService.edit(id, body);
+    return this.streamService.edit(id, body.stream, files);
   }
 
   @Get("key/:id")

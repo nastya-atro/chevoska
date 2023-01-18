@@ -89,11 +89,20 @@
         </div>
         <div class="row mt-2">
             <div class="form col d-flex flex-column align-self-center">
-                <div class="images-container">
-                    <div class="images-container_area images-container_area_preview">
-                        <img [src]="'assets/images/stream-preview.jpg'" />
-                    </div>
-                </div>
+                <app-image-upload
+                        [type]="'background'"
+                        [title]="'Banner'"
+                        [isCroppingNeed]="true"
+                        [slimSizeModal]="true"
+                        [descriptions]="['JPG and PNG images - max 1 GB']"
+                        [aspectRatio]="5/3"
+                        [image]="this.form.controls.originBanner.value"
+                        [croppedImage]="this.form.controls.banner.value"
+                        [cropSettings]="this.form.controls.bannerCropSettings.value"
+                        (uploadFinished)="onUploadBackgroundFinished($event)"
+                        (setCroppedBackgroundState)="setCroppedBackgroundState($event)"
+                        (removed)="this.resetBackgroundImage()"
+                ></app-image-upload>
             </div>
             <div class="col-6">
 

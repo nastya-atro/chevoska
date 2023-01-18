@@ -1,5 +1,23 @@
 @import "app/shared/modules/notifications/styles/style";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 
+.btn-icon > i {
+  position:relative;
+  top: calc(50% - 10px); /* 50% - 3/4 of icon height */
+}
+//.icon {
+//  font-size: inherit;
+//  width: 20px;
+//  height: 20px;
+//  flex-shrink: 0;
+//}
+//
+//.icon_md {
+//  font-size: inherit;
+//  width: 24px;
+//  height: 24px;
+//  flex-shrink: 0;
+//}
 
 // styles for Quill Text Editor
 .ql-editor {

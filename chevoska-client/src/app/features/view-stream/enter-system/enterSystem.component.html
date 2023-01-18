@@ -19,7 +19,7 @@
         <div class="row d-flex justify-content-center align-items-stretch">
             <div class="col-12 mt-3">
                 <div class="card text-bg-dark container-wrapper">
-                    <img class="card-img im-blurry-anyway" src="assets/images/stream-banner.jpg" alt="Card image" />
+                    <img class="card-img im-blurry-anyway" [src]="stream.banner ||'assets/images/stream-banner.jpg'" alt="Card image" />
                     <div class="card-img-overlay d-flex flex-column justify-content-center">
                         <div class="mt-md-4 pb-1">
                             <form   [formGroup]="form" (ngSubmit)="submit()" class="form">

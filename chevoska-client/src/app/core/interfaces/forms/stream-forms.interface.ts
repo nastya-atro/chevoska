@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
 export interface INewStream {
   title: string;
@@ -6,6 +6,11 @@ export interface INewStream {
   keyWord: string;
   startDate: string;
   isPrivate: boolean;
+
+  banner: string;
+  bannerCropSettings: string;
+  originBanner: string;
+  bannerFile: any;
 }
 
 export interface NewStreamFormGroup extends FormGroup {
@@ -17,6 +22,11 @@ export interface NewStreamFormGroup extends FormGroup {
     startDate: AbstractControl;
     isPrivate: AbstractControl;
     keyWord: AbstractControl;
+
+    banner: AbstractControl;
+    bannerCropSettings: AbstractControl;
+    originBanner: AbstractControl;
+    bannerFile: AbstractControl;
   };
 }
 
@@ -25,6 +35,11 @@ export interface IEditStream {
   description: string;
   startDate: string;
   isPrivate: boolean;
+
+  banner: string;
+  bannerCropSettings: string;
+  originBanner: string;
+  bannerFile: any;
 }
 
 export interface EditStreamFormGroup extends FormGroup {
@@ -35,5 +50,10 @@ export interface EditStreamFormGroup extends FormGroup {
     description: AbstractControl;
     startDate: AbstractControl;
     isPrivate: AbstractControl;
+
+    banner: AbstractControl;
+    bannerCropSettings: AbstractControl;
+    originBanner: AbstractControl;
+    bannerFile: AbstractControl;
   };
 }

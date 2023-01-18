@@ -18,8 +18,8 @@ export class StreamService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  createStream(stream: CreateStreamRequest): Observable<unknown> {
-    return this.streamsApi.createStream(stream);
+  createStream(formData: FormData): Observable<unknown> {
+    return this.streamsApi.createStream(formData);
   }
 
   getStream(id: number): Observable<StreamForUserResponse> {
@@ -30,7 +30,7 @@ export class StreamService implements OnDestroy {
     return this.streamsApi.generatePrivateKey(id);
   }
 
-  editStream(id: number, newStreamData: EditStreamRequest): Observable<unknown> {
-    return this.streamsApi.editStream(id, newStreamData);
+  editStream(id: number, formData: FormData): Observable<unknown> {
+    return this.streamsApi.editStream(id, formData);
   }
 }

@@ -10,6 +10,7 @@ import { RoleEntity } from "./role.entity";
 import { ProfileEntity } from "./profile.entity";
 import { StreamStatusesEntity } from "./stream-statuses.entity";
 import { StreamClientsEntity } from "./stream-clients.entity";
+import { BannerCropSettings } from "../models/background-crop-settings.model";
 
 @Entity("stream")
 export class StreamEntity {
@@ -42,6 +43,15 @@ export class StreamEntity {
 
   @Column()
   private: boolean;
+
+  @Column({ type: "varchar", length: 255 })
+  banner: string;
+
+  @Column({ name: "origin_banner", type: "varchar", length: 255 })
+  originBanner: string;
+
+  @Column({ name: "banner_crop_settings", type: "json" })
+  bannerCropSettings: BannerCropSettings;
 
   @ManyToOne(() => StreamStatusesEntity, (status) => status.id)
   @JoinColumn({ name: "status_id" })

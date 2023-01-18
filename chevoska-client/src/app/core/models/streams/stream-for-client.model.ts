@@ -5,6 +5,7 @@ export interface StreamsForClientList {
   private: boolean;
   startDate: string;
   streamStatus: string;
+  banner: string;
 }
 
 export interface StreamsForClientListResponse extends StreamsForClientList {}
@@ -15,6 +16,7 @@ export interface StreamForClient {
   private: boolean;
   startDate: string;
   streamStatus: string;
+  banner: string;
 }
 
 export interface StreamForClientResponse extends StreamForClient {}

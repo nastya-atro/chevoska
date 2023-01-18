@@ -10,6 +10,7 @@ import {
 import { ResponseListInterface } from '../../interfaces/payload-list.interface';
 import { QueryParams } from '../../interfaces/query-params.interfaces';
 import { StreamForClientResponse, StreamsForClientListResponse } from '../../models/streams/stream-for-client.model';
+import Utils from '../../utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +20,8 @@ export class StreamsApi implements OnDestroy {
 
   constructor(private api: ApiService) {}
 
-  createStream(stream: CreateStreamRequest): Observable<unknown> {
-    return this.api.post(`${this.SEGMENT}`, stream);
+  createStream(formData: FormData): Observable<unknown> {
+    return this.api.post(`${this.SEGMENT}`, formData);
   }
 
   getMyStreams(params: QueryParams): Observable<ResponseListInterface<StreamsForUserListResponse>> {
@@ -51,8 +52,8 @@ export class StreamsApi implements OnDestroy {
     return this.api.delete(`${this.SEGMENT}/${id}`);
   }
 
-  editStream(id: number, newStreamData: EditStreamRequest): Observable<unknown> {
-    return this.api.put(`${this.SEGMENT}/${id}`, newStreamData);
+  editStream(id: number, formData: FormData): Observable<unknown> {
+    return this.api.put(`${this.SEGMENT}/${id}`, formData);
   }
 
   ngOnDestroy(): void {}

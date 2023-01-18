@@ -16,6 +16,9 @@ export class StreamForClientListOutputDto {
   @Expose()
   startDate: Date;
 
+  @Expose()
+  banner: string;
+
   status: StreamStatusesEntity;
 
   @Expose()

@@ -1,5 +1,12 @@
-import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
+import { BannerCropInputDto } from "./banner-crop.input.dto";
 
 export class EditStreamInputDto {
   @IsNotEmpty({ always: true })
@@ -17,4 +24,17 @@ export class EditStreamInputDto {
   @IsNotEmpty({ always: true })
   @IsBoolean()
   readonly isPrivate: boolean;
+
+  @IsOptional()
+  @IsString()
+  readonly banner: string;
+
+  @IsOptional()
+  @IsString()
+  readonly originBanner: string;
+
+  @IsOptional()
+  @Type(() => BannerCropInputDto)
+  @ValidateNested({ each: true })
+  readonly bannerCropSettings: BannerCropInputDto;
 }

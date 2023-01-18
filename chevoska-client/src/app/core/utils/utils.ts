@@ -21,4 +21,10 @@ export default class Utils {
   static utcDateStringToLocalString(date: string, format?: string | undefined): string {
     return moment(new Date(date)).format(format);
   }
+
+  static fromObjToFormData(data: { [key: string]: any }) {
+    const formData = new FormData();
+    Object.keys(data).forEach(key => formData.append(key, data[key]));
+    return formData;
+  }
 }

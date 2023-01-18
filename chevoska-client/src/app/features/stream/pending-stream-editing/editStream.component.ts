@@ -13,6 +13,7 @@ import { EditStreamFormGroup } from '../../../core/interfaces/forms/stream-forms
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
 import { TextEditorService } from '../../../shared/modules/text-editor/text-editor.service';
+import { CroppedState } from '../../../shared/directives/image-upload/image-upload.component';
 
 @UntilDestroy()
 @Component({
@@ -62,6 +63,12 @@ export class EditStreamComponent implements OnInit {
       description: new FormControl('', [Validators.required]),
       startDate: new FormControl('', [Validators.required, Validators.maxLength(80)]),
       isPrivate: new FormControl(false),
+
+      banner: new FormControl(''),
+      bannerCropSettings: new FormControl(''),
+      originBanner: new FormControl(''),
+      bannerFile: new FormControl(null),
+      croppedBannerFile: new FormControl(null),
     }) as EditStreamFormGroup;
   }
 
@@ -81,6 +88,9 @@ export class EditStreamComponent implements OnInit {
             description: this.stream.description,
             startDate: Utils.utcDateStringToLocalString(this.stream.startDate, this.dateForat),
             isPrivate: this.stream.private,
+            banner: this.stream.banner,
+            bannerCropSettings: this.stream.bannerCropSettings,
+            originBanner: this.stream.originBanner,
           });
         }
       },
@@ -127,11 +137,22 @@ export class EditStreamComponent implements OnInit {
     if (this.id) {
       if (this.form.valid) {
         const data = {
-          ...this.form.value,
-          // startDate: Utils.localDateToUtcString(this.form.get('startDate')?.value, this.dateForat),
+          title: this.form.controls.title.value,
+          description: this.form.controls.description.value,
+          isPrivate: this.form.controls.isPrivate.value,
+          banner: this.form.controls.banner.value,
+          bannerCropSettings: this.form.controls.bannerCropSettings.value,
+          originBanner: this.form.controls.originBanner.value,
+          startDate: this.form.controls.startDate.value,
         };
+        const formData = new FormData();
+        this.form.get('bannerFile')?.value && formData.append('bannerFile', this.form.get('bannerFile')?.value);
+        this.form.get('croppedBannerFile')?.value &&
+          formData.append('croppedBannerFile', this.form.get('croppedBannerFile')?.value);
+        formData.append('stream', JSON.stringify({ ...data }));
+
         this.streamService
-          .editStream(this.id, data)
+          .editStream(this.id, formData)
           .pipe(
             untilDestroyed(this),
             finalize(() => (this.loading = false))
@@ -156,5 +177,30 @@ export class EditStreamComponent implements OnInit {
   copyToClipboard(text: string) {
     this.clipboard.copy(text);
     this.notifyService.notifier.success('Copied to clipboard success');
+  }
+
+  onUploadBackgroundFinished({ file }: { file: File; type: string }) {
+    this.form.patchValue({
+      originBanner: '',
+      bannerFile: file,
+    });
+  }
+
+  setCroppedBackgroundState({ file, position }: CroppedState) {
+    this.form.patchValue({
+      bannerCropSettings: position,
+      croppedBannerFile: file,
+      banner: '',
+    });
+  }
+
+  resetBackgroundImage() {
+    this.form.patchValue({
+      croppedBannerFile: null,
+      backgroundFile: null,
+      originBackground: null,
+      backgroundCropSettings: null,
+      background: null,
+    });
   }
 }

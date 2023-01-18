@@ -14,6 +14,18 @@ export class UploadPath {
     "uploads/streams"
   );
   static localStreamsStoragePath = "uploads/streams";
+
+  static globalStoragePath = path.join(
+    process.env.STORAGE_DIR ||
+      path.join(__dirname, "..", "..", "..", "public/"),
+    "uploads"
+  );
+
+  static globalImagesPath = path.join(
+    process.env.STORAGE_DIR ||
+      path.join(__dirname, "..", "..", "..", "public/"),
+    "images"
+  );
 }
 
 /*dev:

@@ -2,11 +2,13 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import helmet from "helmet";
+import * as express from "express";
 import * as session from "express-session";
 import * as nocache from "nocache";
 import { logger } from "./common/middleware/logger.middleware";
 import { getCacheClient } from "./shared/redis";
 import * as RedisStore from "connect-redis";
+import { UploadPath } from "./common/constants/uploadPath.constants";
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || "localhost";
@@ -45,6 +47,9 @@ async function bootstrap() {
       saveUninitialized: false,
     })
   );
+
+  app.use("/uploads", express.static(UploadPath.globalStoragePath));
+  app.use("/images", express.static(UploadPath.globalImagesPath));
 
   await app.listen(PORT, HOST);
 }

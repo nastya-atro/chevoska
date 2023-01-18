@@ -8,11 +8,24 @@
     <div class="row mt-5">
         <div class="form col d-flex flex-column align-self-center">
             <div class="logo-block">
-                <img class="logo" [src]="'assets/images/avatar.jpg'" />
+                <img class="logo" [src]="this.imagePreview ||form.controls.avatar.value ||'assets/images/avatar.jpg'" />
             </div>
         </div>
 
         <form [formGroup]="form" class="form col-6">
+
+            <div class="form-outline mb-4">
+                <label for="file-image-1" class="form-label">Avatar</label>
+                <input
+                    #fileInput
+                    (change)="handleUpload($event)"
+                    accept="image/*"
+                    id="file-image-1"
+                    class="form-control"
+                    type="file"
+                />
+            </div>
+
             <div class="form-outline mb-4">
                 <label class="form-label" for="firstName">First Name</label>
                 <input

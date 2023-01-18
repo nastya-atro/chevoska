@@ -10,6 +10,7 @@ import { Profile, ProfileResolverData } from '../../core/models/user.model';
 import { UserProfileFormGroup } from '../../core/interfaces/forms/profile-forms.interface';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
+import { finalize } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -30,6 +31,10 @@ import { fadeIn } from 'ng-animate';
 export class ProfileComponent implements OnInit {
   profile!: Profile;
   form: UserProfileFormGroup;
+  imagePreview!: string;
+  loading = false;
+  uploadedFile: File | null = null;
+
   constructor(
     private authService: AuthenticationService,
     private profileService: ProfileService,
@@ -67,6 +72,7 @@ export class ProfileComponent implements OnInit {
             username: this.profile.username || '',
             phone: this.profile.phone || '',
             email: this.profile.email || '',
+            avatar: this.profile.avatar || '',
           });
         }
       },
@@ -93,11 +99,16 @@ export class ProfileComponent implements OnInit {
   }
 
   editProfile() {
+    const data = { ...this.form.value, file: this.uploadedFile }; // get form data
+    this.loading = true;
+
     if (this.form.valid) {
-      const data = { ...this.form.value };
       this.profileService
         .editProfile(data)
-        .pipe(untilDestroyed(this))
+        .pipe(
+          untilDestroyed(this),
+          finalize(() => (this.loading = false))
+        )
         .subscribe({
           next: () => {
             this.loadProfile();
@@ -107,6 +118,23 @@ export class ProfileComponent implements OnInit {
         });
     } else {
       Utils.checkFormValidation(this.form);
+    }
+  }
+
+  handleUpload(event: any) {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | [] = element.files || [];
+    let file = fileList[0];
+    if (file) {
+      this.uploadedFile = file;
+      this.form.patchValue({
+        avatar: '',
+      });
+      let reader = new FileReader();
+      reader.onload = (event: any) => {
+        this.imagePreview = event.target.result;
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

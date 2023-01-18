@@ -15,6 +15,7 @@ export interface ViewStream {
   enterLink: string;
   startDate: string;
   streamStatus: string;
+  banner: string;
 }
 
 export interface viewStreamResolverData {
