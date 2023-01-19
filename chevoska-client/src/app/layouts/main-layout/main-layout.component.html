@@ -1,6 +1,8 @@
 <nav class="navbar bg-body-tertiary fixed-top bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/main">Chevos'Ka_Streams</a>
+        <a class="navbar-brand" href="/main">
+            Chevos'Ka_Streams
+        </a>
         <div class="d-flex flex-row gap-3">
             <div class="navbar-nav d-flex flex-row gap-3">
                 <ng-container *ngIf="authService.isAuthorized() | async; else notAuth">

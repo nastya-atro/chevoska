@@ -33,3 +33,18 @@
   //border: 2px dashed rgba(0, 0, 0, 0.7);
   border-radius: 8px;
 }
+
+.logo{
+  height: 50px;
+  width: auto;
+}
+
+.navbar-brand{
+  border: 1.5px dashed rgb(52, 52, 52);
+ &_white {
+   border: 1.5px dashed rgb(255, 255, 255);
+ }
+  padding: 5px;
+  border-radius: 8px;
+
+}

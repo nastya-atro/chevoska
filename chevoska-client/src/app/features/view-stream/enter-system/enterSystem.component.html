@@ -1,6 +1,6 @@
 <nav class="navbar bg-body-tertiary fixed-top bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand text-light" href="/main">Chevos'Ka_Streams</a>
+        <a class="navbar-brand navbar-brand_white text-light" href="/main">Chevos'Ka_Streams</a>
     </div>
 </nav>
 
@@ -13,23 +13,20 @@
                 <span *ngIf="isStreamEnterAvailable"> You can enter the stream 6 hours before the start . </span>
             </small>
         </p>
-        <figcaption class="figure-caption">
-            Stream start at {{ stream.startDate | date: "medium" }}
-        </figcaption>
+        <figcaption class="figure-caption">Stream start at {{ stream.startDate | date: "medium" }}</figcaption>
     </div>
 
     <div class="row">
         <div class="col">
-
             <div class="container w-100" [ngClass]="isStreamEnterAvailable ? 'im-blurry-anyway' : ''">
                 <div class="row d-flex justify-content-center align-items-stretch">
                     <div class="col-12 mt-3">
                         <div class="card text-bg-dark images-container">
                             <div class="images-container_area images-container_area_preview">
                                 <img
-                                        class="card-img im-blurry-anyway"
-                                        [src]="stream.banner || 'assets/images/stream-banner.jpg'"
-                                        alt="Card image"
+                                    class="card-img im-blurry-anyway"
+                                    [src]="stream.banner || 'assets/images/stream-banner.jpg'"
+                                    alt="Card image"
                                 />
                             </div>
                             <div class="card-img-overlay d-flex flex-column align-items-center justify-content-center">
@@ -37,15 +34,15 @@
                                     <form [formGroup]="form" (ngSubmit)="submit()" class="form">
                                         <div class="form-outline mb-2">
                                             <input
-                                                    [formControl]="form.controls.username"
-                                                    type="text"
-                                                    placeholder="Username"
-                                                    class="form-control form-control-lg"
-                                                    [ngClass]="
-                                            form.controls.username.errors && form.controls.username.touched
-                                                ? 'is-invalid'
-                                                : ''
-                                        "
+                                                [formControl]="form.controls.username"
+                                                type="text"
+                                                placeholder="Username"
+                                                class="form-control form-control-lg"
+                                                [ngClass]="
+                                                    form.controls.username.errors && form.controls.username.touched
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                "
                                             />
                                             <div class="invalid-feedback" *ngIf="form.controls.username.errors">
                                                 {{ form.controls.username.errors | validateError }}
@@ -54,15 +51,15 @@
 
                                         <div class="form-outline mb-2">
                                             <input
-                                                    [formControl]="form.controls.email"
-                                                    type="email"
-                                                    placeholder="Email"
-                                                    class="form-control form-control-lg"
-                                                    [ngClass]="
-                                            form.controls.email.errors && form.controls.email.touched
-                                                ? 'is-invalid'
-                                                : ''
-                                        "
+                                                [formControl]="form.controls.email"
+                                                type="email"
+                                                placeholder="Email"
+                                                class="form-control form-control-lg"
+                                                [ngClass]="
+                                                    form.controls.email.errors && form.controls.email.touched
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                "
                                             />
                                             <div class="invalid-feedback" *ngIf="form.controls.email.errors">
                                                 {{ form.controls.email.errors | validateError: "email" }}
@@ -71,13 +68,15 @@
 
                                         <div *ngIf="stream.private" class="form-outline">
                                             <input
-                                                    [formControl]="form.controls.key"
-                                                    type="text"
-                                                    placeholder="Key for Enter"
-                                                    class="form-control form-control-lg"
-                                                    [ngClass]="
-                                            form.controls.key.errors && form.controls.key.touched ? 'is-invalid' : ''
-                                        "
+                                                [formControl]="form.controls.key"
+                                                type="text"
+                                                placeholder="Key for Enter"
+                                                class="form-control form-control-lg"
+                                                [ngClass]="
+                                                    form.controls.key.errors && form.controls.key.touched
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                "
                                             />
                                             <div class="invalid-feedback" *ngIf="form.controls.key.errors">
                                                 {{ form.controls.key.errors }}
@@ -86,8 +85,8 @@
 
                                         <div class="pt-3 d-grid gap-2 col-6 mx-auto">
                                             <button
-                                                    [disabled]="this.isStreamEnterAvailable && !this.isStreamStarted"
-                                                    class="btn btn-dark btn-lg btn-block"
+                                                [disabled]="this.isStreamEnterAvailable && !this.isStreamStarted"
+                                                class="btn btn-dark btn-lg btn-block"
                                             >
                                                 Join to stream
                                             </button>
@@ -99,8 +98,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
         <div class="col-4 d-flex align-items-center">
             <div class="text-light">
