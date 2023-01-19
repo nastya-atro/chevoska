@@ -222,13 +222,22 @@ export class ImageUploadComponent implements OnInit {
   uploadFile(file: File) {
     if (this.isCroppingNeed) {
       this.state.image.originFile = file;
-    } else {
-      this.state.image.originFile = file;
       this.state.image.position = null;
       this.uploadFinished.emit({
         file: this.state.image.originFile,
         type: this.type,
       });
+      this.setCroppedBackgroundState.emit({
+        file: this.state.image.originFile,
+        position: null,
+      });
+    } else {
+      // this.state.image.originFile = file;
+      // this.state.image.position = null;
+      // this.uploadFinished.emit({
+      //   file: this.state.image.originFile,
+      //   type: this.type,
+      // });
     }
   }
 

@@ -1,103 +1,131 @@
-<div class="row">
-    <div class="col text-end">
-        <button type="button" (click)="createStream()" class="btn btn-dark">Create Stream</button>
-    </div>
-</div>
-
-<form [formGroup]="form" class="form">
-    <div class="row mt-2">
-        <div class="form-outline mb-4">
-            <label class="form-label" for="title">Title</label>
-            <input
-                [formControl]="form.controls.title"
-                type="text"
-                id="title"
-                class="form-control form-control-lg"
-                [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
-            />
-            <div class="invalid-feedback" *ngIf="form.controls.title.errors">
-                {{ form.controls.title.errors | validateError }}
-            </div>
-        </div>
-    </div>
+<div class="stream-container" [@fadeIn]="'fadeIn'">
     <div class="row">
-        <div class="form-outline mb-4">
-            <label class="form-label">Description</label>
-            <div
-                [ngClass]="form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''"
-                class="form-control form-control-lg"
-            >
-                <quill-editor
-                    [placeholder]="'Insert description here...'"
-                    [formControl]="form.controls.description"
-                    [modules]="quillConfig"
-                ></quill-editor>
-            </div>
-            <div class="invalid-feedback" *ngIf="form.controls.description.errors">
-                {{ form.controls.description.errors | validateError }}
-            </div>
+        <div class="col text-end position-fixed bg-light">
+            <button type="button" (click)="createStream()" class="btn btn-dark">Create Stream</button>
         </div>
     </div>
-    <div class="row mt-2">
-        <div class="form col-6 d-flex flex-column align-self-center">
-            <app-image-upload
+
+    <form [formGroup]="form" class="form mt-4 mb-1">
+        <div class="row mt-2 mb-3">
+            <div class="form-outline">
+                <figcaption class="figure-caption form-label">Title</figcaption>
+                <input
+                    [formControl]="form.controls.title"
+                    type="text"
+                    id="title"
+                    class="form-control form-control-lg"
+                    [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
+                />
+                <div class="invalid-feedback" *ngIf="form.controls.title.errors">
+                    {{ form.controls.title.errors | validateError }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2 mb-1">
+            <div class="form col d-flex flex-column align-self-center">
+                <app-image-upload
                     [type]="'background'"
                     [title]="'Banner'"
                     [isCroppingNeed]="true"
                     [slimSizeModal]="true"
                     [descriptions]="['JPG and PNG images - max 1 GB']"
-                    [aspectRatio]="5/3"
+                    [aspectRatio]="5 / 3"
+                    [markError]="!!(form.controls.originBanner.invalid && form.controls.originBanner.touched)"
                     [image]="this.form.controls.originBanner.value"
                     [croppedImage]="this.form.controls.banner.value"
                     [cropSettings]="this.form.controls.bannerCropSettings.value"
                     (uploadFinished)="onUploadBackgroundFinished($event)"
                     (setCroppedBackgroundState)="setCroppedBackgroundState($event)"
                     (removed)="this.resetBackgroundImage()"
-            ></app-image-upload>
-        </div>
-        <div class="col">
-            <div class="form-outline mb-4">
-                <div class="form-check">
+                ></app-image-upload>
+            </div>
+            <div class="col-6 mt-4">
+                <div class="form-outline mb-2">
+                    <div class="form-check p-0">
+                        <figcaption class="figure-caption form-label text-end">Toggle to change Privacy</figcaption>
+                        <div>
+                            <input
+                                [formControl]="form.controls.isPrivate"
+                                type="checkbox"
+                                class="btn-check"
+                                id="btn-check"
+                            />
+                            <label class="btn btn-icon d-flex gap-2" for="btn-check">
+                                <i
+                                    [class]="form.controls.isPrivate.value ? 'bi bi-lock-fill' : 'bi bi-unlock-fill'"
+                                ></i>
+                                <span>{{ form.controls.isPrivate.value ? "Private" : "Public " }}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-outline">
+                    <figcaption class="figure-caption form-label text-end">Start Date</figcaption>
                     <input
-                        [formControl]="form.controls.isPrivate"
-                        class="form-check-input"
-                        type="checkbox"
-                        id="isPrivate"
+                        [formControl]="form.controls.startDate"
+                        mode="daytime"
+                        id="startDate"
+                        class="form-control form-control-lg"
+                        [dpDayPicker]="dayPickerconfig"
+                        (onChange)="dateIntervalChange()"
+                        [ngClass]="
+                            form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''
+                        "
                     />
-                    <label class="form-check-label" for="isPrivate"> Private stream </label>
+                    <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
+                        {{ form.controls.startDate.errors | validateError }}
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-outline mb-4">
-                <label class="form-label" for="startDate">Start Date</label>
-                <input
-                    [formControl]="form.controls.startDate"
-                    mode="daytime"
-                    id="startDate"
-                    class="form-control form-control-lg"
-                    [dpDayPicker]="dayPickerconfig"
-                    (onChange)="dateIntervalChange()"
-                    [ngClass]="form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''"
-                />
-                <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
-                    {{ form.controls.startDate.errors | validateError }}
-                </div>
-            </div>
+                <div class="form-outline">
+                    <figcaption class="figure-caption form-label text-end">Key Word For Entering Link</figcaption>
+                    <input
+                        [formControl]="form.controls.keyWord"
+                        type="text"
+                        id="keyWord"
+                        class="form-control form-control-lg"
+                        [ngClass]="form.controls.keyWord.errors && form.controls.keyWord.touched ? 'is-invalid' : ''"
+                    />
 
-            <div class="form-outline mb-4">
-                <label class="form-label" for="keyWord">Key Word For Entering Link</label>
-                <input
-                    [formControl]="form.controls.keyWord"
-                    type="text"
-                    id="keyWord"
-                    class="form-control form-control-lg"
-                    [ngClass]="form.controls.keyWord.errors && form.controls.keyWord.touched ? 'is-invalid' : ''"
-                />
-
-                <div class="invalid-feedback" *ngIf="form.controls.keyWord.errors">
-                    {{ form.controls.keyWord.errors | validateError }}
+                    <div class="invalid-feedback" *ngIf="form.controls.keyWord.errors">
+                        {{ form.controls.keyWord.errors | validateError }}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+
+        <div class="row">
+            <div class="form-outline mb-4">
+                <figcaption class="figure-caption form-label text-end">Description</figcaption>
+                <div
+                    class="input-block"
+                    [ngClass]="
+                        form.controls.description.errors && form.controls.description.touched
+                            ? 'input-block_invalid'
+                            : ''
+                    "
+                >
+                    <div
+                        [ngClass]="
+                            form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''
+                        "
+                        class="form-control form-control-lg bg-dark p-3"
+                    >
+                        <quill-editor
+                            class="quill-editor"
+                            (onEditorCreated)="onEditorCreated($event)"
+                            [placeholder]="''"
+                            [formControl]="form.controls.description"
+                            [modules]="quillConfig"
+                        ></quill-editor>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="form.controls.description.errors">
+                        {{ form.controls.description.errors | validateError }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -18,7 +18,7 @@ export class StreamService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  createStream(formData: FormData): Observable<unknown> {
+  createStream(formData: FormData): Observable<{ streamId: number }> {
     return this.streamsApi.createStream(formData);
   }
 

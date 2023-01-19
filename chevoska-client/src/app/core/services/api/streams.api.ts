@@ -20,7 +20,7 @@ export class StreamsApi implements OnDestroy {
 
   constructor(private api: ApiService) {}
 
-  createStream(formData: FormData): Observable<unknown> {
+  createStream(formData: FormData): Observable<{ streamId: number }> {
     return this.api.post(`${this.SEGMENT}`, formData);
   }
 

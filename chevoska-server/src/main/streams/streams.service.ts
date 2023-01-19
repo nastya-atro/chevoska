@@ -377,6 +377,7 @@ export class StreamsService {
   ) {
     const { title, description, keyWord, startDate, isPrivate } = stream;
     const enterLink = generateLink("sha1", keyWord, title);
+    let streamId = null;
     const profile = await this.profileRepository.findOneBy({
       id: userId,
     });
@@ -398,28 +399,13 @@ export class StreamsService {
           profile,
           status,
         });
-
-        const globalPath = UploadPath.globalStreamsStoragePath;
-        const localPath = UploadPath.localStreamsStoragePath;
-        const originBannerFilename = files?.bannerFile
-          ? uploadImage(
-              String(newStream.id),
-              files.bannerFile[0],
-              globalPath,
-              localPath,
-              "origin-banner"
-            )
-          : stream.originBanner || "";
-
-        const croppedBannerFilename = files?.croppedBannerFile
-          ? uploadImage(
-              String(newStream.id),
-              files.croppedBannerFile[0],
-              globalPath,
-              localPath,
-              "banner"
-            )
-          : stream.banner || "";
+        const { originBannerFilename, croppedBannerFilename } =
+          this.uploadImages(
+            newStream.id,
+            files,
+            stream.originBanner,
+            stream.banner
+          );
 
         const streamForUpdating = {
           ...newStream,
@@ -433,6 +419,8 @@ export class StreamsService {
           .update(StreamEntity, { ...streamForUpdating })
           .whereInIds([newStream.id])
           .execute();
+
+        streamId = newStream.id;
 
         if (files) {
           const uploadPath = path.join(
@@ -452,7 +440,7 @@ export class StreamsService {
           }
         }
       });
-      return { statusCode: 204 };
+      return { streamId: streamId };
     } catch (e) {
       if (e.code === "ER_DUP_ENTRY") {
         throw new ConflictException();
@@ -463,31 +451,16 @@ export class StreamsService {
 
   async edit(id: number, body: EditStreamModel, files: StreamsFilesModel) {
     try {
-      const globalPath = UploadPath.globalStreamsStoragePath;
-      const localPath = UploadPath.localStreamsStoragePath;
-      const originBannerFilename = files?.bannerFile
-        ? uploadImage(
-            String(id),
-            files.bannerFile[0],
-            globalPath,
-            localPath,
-            "origin-banner"
-          )
-        : body.originBanner || "";
-
-      const croppedBannerFilename = files?.croppedBannerFile
-        ? uploadImage(
-            String(id),
-            files.croppedBannerFile[0],
-            globalPath,
-            localPath,
-            "banner"
-          )
-        : body.banner || "";
+      const { originBannerFilename, croppedBannerFilename } = this.uploadImages(
+        id,
+        files,
+        body.originBanner,
+        body.banner
+      );
 
       const streamForUpdating = {
         title: body.title,
-        description: body.title,
+        description: body.description,
         startDate: body.startDate,
         private: body.isPrivate,
         originBanner: originBannerFilename,
@@ -524,6 +497,37 @@ export class StreamsService {
       }
       throw e;
     }
+  }
+
+  private uploadImages(
+    id: number,
+    files: StreamsFilesModel,
+    originBanner,
+    banner
+  ) {
+    const globalPath = UploadPath.globalStreamsStoragePath;
+    const localPath = UploadPath.localStreamsStoragePath;
+    const originBannerFilename = files?.bannerFile
+      ? uploadImage(
+          String(id),
+          files.bannerFile[0],
+          globalPath,
+          localPath,
+          "origin-banner"
+        )
+      : originBanner || "";
+
+    const croppedBannerFilename = files?.croppedBannerFile
+      ? uploadImage(
+          String(id),
+          files.croppedBannerFile[0],
+          globalPath,
+          localPath,
+          "banner"
+        )
+      : banner || "";
+
+    return { originBannerFilename, croppedBannerFilename };
   }
 
   async remove(id: number): Promise<{ statusCode: number }> {

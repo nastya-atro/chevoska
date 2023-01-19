@@ -9,30 +9,43 @@
         </div>
     </div>
 </nav>
+
 <div *ngIf="{ client: client$ | async, viewStream: viewStream$ | async } as data">
-    <div class="text-light text-end">
+    <div class="text-light text-start">
         <p>
             <small>
                 Hello <b>{{ data.client.username }}, </b> <br />Thanks for joining our stream !
             </small>
+
         </p>
+        <figcaption class="figure-caption">
+            Stream start at {{ data.viewStream.startDate | date: "medium" }}
+        </figcaption>
     </div>
 
-    <div class="container w-100">
-        <div class="row d-flex justify-content-center align-items-stretch">
-            <div class="col-12 mt-3">
-                <div class="card text-bg-dark container-wrapper">
-                    <img class="card-img im-blurry-anyway" [src]="data.viewStream.banner ||'assets/images/stream-banner.jpg'" alt="Card image" />
+    <div class="row">
+        <div class="col">
+
+            <div class="container w-100">
+                <div class="row d-flex justify-content-center align-items-stretch">
+                    <div class="col-12 mt-3">
+                        <div class="card text-bg-dark images-container">
+                            <div class="images-container_area images-container_area_preview">
+                                <img
+                                    class="card-img im-blurry-anyway"
+                                    [src]="data.viewStream.banner || 'assets/images/stream-banner.jpg'"
+                                    alt="Card image"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <figcaption class="figure-caption text-end mt-2 mb-3">
-        Stream start at {{ data.viewStream.startDate | date: "medium" }}
-    </figcaption>
-
-    <div class="text-light">
-        <app-date-count-down [day]="data.viewStream.startDate"></app-date-count-down>
+        <div class="col-4 d-flex align-items-center">
+            <div class="text-light">
+                <app-date-count-down [day]="data.viewStream.startDate"></app-date-count-down>
+            </div>
+        </div>
     </div>
 </div>

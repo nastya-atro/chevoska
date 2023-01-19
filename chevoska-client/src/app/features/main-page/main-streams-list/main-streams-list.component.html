@@ -2,14 +2,13 @@
     <div class="mt-3 d-flex flex-row justify-content-between">
         <h4>Streams</h4>
         <div class="d-flex flex-row gap-2">
-
             <app-multiselect
-                    [title]="'Status'"
-                    [entity]="'streams'"
-                    [filterProperty]="'statuses'"
-                    [options]="filtersOptions.statuses"
-                    [selectedOptions]="this.selectedStatuses"
-                    (handleChange)="handleMultiselect($event)"
+                [title]="'Status'"
+                [entity]="'streams'"
+                [filterProperty]="'statuses'"
+                [options]="filtersOptions.statuses"
+                [selectedOptions]="this.selectedStatuses"
+                (handleChange)="handleMultiselect($event)"
             ></app-multiselect>
 
             <app-multiselect
@@ -56,7 +55,7 @@
             <tr class="align-middle" *ngFor="let stream of streams">
                 <td>{{ stream.title || "—" }}</td>
                 <td>{{ (stream.startDate | date: "medium") || "—" }}</td>
-                <td>{{ stream.private ? "private" : "social" }}</td>
+                <td>{{ stream.private ? "private" : "free" }}</td>
                 <td class="text-end">
                     <button class="btn btn-dark" [routerLink]="['/detail/', stream.id]">Show</button>
                 </td>

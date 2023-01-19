@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
 import Utils from '../../../core/utils/utils';
 import { NotifyService } from '../../../shared/modules/notifications/notify.service';
@@ -49,6 +49,14 @@ export class EditStreamComponent implements OnInit {
   };
   quillConfig!: {};
 
+  displayBannerError: ValidatorFn = (): ValidationErrors | null => {
+    if (this.form?.controls.bannerFile.value || this.form?.controls.originBanner.value) {
+      return null;
+    } else {
+      return { rangeError: true };
+    }
+  };
+
   constructor(
     private clipboard: Clipboard,
     private streamService: StreamService,
@@ -66,7 +74,7 @@ export class EditStreamComponent implements OnInit {
 
       banner: new FormControl(''),
       bannerCropSettings: new FormControl(''),
-      originBanner: new FormControl(''),
+      originBanner: new FormControl('', this.displayBannerError),
       bannerFile: new FormControl(null),
       croppedBannerFile: new FormControl(null),
     }) as EditStreamFormGroup;
@@ -111,6 +119,9 @@ export class EditStreamComponent implements OnInit {
           description: result.description,
           startDate: Utils.utcDateStringToLocalString(result.startDate, this.dateForat),
           isPrivate: result.private,
+          banner: result.banner,
+          bannerCropSettings: result.bannerCropSettings,
+          originBanner: result.originBanner,
         });
         this.stream = {
           ...result,
@@ -197,10 +208,14 @@ export class EditStreamComponent implements OnInit {
   resetBackgroundImage() {
     this.form.patchValue({
       croppedBannerFile: null,
-      backgroundFile: null,
-      originBackground: null,
-      backgroundCropSettings: null,
-      background: null,
+      bannerFile: null,
+      originBanner: null,
+      bannerCropSettings: null,
+      banner: null,
     });
+  }
+
+  onEditorCreated(quill: any) {
+    quill.format('color', 'red');
   }
 }

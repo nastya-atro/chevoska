@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
 import { StreamService } from '../stream.service';
 import { NotifyService } from '../../../shared/modules/notifications/notify.service';
@@ -9,12 +9,24 @@ import { Router } from '@angular/router';
 import { NewStreamFormGroup } from '../../../core/interfaces/forms/stream-forms.interface';
 import { TextEditorService } from '../../../shared/modules/text-editor/text-editor.service';
 import { CroppedState } from '../../../shared/directives/image-upload/image-upload.component';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { fadeIn } from 'ng-animate';
 
 @UntilDestroy()
 @Component({
   selector: 'app-new-stream-stream',
   templateUrl: './addNewStream.component.html',
   styleUrls: ['./addNewStream.component.scss', '../datePicker.styles.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(
+        '* => *',
+        useAnimation(fadeIn, {
+          params: { timing: 0.4, delay: 0 },
+        })
+      ),
+    ]),
+  ],
 })
 export class AddNewStreamComponent {
   form: NewStreamFormGroup;
@@ -30,6 +42,14 @@ export class AddNewStreamComponent {
     disableKeypress: true,
   };
   quillConfig!: {};
+
+  displayBannerError: ValidatorFn = (): ValidationErrors | null => {
+    if (this.form?.controls.bannerFile.value || this.form?.controls.originBanner.value) {
+      return null;
+    } else {
+      return { rangeError: true };
+    }
+  };
 
   constructor(
     private streamsService: StreamService,
@@ -48,7 +68,7 @@ export class AddNewStreamComponent {
 
       banner: new FormControl(''),
       bannerCropSettings: new FormControl(''),
-      originBanner: new FormControl(''),
+      originBanner: new FormControl('', this.displayBannerError),
       bannerFile: new FormControl(null),
       croppedBannerFile: new FormControl(null),
     }) as NewStreamFormGroup;
@@ -76,8 +96,8 @@ export class AddNewStreamComponent {
         .createStream(formData)
         .pipe(untilDestroyed(this))
         .subscribe({
-          next: () => {
-            this.router.navigate(['/streams']);
+          next: res => {
+            this.router.navigate([`/edit/${res.streamId}`]);
             this.notifyService.notifier.success('Stream created success');
           },
           error: () => {},
@@ -109,10 +129,14 @@ export class AddNewStreamComponent {
   resetBackgroundImage() {
     this.form.patchValue({
       croppedBannerFile: null,
-      backgroundFile: null,
-      originBackground: null,
-      backgroundCropSettings: null,
-      background: null,
+      bannerFile: null,
+      originBanner: null,
+      bannerCropSettings: null,
+      banner: null,
     });
+  }
+
+  onEditorCreated(quill: any) {
+    quill.format('color', '#ffffff');
   }
 }

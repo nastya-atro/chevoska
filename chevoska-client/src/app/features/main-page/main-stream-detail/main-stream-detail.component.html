@@ -1,99 +1,63 @@
 <div [@fadeIn]="'fadeIn'" *ngIf="stream">
-
-    <div class="row gy-2 justify-content-start mb-1">
+    <div class="row gy-2 justify-content-start">
         <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row gap-4 justify-content-between">
+            <div
+                class="block-with-radius p-3 border bg-dark text-light d-flex flex-row gap-4 justify-content-between align-items-center"
+            >
                 <h2>{{ stream.title }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row gap-4  justify-content-between">
-                <quill-view-html [content]="stream.description || '_'"></quill-view-html>
-            </div>
-        </div>
-    </div>
-
-    <div class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div class="p-3 border bg-light d-flex flex-row gap-4 justify-content-between">
-                <div>Start Date</div>
-                <div>{{ stream.startDate | date: "medium" }}</div>
-            </div>
-        </div>
-    </div>
-
-    <ng-container *ngIf="!stream.private; else privateStream">
-        <div class="row gy-2 justify-content-start mb-1">
-            <div class="col">
-                <div class="p-3 border bg-light d-flex flex-row gap-4  justify-content-between">
-                    <div>Make request a link to join the stream</div>
-                    <button
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modal-request"
-                        class="btn btn-outline-dark"
-                    >
-                        Request Join Link
-                    </button>
+                <div class="d-flex f-row gap-2 align-items-center" *ngIf="stream.private">
+                    <figcaption class="figure-caption pb-2">Private Stream</figcaption>
+                    <h2><i class="bi bi-shield-lock-fill"></i></h2>
                 </div>
             </div>
         </div>
-    </ng-container>
+    </div>
 
-    <ng-template #privateStream>
-        <div *ngIf="stream.private" class="row gy-2 justify-content-start mb-1">
-            <div class="col">
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button
-                                class="accordion-button"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne"
-                                aria-expanded="true"
-                                aria-controls="collapseOne"
-                            >
-                                This stream is PRIVATE - How to access the stream ?
-                            </button>
-                        </h2>
-                        <div
-                            id="collapseOne"
-                            class="accordion-collapse collapse show"
-                            aria-labelledby="headingOne"
-                            data-bs-parent="#accordionExample"
-                        >
-                            <div class="accordion-body d-flex flex-column gap-2">
-                                <strong>Conditions for joining the stream:</strong>
-                                <div>...</div>
-                                <div class="d-flex flex-row justify-content-between">
-                                    <div></div>
-                                    <button
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal-request"
-                                        class="btn btn-outline-dark"
-                                    >
-                                        Request Join Link and Private Key
-                                    </button>
-                                </div>
-                            </div>
+    <div class="row mt-1">
+        <div class="form col d-flex flex-column align-self-center">
+            <div class="images-container">
+                <div class="text-light bg-dark images-container_area images-container_area_preview">
+                    <img [src]="stream.banner || 'assets/images/stream-preview.jpg'" />
+                    <div class="d-flex flex-column flex-center gap-5 align-self-center flex-grow-1">
+                        <div class="align-self-end">
+                            <figcaption class="figure-caption text-end">Start Date</figcaption>
+                            <h4>{{ stream.startDate | date: "medium" }}</h4>
                         </div>
+
+                        <ng-container *ngIf="!stream.private; else privateStream">
+                            <button
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-request"
+                                class="btn btn-light"
+                            >
+                                <figcaption class="figure-caption">Make Request for getting</figcaption>
+                                <div>Join Link</div>
+                                <h2><i class="bi bi-link-45deg"></i></h2>
+                            </button>
+                        </ng-container>
+                        <ng-template #privateStream>
+                            <button
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-request"
+                                class="btn btn-light"
+                            >
+                                <figcaption class="figure-caption">Request Instructions for getting</figcaption>
+                                <div>Join Link and Private Key</div>
+                                <h2><i class="bi bi-key-fill"></i></h2>
+                            </button>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
-    </ng-template>
+    </div>
 
-    <div class="row mt-2">
-        <div class="form col d-flex flex-column align-self-center">
-            <div class="images-container">
-                <div class="images-container_area images-container_area_preview">
-                    <img [src]="stream.banner || 'assets/images/stream-preview.jpg'" />
-                </div>
+    <div class="row justify-content-start mt-1">
+        <div class="col">
+            <div class="block-with-radius bg-dark p-3 border bg-light d-flex flex-row gap-4 justify-content-between">
+                <quill-view-html class="ql-editor-container" [content]="stream.description || '_'"></quill-view-html>
             </div>
         </div>
     </div>

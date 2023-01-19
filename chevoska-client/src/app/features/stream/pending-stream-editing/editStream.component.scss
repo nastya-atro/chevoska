@@ -1,3 +1,18 @@
+.stream-container {
+  margin-top: 50px;
+}
+
+.position-fixed {
+  top: 55px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  right: 10px;
+}
+
+.quill-editor {
+  caret-color: white;
+}
+
 .images-container {
   display: flex;
   flex-direction: column;
@@ -41,3 +56,13 @@
     align-self: center;
   }
 }
+
+.block-with-radius{
+  border-radius: 8px;
+}
+
+.im-blurry-anyway {
+  border: none;
+  filter: blur(4px);
+}
+

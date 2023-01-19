@@ -1,10 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
+const path = require("path");
 
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.development';
-const baseDir = path.join(__dirname, '/env');
+const envFile = process.env.NODE_ENV
+  ? `.env.${process.env.NODE_ENV}`
+  : ".env.development";
+const baseDir = path.join(__dirname, "/env");
 const envPath = path.resolve(baseDir, `${envFile}`);
 
 dotenv.config({ path: envPath });
