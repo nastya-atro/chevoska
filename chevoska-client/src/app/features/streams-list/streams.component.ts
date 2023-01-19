@@ -58,7 +58,7 @@ export class StreamsComponent {
     pagination: {
       total: 0,
       page: 1,
-      limit: 9,
+      limit: 10,
       totalPages: 0,
     },
     filters: {

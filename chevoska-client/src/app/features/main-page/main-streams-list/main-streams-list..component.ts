@@ -38,7 +38,7 @@ export class MainStreamsListComponent {
   rootPath = 'main';
   queryParams!: QueryParams;
   streams = [] as null | StreamsForClientList[];
-  displayedColumns: string[] = [...STREAMS_COLUMNS];
+  displayedColumns: string[] = [''];
 
   filtersOptions = {
     privacy: [...STREAMS_PRIVACY_FILTER],
@@ -57,7 +57,7 @@ export class MainStreamsListComponent {
     pagination: {
       total: 0,
       page: 1,
-      limit: 9,
+      limit: 10,
       totalPages: 0,
     },
     filters: {
