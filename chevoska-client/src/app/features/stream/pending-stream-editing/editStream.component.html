@@ -1,176 +1,179 @@
-<div class="stream-container" [@fadeIn]="'fadeIn'" *ngIf="stream">
+<div class="stream-container">
     <div class="row">
         <div class="col text-end position-fixed bg-light">
             <button class="btn btn-outline-dark m-1" [routerLink]="['/detail/', stream.id]">Show Preview</button>
             <button type="button" (click)="editStream()" class="btn btn-dark m-1">Edit Stream</button>
         </div>
     </div>
-
-    <div class="row gy-2 justify-content-start mb-1 mt-3">
-        <div class="col">
-            <div class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between">
-                <figcaption class="figure-caption">Create Date</figcaption>
-                <div>{{ stream.createDate | date: "medium" }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between">
-                <figcaption class="figure-caption">Status</figcaption>
-                <div>{{ stream.streamStatus }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between">
-                <figcaption class="figure-caption">Enter Link</figcaption>
-                <div class="d-flex flex-row gap-2">
-                    <button type="button" (click)="copyToClipboard(stream.enterLink)" class="btn btn-light">
-                        Copy Link to clipboard
-                    </button>
-                    <button [routerLink]="[stream.hrefLink]" class="btn btn-outline-light btn-icon">
-                        <i class="bi bi-eye"></i>
-                    </button>
+    <div [@fadeIn]="'fadeIn'">
+        <div class="row gy-2 justify-content-start mb-1 mt-3">
+            <div class="col">
+                <div class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between">
+                    <figcaption class="figure-caption">Create Date</figcaption>
+                    <div>{{ stream.createDate | date: "medium" }}</div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div *ngIf="stream.private" class="row gy-2 justify-content-start mb-1">
-        <div class="col">
-            <div
-                [ngClass]="!form.controls.isPrivate.value ? 'im-blurry-anyway' : ''"
-                class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between"
-            >
-                <button type="button" (click)="generateKey()" class="btn btn-light">
-                    <h3><i class="bi bi-key"></i></h3>
-                    Generate Private Key For Enter
-                </button>
-                <div class="d-flex flex-row gap-2 align-items-center">
-                    <div>{{ stream.enterKey ? stream.enterKey?.slice(0, 5) + "*****" : "N/A" }}</div>
-                    <button
-                        *ngIf="stream.enterKey"
-                        type="button"
-                        (click)="copyToClipboard(stream.enterKey)"
-                        class="btn btn-light"
-                    >
-                        Copy Key to clipboard
-                    </button>
+        <div class="row gy-2 justify-content-start mb-1">
+            <div class="col">
+                <div class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between">
+                    <figcaption class="figure-caption">Status</figcaption>
+                    <div>{{ stream.streamStatus }}</div>
                 </div>
             </div>
         </div>
-    </div>
-    <form [formGroup]="form" class="form">
-        <div class="row mt-2">
-            <div class="form col d-flex flex-column align-self-center">
-                <app-image-upload
-                    [type]="'background'"
-                    [title]="'Banner'"
-                    [isCroppingNeed]="true"
-                    [slimSizeModal]="true"
-                    [descriptions]="['JPG and PNG images - max 1 GB']"
-                    [aspectRatio]="5 / 3"
-                    [markError]="!!(form.controls.originBanner.invalid && form.controls.originBanner.touched)"
-                    [image]="this.form.controls.originBanner.value"
-                    [croppedImage]="this.form.controls.banner.value"
-                    [cropSettings]="this.form.controls.bannerCropSettings.value"
-                    (uploadFinished)="onUploadBackgroundFinished($event)"
-                    (setCroppedBackgroundState)="setCroppedBackgroundState($event)"
-                    (removed)="this.resetBackgroundImage()"
-                ></app-image-upload>
-            </div>
-            <div class="col-6 mt-4">
 
-                <div class="form-outline mb-3">
-                    <div class="form-check p-0">
-                        <figcaption class="figure-caption form-label text-end">Toggle to change Privacy</figcaption>
-                        <div>
-                            <input
-                                [formControl]="form.controls.isPrivate"
-                                type="checkbox"
-                                class="btn-check"
-                                id="btn-check"
-                            />
-                            <label class="btn btn-icon d-flex gap-2" for="btn-check">
-                                <i
-                                    [class]="form.controls.isPrivate.value ? 'bi bi-lock-fill' : 'bi bi-unlock-fill'"
-                                ></i>
-                                <span>{{ form.controls.isPrivate.value ? "Private" : "Public " }}</span>
-                            </label>
+        <div class="row gy-2 justify-content-start mb-1">
+            <div class="col">
+                <div class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between">
+                    <figcaption class="figure-caption">Enter Link</figcaption>
+                    <div class="d-flex flex-row gap-2">
+                        <button type="button" (click)="copyToClipboard(stream.enterLink)" class="btn btn-light">
+                            Copy Link to clipboard
+                        </button>
+                        <button [routerLink]="[stream.hrefLink]" class="btn btn-outline-light btn-icon">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="stream.private" class="row gy-2 justify-content-start mb-1">
+            <div class="col">
+                <div
+                    [ngClass]="!form.controls.isPrivate.value ? 'im-blurry-anyway' : ''"
+                    class="block-with-radius p-3 border bg-dark text-light d-flex flex-row justify-content-between"
+                >
+                    <button type="button" (click)="generateKey()" class="btn btn-light">
+                        <h3><i class="bi bi-key"></i></h3>
+                        Generate Private Key For Enter
+                    </button>
+                    <div class="d-flex flex-row gap-2 align-items-center">
+                        <div>{{ stream.enterKey ? stream.enterKey?.slice(0, 5) + "*****" : "N/A" }}</div>
+                        <button
+                            *ngIf="stream.enterKey"
+                            type="button"
+                            (click)="copyToClipboard(stream.enterKey)"
+                            class="btn btn-light"
+                        >
+                            Copy Key to clipboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form [formGroup]="form" class="form">
+            <div class="row mt-2">
+                <div class="form col d-flex flex-column align-self-center">
+                    <app-image-upload
+                        [type]="'background'"
+                        [title]="'Banner'"
+                        [isCroppingNeed]="true"
+                        [slimSizeModal]="true"
+                        [descriptions]="['JPG and PNG images - max 1 GB']"
+                        [aspectRatio]="5 / 3"
+                        [markError]="!!(form.controls.originBanner.invalid && form.controls.originBanner.touched)"
+                        [image]="this.form.controls.originBanner.value"
+                        [croppedImage]="this.form.controls.banner.value"
+                        [cropSettings]="this.form.controls.bannerCropSettings.value"
+                        (uploadFinished)="onUploadBackgroundFinished($event)"
+                        (setCroppedBackgroundState)="setCroppedBackgroundState($event)"
+                        (removed)="this.resetBackgroundImage()"
+                    ></app-image-upload>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="form-outline mb-3">
+                        <div class="form-check p-0">
+                            <figcaption class="figure-caption form-label text-end">Toggle to change Privacy</figcaption>
+                            <div>
+                                <input
+                                    [formControl]="form.controls.isPrivate"
+                                    type="checkbox"
+                                    class="btn-check"
+                                    id="btn-check"
+                                />
+                                <label class="btn btn-icon d-flex gap-2" for="btn-check">
+                                    <i
+                                        [class]="
+                                            form.controls.isPrivate.value ? 'bi bi-lock-fill' : 'bi bi-unlock-fill'
+                                        "
+                                    ></i>
+                                    <span>{{ form.controls.isPrivate.value ? "Private" : "Public " }}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-outline mb-3">
+                        <figcaption class="figure-caption form-label text-end">Title</figcaption>
+                        <input
+                            [formControl]="form.controls.title"
+                            type="text"
+                            id="title"
+                            class="form-control form-control-lg"
+                            [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
+                        />
+                        <div class="invalid-feedback" *ngIf="form.controls.title.errors">
+                            {{ form.controls.title.errors | validateError }}
+                        </div>
+                    </div>
+
+                    <div class="form-outline">
+                        <figcaption class="figure-caption form-label text-end">Start Date</figcaption>
+                        <input
+                            [formControl]="form.controls.startDate"
+                            mode="daytime"
+                            id="startDate"
+                            class="form-control form-control-lg"
+                            [dpDayPicker]="dayPickerconfig"
+                            (onChange)="dateIntervalChange()"
+                            [ngClass]="
+                                form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''
+                            "
+                        />
+                        <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
+                            {{ form.controls.startDate.errors | validateError }}
                         </div>
                     </div>
                 </div>
-
-                <div class="form-outline mb-3">
-                    <figcaption class="figure-caption form-label text-end">Title</figcaption>
-                    <input
-                        [formControl]="form.controls.title"
-                        type="text"
-                        id="title"
-                        class="form-control form-control-lg"
-                        [ngClass]="form.controls.title.errors && form.controls.title.touched ? 'is-invalid' : ''"
-                    />
-                    <div class="invalid-feedback" *ngIf="form.controls.title.errors">
-                        {{ form.controls.title.errors | validateError }}
-                    </div>
-                </div>
-
-                <div class="form-outline">
-                    <figcaption class="figure-caption form-label text-end">Start Date</figcaption>
-                    <input
-                        [formControl]="form.controls.startDate"
-                        mode="daytime"
-                        id="startDate"
-                        class="form-control form-control-lg"
-                        [dpDayPicker]="dayPickerconfig"
-                        (onChange)="dateIntervalChange()"
-                        [ngClass]="
-                            form.controls.startDate.errors && form.controls.startDate.touched ? 'is-invalid' : ''
-                        "
-                    />
-                    <div class="invalid-feedback" *ngIf="form.controls.startDate.errors">
-                        {{ form.controls.startDate.errors | validateError }}
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="form-outline mb-4">
-                <figcaption class="figure-caption form-label text-end">Description</figcaption>
-                <div
+            <div class="row">
+                <div class="form-outline mb-4">
+                    <figcaption class="figure-caption form-label text-end">Description</figcaption>
+                    <div
                         class="input-block"
                         [ngClass]="
-                        form.controls.description.errors && form.controls.description.touched
-                            ? 'input-block_invalid'
-                            : ''
-                    "
-                >
-                    <div
-                            [ngClass]="
-                        form.controls.description.errors && form.controls.description.touched ? 'is-invalid' : ''
-                    "
-                            class="form-control form-control-lg bg-dark p-3"
+                            form.controls.description.errors && form.controls.description.touched
+                                ? 'input-block_invalid'
+                                : ''
+                        "
                     >
-                        <quill-editor
+                        <div
+                            [ngClass]="
+                                form.controls.description.errors && form.controls.description.touched
+                                    ? 'is-invalid'
+                                    : ''
+                            "
+                            class="form-control form-control-lg bg-dark p-3"
+                        >
+                            <quill-editor
                                 class="quill-editor"
                                 (onEditorCreated)="onEditorCreated($event)"
                                 [placeholder]="''"
                                 [formControl]="form.controls.description"
                                 [modules]="quillConfig"
-                        ></quill-editor>
-                    </div>
+                            ></quill-editor>
+                        </div>
 
-                    <div class="invalid-feedback" *ngIf="form.controls.description.errors">
-                        {{ form.controls.description.errors | validateError }}
+                        <div class="invalid-feedback" *ngIf="form.controls.description.errors">
+                            {{ form.controls.description.errors | validateError }}
+                        </div>
                     </div>
                 </div>
-
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

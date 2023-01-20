@@ -1,11 +1,11 @@
-<div class="stream-container" [@fadeIn]="'fadeIn'">
+<div class="stream-container" >
     <div class="row">
         <div class="col text-end position-fixed bg-light">
             <button type="button" (click)="createStream()" class="btn btn-dark">Create Stream</button>
         </div>
     </div>
 
-    <form [formGroup]="form" class="form mt-4 mb-1">
+    <form [formGroup]="form" [@fadeIn]="'fadeIn'" class="form mt-4 mb-1">
         <div class="row mt-2 mb-3">
             <div class="form-outline">
                 <figcaption class="figure-caption form-label">Title</figcaption>

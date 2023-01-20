@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IDatePickerDirectiveConfig } from 'ng2-date-picker';
@@ -58,6 +58,7 @@ export class EditStreamComponent implements OnInit {
   };
 
   constructor(
+    private router: Router,
     private clipboard: Clipboard,
     private streamService: StreamService,
     private activatedRoute: ActivatedRoute,
@@ -170,7 +171,7 @@ export class EditStreamComponent implements OnInit {
           )
           .subscribe({
             next: () => {
-              this.loadStream();
+              this.router.navigate(['/streams']);
               this.notifyService.notifier.success('Stream edit success');
             },
             error: () => {},

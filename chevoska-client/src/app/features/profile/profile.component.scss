@@ -1,7 +1,18 @@
+.stream-container {
+  margin-top: 50px;
+}
+
+.position-fixed {
+  top: 55px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  right: 10px;
+}
+
 // Round User Logo
 .logo-block {
-  height: 300px;
-  width:  300px;
+  height: 35vw;
+  width:  auto;
   margin: 0 auto;
   overflow: hidden;
   .logo {
@@ -12,4 +23,8 @@
     margin: 0 auto;
     object-fit: cover;
   }
+}
+
+.profile-form{
+  margin-top: 80px;
 }
