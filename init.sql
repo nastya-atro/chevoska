@@ -73,7 +73,7 @@ DROP TABLE IF EXISTS `stream`;
 CREATE TABLE `stream` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(80) DEFAULT NULL,
-  `description` varchar(80) DEFAULT NULL,
+  `description` text,
   `status_id` int NOT NULL,
   `user_id` int NOT NULL,
   `enter_link` varchar(255) DEFAULT NULL,
