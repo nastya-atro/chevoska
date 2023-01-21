@@ -29,14 +29,16 @@ services:
       - cache:/data
 
   backend:
-    image: chevoska/testapp:server2
-   # build: ./chevoska-server
+   # image: chevoska/testapp:server2
+    build: ./chevoska-server
     container_name: server
     depends_on:
       - cache
       - db
     ports:
       - 0.0.0.0:3001:3001
+    volumes:
+      - /var/chevoska/uploads:/usr/src/app/public/uploads
     environment:
       - HOST=0.0.0.0
       - PORT=3001

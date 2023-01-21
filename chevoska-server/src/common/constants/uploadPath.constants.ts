@@ -27,10 +27,3 @@ export class UploadPath {
     "images"
   );
 }
-
-/*dev:
-      - /var/ovp/uploads:/usr/src/app/public/uploads
-      - STORAGE_DIR=/var/ovp
-prod:
-      - /var/ovp/uploads:/usr/src/app/public/uploads
-      - STORAGE_DIR=/usr/src/app/public/*/
