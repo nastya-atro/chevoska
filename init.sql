@@ -30,6 +30,9 @@ CREATE TABLE `stream_statuses` (
   PRIMARY KEY (`id`)
 );
 
+INSERT INTO stream_statuses(id,title) values
+(1, 'pending'),(2, 'active'),(3, 'done');
+
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -58,6 +61,8 @@ CREATE TABLE `profiles` (
   `phone` varchar(25) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `timezone` varchar(45) DEFAULT NULL,
+  `username` varchar(80) NOT NULL,
+
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 );
@@ -78,8 +83,8 @@ CREATE TABLE `stream` (
   `download_link` varchar(255) DEFAULT NULL,
   `private` tinyint(1) NOT NULL DEFAULT '0',
   `enter_key` varchar(64) DEFAULT NULL,
-  `bannerCropSettings` json DEFAULT NULL,
-  `originBanner` varchar(255) DEFAULT NULL,
+  `banner_crop_settings` json DEFAULT NULL,
+  `origin_banner` varchar(255) DEFAULT NULL,
   `banner` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `status_id` (`status_id`),
@@ -103,11 +108,10 @@ CREATE TABLE `stream_reviews` (
 CREATE TABLE `stream_clients` (
   `id` int NOT NULL AUTO_INCREMENT,
   `stream_id` int DEFAULT NULL,
-  `username` varchar(80) not null,
+  `username` varchar(80) NOT NULL,
   `email` varchar(50)  DEFAULT NULL,
   `phone` varchar(25) DEFAULT NULL,
   `timezone` varchar(45) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `stream_id` (`stream_id`),
   FOREIGN KEY (`stream_id`) REFERENCES `stream` (`id`)  ON DELETE CASCADE ON UPDATE RESTRICT

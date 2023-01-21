@@ -15,7 +15,8 @@
                         data-bs-target="#staticBackdrop"
                         (click)="showModalPreview(this.image || state.imagePreview)"
                         type="button"
-                        class="btn btn-outline-light btn-lg btn-icon"
+                        class="btn btn-lg btn-icon"
+                        [ngClass]="markError ? 'btn-outline-danger' : 'btn-outline-light'"
                     >
                         <i class="bi bi-crop"></i>
                     </button>

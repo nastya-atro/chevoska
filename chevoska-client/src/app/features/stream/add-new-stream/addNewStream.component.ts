@@ -45,8 +45,11 @@ export class AddNewStreamComponent {
 
   displayBannerError: ValidatorFn = (): ValidationErrors | null => {
     if (this.form?.controls.bannerFile.value || this.form?.controls.originBanner.value) {
+      console.log(this.form?.controls.bannerFile.value || this.form?.controls.originBanner.value);
       return null;
     } else {
+      console.log(this.form?.controls.bannerFile.value || this.form?.controls.originBanner.value);
+
       return { rangeError: true };
     }
   };
@@ -103,6 +106,7 @@ export class AddNewStreamComponent {
           error: () => {},
         });
     } else {
+      console.log(this.form.controls.originBanner.invalid);
       Utils.checkFormValidation(this.form);
     }
   }
