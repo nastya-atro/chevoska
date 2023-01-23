@@ -16,6 +16,7 @@ import { MultiSelectFilterPipe } from '../core/pipes/multi-select-filter.pipe';
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { MultiselectComponent } from './components/multiselect/multiselect.component';
 import { QuillEditorComponent, QuillViewHTMLComponent } from 'ngx-quill';
+import { SpyDirective } from './directives/dev-tools/spy.directive';
 
 const COMPONENTS = [
   PageNotFoundComponent,
@@ -41,7 +42,7 @@ const COMPONENTS = [
     QuillViewHTMLComponent,
     QuillEditorComponent,
   ],
-  declarations: [...COMPONENTS, LoaderDirective],
-  exports: [...COMPONENTS, LoaderDirective],
+  declarations: [...COMPONENTS, LoaderDirective, SpyDirective],
+  exports: [...COMPONENTS, LoaderDirective, SpyDirective],
 })
 export class SharedModule {}
