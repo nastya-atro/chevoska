@@ -11,7 +11,7 @@ services:
     container_name: mysql-server
     restart: always
     ports:
-     - 3307:3307
+     - 172.17.0.1:3307:3307
     environment:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_TCP_PORT: 3307
@@ -24,29 +24,31 @@ services:
     container_name: cache-server
     restart: always
     ports:
-      - 0.0.0.0:6379:6379
+      - 172.17.0.1:6379:6379
     volumes:
       - cache:/data
 
   backend:
-   # image: chevoska/testapp:server2
-    build: ./chevoska-server
+    image: chevoska/testapp:server_1_1
+    # build: ./chevoska-server
     container_name: server
     depends_on:
       - cache
       - db
     ports:
-      - 0.0.0.0:3001:3001
+      - 172.17.0.1:3001:3001
     volumes:
       - /var/chevoska/uploads:/usr/src/app/public/uploads
     environment:
       - HOST=0.0.0.0
       - PORT=3001
       - NODE_ENV=development
+      - STORAGE_DIR=/usr/src/app/public/
+
 
       - TYPEORM_HOST=db
       - TYPEORM_PORT=3307
-      - CUSTOM_HOST=http://168.119.62.93
+      - CUSTOM_HOST=http://168.119.62.93:80
 
       - REDIS_CLUSTER_MODE=false
       - REDIS_KEY_PREFIX=CVEVOSKA_
